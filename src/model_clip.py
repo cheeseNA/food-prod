@@ -1,11 +1,14 @@
 import torch
+import torch.nn as nn
+
 # import clip
 from transformers import CLIPModel, CLIPProcessor
 
-import torch.nn as nn
+
 # from args import get_parser
 # parser = get_parser()
 # opts = parser.parse_args()
+
 
 class Recognition(nn.Module):
     def __init__(self):
@@ -26,7 +29,11 @@ class Recognition(nn.Module):
             image_features = self.clip_model.get_image_features(input)
 
         cat_pred = self.cat_pred(image_features)
-        cat_pred = self.max(cat_pred.view(input.size(0), 82, 1, 1)).view(input.size(0), -1)
+        cat_pred = self.max(cat_pred.view(input.size(0), 82, 1, 1)).view(
+            input.size(0), -1
+        )
         ing_pred = self.ing_pred(image_features)
-        ing_pred = self.max(ing_pred.view(input.size(0), 588, 1, 1)).view(input.size(0), -1)
+        ing_pred = self.max(ing_pred.view(input.size(0), 588, 1, 1)).view(
+            input.size(0), -1
+        )
         return [cat_pred, ing_pred]

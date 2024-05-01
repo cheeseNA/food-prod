@@ -1,6 +1,32 @@
 {
-    "names": ["LiangyuWang", "Yamakata", "administrator", "f001", "f002", "f003", "f004", "f005"],
-    "usernames": ["l_wang", "yamakata", "admin", "f001", "f002", "f003", "f004", "f005"],
-    "passwords": ["12345", "54321", "ad1234", "foodlog001", "foodlog002", "foodlog003", "foodlog004", "foodlog005"]
-  }
-  
+  "names": [
+    "LiangyuWang",
+    "Yamakata",
+    "administrator",
+    "f001",
+    "f002",
+    "f003",
+    "f004",
+    "f005"
+  ],
+  "usernames": [
+    "l_wang",
+    "yamakata",
+    "admin",
+    "f001",
+    "f002",
+    "f003",
+    "f004",
+    "f005"
+  ],
+  "passwords": [
+    "12345",
+    "54321",
+    "ad1234",
+    "foodlog001",
+    "foodlog002",
+    "foodlog003",
+    "foodlog004",
+    "foodlog005"
+  ]
+}
