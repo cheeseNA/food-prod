@@ -16,8 +16,12 @@ from PIL import Image
 from src.dataloader import VireoLoader
 from src.model_clip import Recognition
 
+DEBUG = True
 
-device = "cpu"
+
+def debug_print(*args, **kwargs):
+    if DEBUG:
+        print(*args, **kwargs)
 
 
 @st.cache_data
@@ -172,14 +176,14 @@ def update_mask_method1(selected_items, mask):
 
 
 @st.cache_data
-def get_current_candidate(candidate_nums, flat_list, mask, normalized_matrix):
+def get_current_candidate(candidate_nums, flat_list, mask):
     cur_prob = flat_list * mask
     top_k_indices = np.argsort(cur_prob)[-candidate_nums:][::-1]
     return top_k_indices.tolist()
 
 
 @st.cache_data
-def get_current_candidate_method1(candidate_nums, flat_list, mask, normalized_matrix):
+def get_current_candidate_method1(candidate_nums, flat_list, mask):
     cur_prob = flat_list * mask
     top_k_indices = np.argsort(cur_prob)[-candidate_nums:][::-1]
     return top_k_indices.tolist()
@@ -229,12 +233,7 @@ def save_results(username, image_file, method, ingredients, ingres_convert, clic
         json.dump(result_data, file, ensure_ascii=False, indent=4)
 
 
-def set_state(i):
-    st.session_state.stage = i
-    # st.session_state.click_dict["button"] += 1
-
-
-def page_1(username):
+def page_1():
     st.title("材料リストによる食事管理")
 
     if "ingre_finish" not in st.session_state:
@@ -269,7 +268,6 @@ def page_1(username):
 
     # Predict Module
     c1, c2, c3 = st.columns((1, 1, 1))
-    # if st.session_state.uploaded_image is not None and st.session_state.stage >= 1:
     if st.session_state.stage >= 1:
         threshold = 0.5
         candidate_nums = 10
@@ -306,13 +304,12 @@ def page_1(username):
             # if 'selected_options' not in st.session_state:
             st.session_state.selected_options = {}
 
-        if st.session_state.init_prediction == False:
+        if not st.session_state.init_prediction:
             if st.session_state.predict_method == "method_1":
                 st.session_state.predict_ingres = get_current_candidate_method1(
                     candidate_nums,
                     st.session_state.probability_scores,
                     st.session_state.mask,
-                    st.session_state.normalized_matrix,
                 )
             if st.session_state.predict_method == "method_2":
                 # st.session_state.predict_ingres = get_current_candidate(candidate_nums, st.session_state.probability_scores, st.session_state.mask, st.session_state.normalized_matrix)
@@ -320,7 +317,6 @@ def page_1(username):
                     candidate_nums,
                     st.session_state.pos_probability,
                     st.session_state.mask,
-                    st.session_state.normalized_matrix,
                 )
             st.session_state.init_prediction = True
 
@@ -332,7 +328,7 @@ def page_1(username):
 
         if "start_time" not in st.session_state:
             st.session_state.start_time_flag = False
-        if st.session_state.start_time_flag == False:
+        if not st.session_state.start_time_flag:
             st.session_state.start_time_flag = True
             st.session_state.start_time = datetime.now()
 
@@ -376,7 +372,6 @@ def page_1(username):
                     candidate_nums,
                     st.session_state.probability_scores,
                     st.session_state.mask,
-                    st.session_state.normalized_matrix,
                 )
             if st.session_state.predict_method == "method_2":
                 # st.session_state.predict_ingres = get_current_candidate(candidate_nums, st.session_state.probability_scores, st.session_state.mask, st.session_state.normalized_matrix)
@@ -384,7 +379,6 @@ def page_1(username):
                     candidate_nums,
                     st.session_state.pos_probability,
                     st.session_state.mask,
-                    st.session_state.normalized_matrix,
                 )
 
             print("generate:", st.session_state.predict_ingres)
@@ -402,11 +396,8 @@ def page_1(username):
 
         if c3.button("完了"):
             st.session_state.ingre_finish = True
-            set_state(3)
 
-        # if st.session_state.stage >= 3:
-        if st.session_state.ingre_finish == True:
-            st.session_state.stage = 3
+        if st.session_state.ingre_finish:
             st.session_state.click_dict["checkbox"] = (
                 len(st.session_state.selected_ingres)
                 - st.session_state.click_dict["input_text"]
@@ -416,7 +407,7 @@ def page_1(username):
                 for item, selected in st.session_state.selected_options.items()
                 if selected
             ]
-            if st.session_state.saved == False:
+            if not st.session_state.saved:
                 save_results(
                     st.session_state.username,
                     image,
@@ -433,36 +424,29 @@ def page_1(username):
                     file
                 )  # {"1": [id, exp, label_name, [whole_exps]]}
 
+            with open("Labels/weight_median.json", "r", encoding="utf-8") as f:
+                ingre_id_to_weights = json.load(f)
+
             ingre_names = []
             ingre_exps = []
             ingre_ids = []
+            median_weights = []
             for item in st.session_state.selected_ingres:
                 label_id = int(item) + 1
+                ingre_id = foodid_dic[str(label_id)][0]
+                ingre_ids.append(ingre_id)
                 ingre_names.append(foodid_dic[str(label_id)][2])
                 ingre_exps.append(foodid_dic[str(label_id)][1])
-                ingre_ids.append(foodid_dic[str(label_id)][0])
+                median_weights.append(ingre_id_to_weights[ingre_id][1])
 
             if "generate_value" not in st.session_state:
                 st.session_state.generate_value = False
-            if "edited_amount" not in st.session_state:
-                st.session_state.edited_amount = []
-            if "edited_unit" not in st.session_state:
-                st.session_state.edited_unit = []
-            # if 'edited_weight' not in st.session_state:
-            #     st.session_state.edited_weight = []
-
-            if "nutrient" not in st.session_state:
-                st.session_state.nutrient = {}
 
             if not st.session_state.generate_value:
-                st.session_state.edited_amount = [0] * len(
-                    st.session_state.selected_ingres
-                )
-                # st.session_state.edited_amount = [240, 75, 10, 10]
+                st.session_state.edited_amount = median_weights
                 st.session_state.edited_unit = ["g"] * len(
                     st.session_state.selected_ingres
                 )
-                # st.session_state.edited_weight = [0] * len(st.session_state.selected_ingres)
                 st.session_state.generate_value = True
 
             data = pd.DataFrame(
@@ -471,13 +455,16 @@ def page_1(username):
                     "standard_exp": ingre_exps,
                     "amount": st.session_state.edited_amount,
                     "unit": st.session_state.edited_unit,
-                    # "weight": st.session_state.edited_weight,
                 }
             )
 
             data["index"] = data.index + 1
             data.set_index("index", inplace=True)
 
+            debug_print(f"selected_ingres: {st.session_state.selected_ingres}")
+            debug_print(data)
+
+            # data_df is the editable version of the data
             data_df = st.data_editor(
                 data,
                 column_config={
@@ -519,7 +506,7 @@ def page_1(username):
                 hide_index=False,
             )
 
-            if st.button("入力完了", on_click=set_state, args=[4]):
+            if st.button("入力完了"):
                 st.session_state.dataframe_finish = True
                 with open("Labels/nutrition_dic.json", "r", encoding="utf-8") as file:
                     nutrients_infos = json.load(file)
@@ -579,8 +566,7 @@ def page_1(username):
                     predicted_ingre_names.append(ingres[item])
                 st.session_state.nutrient = nutrient
 
-                # if st.session_state.stage >= 4:
-                if st.session_state.dataframe_finish == True:
+                if st.session_state.dataframe_finish:
                     total_df = pd.DataFrame(st.session_state.nutrient)
                     total_df["主要栄養素"] = pd.Categorical(
                         total_df["主要栄養素"],
@@ -599,142 +585,9 @@ def page_1(username):
                     )  # , color=custom_colors
 
 
-############
-usernames = [
-    "l_wang",
-    "yamakata",
-    "admin",
-    "f001",
-    "f002",
-    "f003",
-    "f004",
-    "f005",
-    "f006",
-    "f007",
-    "f008",
-    "f009",
-    "f010",
-    "u001",
-    "u002",
-    "u003",
-    "u004",
-    "u005",
-    "u006",
-    "u007",
-    "u008",
-    "u009",
-    "u010",
-    "u011",
-    "u012",
-    "u013",
-    "u014",
-    "u015",
-    "u016",
-    "u017",
-    "u018",
-    "u019",
-    "u020",
-    "u021",
-    "u022",
-    "u023",
-    "u024",
-    "u025",
-    "u026",
-    "u027",
-    "u028",
-    "u029",
-    "u030",
-    "u031",
-    "u032",
-    "u033",
-    "u034",
-    "u035",
-    "u036",
-    "u037",
-    "u038",
-    "u039",
-    "u040",
-    "u041",
-    "u042",
-    "u043",
-    "u044",
-    "u045",
-    "u046",
-    "u047",
-    "u048",
-    "u049",
-    "u050",
-]
-passwords = [
-    "12345",
-    "54321",
-    "ad1234",
-    "f001",
-    "f002",
-    "f003",
-    "f004",
-    "f005",
-    "f006",
-    "f007",
-    "f008",
-    "f009",
-    "f010",
-    "45260",
-    "75340",
-    "44107",
-    "62902",
-    "23960",
-    "75281",
-    "99990",
-    "86609",
-    "76326",
-    "43646",
-    "72447",
-    "75362",
-    "07098",
-    "75855",
-    "26734",
-    "24302",
-    "03279",
-    "86585",
-    "15465",
-    "45127",
-    "64148",
-    "33167",
-    "46420",
-    "32709",
-    "47293",
-    "06965",
-    "39102",
-    "58952",
-    "54210",
-    "95708",
-    "00531",
-    "75240",
-    "66479",
-    "34432",
-    "42353",
-    "35340",
-    "48337",
-    "71182",
-    "39435",
-    "07803",
-    "24257",
-    "86121",
-    "97796",
-    "86071",
-    "90097",
-    "12565",
-    "56250",
-    "98969",
-    "31541",
-    "80025",
-]
-
-credentials = {}
-for uname, pwd in zip(usernames, passwords):
-    # user_dict = {"name": uname, "password": pwd}
-    credentials[uname] = pwd
+credentials = {
+    "test": "test",
+}
 
 
 def authenticate(username, password):
@@ -760,7 +613,7 @@ def main():
         initial_sidebar_state="collapsed",
     )
 
-    if st.session_state.register == False:
+    if not st.session_state.register:
         st.title("Login")
         c1, c2, c3 = st.columns((1, 1, 1))
         username = c1.text_input(
@@ -777,7 +630,7 @@ def main():
             else:
                 c1.error("アカウント／パスワードが正しくありません")
 
-    if st.session_state.register == True:
+    if st.session_state.register:
         methods = ["method_1", "method_2"]
         if "predict_method" not in st.session_state:
             st.session_state.predict_method = random.choice(methods)
@@ -787,7 +640,7 @@ def main():
             st.session_state.now_page = 1
 
         if st.session_state.now_page == 1:
-            page_1(st.session_state.username)
+            page_1()
 
 
 if __name__ == "__main__":
