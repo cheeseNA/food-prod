@@ -236,353 +236,318 @@ def save_results(username, image_file, method, ingredients, ingres_convert, clic
 def page_1():
     st.title("材料リストによる食事管理")
 
-    if "ingre_finish" not in st.session_state:
-        st.session_state.ingre_finish = False
-
-    if "dataframe_finish" not in st.session_state:
-        st.session_state.dataframe_finish = False
-
-    if "init_prediction" not in st.session_state:
-        st.session_state.init_prediction = False
-
     if "init_1" not in st.session_state:
         st.session_state.init_1 = True
         st.session_state.click_dict = {"button": 0, "checkbox": 0, "input_text": 0}
-
         st.session_state.stage = 0
-        st.session_state.ingres, st.session_state.name2idx = get_ingres_name()
-        st.session_state.uploaded_image = None
-        st.session_state.saved = False
 
     uploaded_image = st.file_uploader(
         "食事の写真をアップロードしてください", type=["jpg", "jpeg", "png"]
     )
     st.session_state.uploaded_image = uploaded_image
 
-    if (
-        uploaded_image
-        and st.session_state.stage == 0
-        and st.session_state.predict_method
-    ):
+    debug_print("(0)stage:", st.session_state.stage)
+
+    debug_print("uploaded_image:", st.session_state.uploaded_image)
+
+    if uploaded_image and st.session_state.stage == 0:
         st.session_state.stage += 1
 
-    # Predict Module
     c1, c2, c3 = st.columns((1, 1, 1))
-    if st.session_state.stage >= 1:
-        threshold = 0.5
-        candidate_nums = 10
-        ingres, name2idx = st.session_state.ingres, st.session_state.name2idx
-        # display image
+    candidate_nums = 10
+    ingres, name2idx = get_ingres_name()
+
+    if st.session_state.uploaded_image:
         c1.image(st.session_state.uploaded_image, use_column_width=False, width=150)
         image = Image.open(st.session_state.uploaded_image)
 
-        if "init_2" not in st.session_state:
-            st.session_state.init_2 = True
-            # if 'predict_ingres' not in st.session_state:
-            st.session_state.predict_ingres = []
-            # if 'selected_ingres' not in st.session_state:
-            st.session_state.selected_ingres = []
-            # if 'probability_scores' not in st.session_state:
-            # text_probs = get_ingre_probability(ingres, image)
-            text_probs = get_ingre_prob_from_model(uploaded_image)
-            st.session_state.probability_scores = [
-                item for sublist in text_probs.tolist() for item in sublist
-            ]
-            st.session_state.pos_probability = get_pos_probability(
-                st.session_state.probability_scores
-            )
-            # if 'normalized_matrix' not in st.session_state:
-            normalized_matrix = get_normalized_co_occurrence_matrix()
-            st.session_state.normalized_matrix = np.where(
-                normalized_matrix < threshold / 100, 0, normalized_matrix
-            )
-            # if 'mask' not in st.session_state:
-            mask = [1] * 588
-            mask[2] = 0
-            mask = np.array(mask)
-            st.session_state.mask = mask
-            # if 'selected_options' not in st.session_state:
-            st.session_state.selected_options = {}
+    if st.session_state.stage == 1:
+        st.session_state.stage += 1
 
-        if not st.session_state.init_prediction:
-            if st.session_state.predict_method == "method_1":
-                st.session_state.predict_ingres = get_current_candidate_method1(
-                    candidate_nums,
-                    st.session_state.probability_scores,
-                    st.session_state.mask,
-                )
-            if st.session_state.predict_method == "method_2":
-                # st.session_state.predict_ingres = get_current_candidate(candidate_nums, st.session_state.probability_scores, st.session_state.mask, st.session_state.normalized_matrix)
-                st.session_state.predict_ingres = get_current_candidate(
-                    candidate_nums,
-                    st.session_state.pos_probability,
-                    st.session_state.mask,
-                )
-            st.session_state.init_prediction = True
-
-    st.session_state.stage += 1
-
-    if st.session_state.stage >= 2:
-        c2.write("食材候補：料理に含まれている材料をチェックしてください")
-        print("now:", st.session_state.predict_ingres)
-
-        if "start_time" not in st.session_state:
-            st.session_state.start_time_flag = False
-        if not st.session_state.start_time_flag:
-            st.session_state.start_time_flag = True
-            st.session_state.start_time = datetime.now()
-
-        for item in st.session_state.predict_ingres:
-            st.session_state.selected_options[item] = c2.checkbox(
-                ingres[int(item)]
-            )  # key=f'ingre_{item}')
-
-        ingres_without_NA = ingres[:2] + ingres[3:]
-        options = c2.multiselect("リストにない食材を検索:", ingres_without_NA, [])
-        st.session_state.selected_ingres = [
-            item
-            for item, selected in st.session_state.selected_options.items()
-            if selected
+        text_probs = get_ingre_prob_from_model(uploaded_image)
+        st.session_state.probability_scores = [
+            item for sublist in text_probs.tolist() for item in sublist
         ]
-        # st.session_state.click_dict["checkbox"] += 1
-        if options:
-            for option in options:
-                st.session_state.selected_ingres.append(name2idx[option])
-            st.session_state.click_dict["input_text"] = len(options)
+        st.session_state.pos_probability = get_pos_probability(
+            st.session_state.probability_scores
+        )
+        normalized_matrix = get_normalized_co_occurrence_matrix()
+        threshold = 0.5
+        st.session_state.normalized_matrix = np.where(
+            normalized_matrix < threshold / 100, 0, normalized_matrix
+        )
+        # if 'mask' not in st.session_state:
+        mask = [1] * 588
+        mask[2] = 0
+        mask = np.array(mask)
+        st.session_state.mask = mask
+        # if 'selected_options' not in st.session_state:
+        st.session_state.selected_options = {}
 
+        st.session_state.init_prediction = True
         if st.session_state.predict_method == "method_1":
-            st.session_state.mask = update_mask_method1(
-                st.session_state.selected_ingres, st.session_state.mask
+            st.session_state.predict_ingres = get_current_candidate_method1(
+                candidate_nums,
+                st.session_state.probability_scores,
+                st.session_state.mask,
             )
         if st.session_state.predict_method == "method_2":
-            st.session_state.mask = update_mask(
-                st.session_state.selected_ingres,
+            st.session_state.predict_ingres = get_current_candidate(
+                candidate_nums,
+                st.session_state.pos_probability,
                 st.session_state.mask,
-                st.session_state.normalized_matrix,
             )
 
-        if c2.button("新しい食材候補を生成する"):
-            st.session_state.click_dict["button"] += 1
-            st.session_state.mask = update_mask_method1(
-                st.session_state.predict_ingres, st.session_state.mask
-            )  # delete other unselected ingredients
+    debug_print("(2)stage:", st.session_state.stage)
 
-            if st.session_state.predict_method == "method_1":
-                st.session_state.predict_ingres = get_current_candidate_method1(
-                    candidate_nums,
-                    st.session_state.probability_scores,
-                    st.session_state.mask,
-                )
-            if st.session_state.predict_method == "method_2":
-                # st.session_state.predict_ingres = get_current_candidate(candidate_nums, st.session_state.probability_scores, st.session_state.mask, st.session_state.normalized_matrix)
-                st.session_state.predict_ingres = get_current_candidate(
-                    candidate_nums,
-                    st.session_state.pos_probability,
-                    st.session_state.mask,
-                )
+    if not st.session_state.stage >= 2:
+        return
+    c2.write("食材候補：料理に含まれている材料をチェックしてください")
+    print("now:", st.session_state.predict_ingres)
 
-            print("generate:", st.session_state.predict_ingres)
-            st.rerun()
+    if "start_time" not in st.session_state:
+        st.session_state.start_time = datetime.now()
 
-        c3.divider()
-        c3.write("選択された食材リスト:")
-        # for item in st.session_state.selected_ingres:
-        #     c3.checkbox(ingres[int(item)], value=True)
-        for item in st.session_state.selected_ingres:
-            checkbox_value = c3.checkbox(ingres[int(item)], value=True)
-            if not checkbox_value:
-                st.session_state.selected_options[item] = False
-        c3.divider()
+    for item in st.session_state.predict_ingres:
+        st.session_state.selected_options[item] = c2.checkbox(
+            ingres[int(item)]
+        )  # key=f'ingre_{item}')
 
-        if c3.button("完了"):
-            st.session_state.ingre_finish = True
+    ingres_without_NA = ingres[:2] + ingres[3:]
+    options = c2.multiselect("リストにない食材を検索:", ingres_without_NA, [])
+    st.session_state.selected_ingres = [
+        item for item, selected in st.session_state.selected_options.items() if selected
+    ]
+    # st.session_state.click_dict["checkbox"] += 1
+    if options:
+        for option in options:
+            st.session_state.selected_ingres.append(name2idx[option])
+        st.session_state.click_dict["input_text"] = len(options)
 
-        if st.session_state.ingre_finish:
-            st.session_state.click_dict["checkbox"] = (
-                len(st.session_state.selected_ingres)
-                - st.session_state.click_dict["input_text"]
+    if st.session_state.predict_method == "method_1":
+        st.session_state.mask = update_mask_method1(
+            st.session_state.selected_ingres, st.session_state.mask
+        )
+    if st.session_state.predict_method == "method_2":
+        st.session_state.mask = update_mask(
+            st.session_state.selected_ingres,
+            st.session_state.mask,
+            st.session_state.normalized_matrix,
+        )
+
+    if c2.button("新しい食材候補を生成する"):
+        st.session_state.click_dict["button"] += 1
+        st.session_state.mask = update_mask_method1(
+            st.session_state.predict_ingres, st.session_state.mask
+        )  # delete other unselected ingredients
+
+        if st.session_state.predict_method == "method_1":
+            st.session_state.predict_ingres = get_current_candidate_method1(
+                candidate_nums,
+                st.session_state.probability_scores,
+                st.session_state.mask,
             )
-            st.session_state.selected_ingres = [
-                item
-                for item, selected in st.session_state.selected_options.items()
-                if selected
-            ]
-            if not st.session_state.saved:
-                save_results(
-                    st.session_state.username,
-                    image,
-                    st.session_state.predict_method,
-                    st.session_state.selected_ingres,
-                    ingres,
-                    st.session_state.click_dict,
-                )
-                st.session_state.saved = True
-            c3.success("回答を記録しました！次のページに進んでください。")
-
-            with open("Labels/foodid_dict.json", "r", encoding="utf-8") as file:
-                foodid_dic = json.load(
-                    file
-                )  # {"1": [id, exp, label_name, [whole_exps]]}
-
-            with open("Labels/weight_median.json", "r", encoding="utf-8") as f:
-                ingre_id_to_weights = json.load(f)
-
-            ingre_names = []
-            ingre_exps = []
-            ingre_ids = []
-            median_weights = []
-            for item in st.session_state.selected_ingres:
-                label_id = int(item) + 1
-                ingre_id = foodid_dic[str(label_id)][0]
-                ingre_ids.append(ingre_id)
-                ingre_names.append(foodid_dic[str(label_id)][2])
-                ingre_exps.append(foodid_dic[str(label_id)][1])
-                median_weights.append(ingre_id_to_weights[ingre_id][1])
-
-            if "generate_value" not in st.session_state:
-                st.session_state.generate_value = False
-
-            if not st.session_state.generate_value:
-                st.session_state.edited_amount = median_weights
-                st.session_state.edited_unit = ["g"] * len(
-                    st.session_state.selected_ingres
-                )
-                st.session_state.generate_value = True
-
-            data = pd.DataFrame(
-                {
-                    "ingredients": ingre_names,
-                    "standard_exp": ingre_exps,
-                    "amount": st.session_state.edited_amount,
-                    "unit": st.session_state.edited_unit,
-                }
+        if st.session_state.predict_method == "method_2":
+            st.session_state.predict_ingres = get_current_candidate(
+                candidate_nums,
+                st.session_state.pos_probability,
+                st.session_state.mask,
             )
 
-            data["index"] = data.index + 1
-            data.set_index("index", inplace=True)
+        print("generate:", st.session_state.predict_ingres)
+        st.rerun()
 
-            debug_print(f"selected_ingres: {st.session_state.selected_ingres}")
-            debug_print(data)
+    c3.divider()
+    c3.write("選択された食材リスト:")
+    for item in st.session_state.selected_ingres:
+        checkbox_value = c3.checkbox(ingres[int(item)], value=True)
+        if not checkbox_value:
+            st.session_state.selected_options[item] = False
+    c3.divider()
 
-            # data_df is the editable version of the data
-            data_df = st.data_editor(
-                data,
-                column_config={
-                    "index": st.column_config.Column("index", width=50),
-                    "ingredients": "食材名",
-                    "standard_exp": st.column_config.Column("食品名", width=100),
-                    "amount": st.column_config.NumberColumn(
-                        "重さ",
-                    ),
-                    "unit": st.column_config.SelectboxColumn(
-                        "単位",
-                        help="The category of the unit",
-                        options=[
-                            "g",
-                            "無単位",
-                            "枚",
-                            "本",
-                            "個片丁株玉房",
-                            "杯/カップ",
-                            "半分",
-                            "摘/少",
-                            "小/小匙",
-                            "中",
-                            "大/大匙",
-                            "一掴",
-                            "袋",
-                            "箱",
-                            "缶/カン",
-                            "CC",
-                            "cm",
-                            "束",
-                            "合",
-                        ],
-                        required=True,
-                    ),
-                    # "weight": "Weight(g)",
-                },
-                # width = 500,
-                hide_index=False,
+    if c3.button("完了"):
+        st.session_state.ingre_finish = True
+
+    if "ingre_finish" not in st.session_state:
+        return
+
+    st.session_state.click_dict["checkbox"] = (
+        len(st.session_state.selected_ingres)
+        - st.session_state.click_dict["input_text"]
+    )
+    st.session_state.selected_ingres = [
+        item for item, selected in st.session_state.selected_options.items() if selected
+    ]
+    if "saved" not in st.session_state:
+        save_results(
+            st.session_state.username,
+            image,
+            st.session_state.predict_method,
+            st.session_state.selected_ingres,
+            ingres,
+            st.session_state.click_dict,
+        )
+        st.session_state.saved = True
+    c3.success("回答を記録しました！次のページに進んでください。")
+
+    with open("Labels/foodid_dict.json", "r", encoding="utf-8") as file:
+        foodid_dic = json.load(file)  # {"1": [id, exp, label_name, [whole_exps]]}
+
+    with open("Labels/weight_median.json", "r", encoding="utf-8") as f:
+        ingre_id_to_weights = json.load(f)
+
+    ingre_names = []
+    ingre_exps = []
+    ingre_ids = []
+    median_weights = []
+    for item in st.session_state.selected_ingres:
+        label_id = int(item) + 1
+        ingre_id = foodid_dic[str(label_id)][0]
+        ingre_ids.append(ingre_id)
+        ingre_names.append(foodid_dic[str(label_id)][2])
+        ingre_exps.append(foodid_dic[str(label_id)][1])
+        median_weights.append(ingre_id_to_weights[ingre_id][1])
+
+    if "generate_value" not in st.session_state:
+        st.session_state.generate_value = False
+
+    if not st.session_state.generate_value:
+        st.session_state.edited_amount = median_weights
+        st.session_state.edited_unit = ["g"] * len(st.session_state.selected_ingres)
+        st.session_state.generate_value = True
+
+    data = pd.DataFrame(
+        {
+            "ingredients": ingre_names,
+            "standard_exp": ingre_exps,
+            "amount": st.session_state.edited_amount,
+            "unit": st.session_state.edited_unit,
+        }
+    )
+
+    data["index"] = data.index + 1
+    data.set_index("index", inplace=True)
+
+    debug_print(f"selected_ingres: {st.session_state.selected_ingres}")
+    debug_print(data)
+
+    # data_df is the editable version of the data
+    data_df = st.data_editor(
+        data,
+        column_config={
+            "index": st.column_config.Column("index", width=50),
+            "ingredients": "食材名",
+            "standard_exp": st.column_config.Column("食品名", width=100),
+            "amount": st.column_config.NumberColumn(
+                "重さ",
+            ),
+            "unit": st.column_config.SelectboxColumn(
+                "単位",
+                help="The category of the unit",
+                options=[
+                    "g",
+                    "無単位",
+                    "枚",
+                    "本",
+                    "個片丁株玉房",
+                    "杯/カップ",
+                    "半分",
+                    "摘/少",
+                    "小/小匙",
+                    "中",
+                    "大/大匙",
+                    "一掴",
+                    "袋",
+                    "箱",
+                    "缶/カン",
+                    "CC",
+                    "cm",
+                    "束",
+                    "合",
+                ],
+                required=True,
+            ),
+            # "weight": "Weight(g)",
+        },
+        # width = 500,
+        hide_index=False,
+    )
+
+    if st.button("入力完了"):
+        with open("Labels/nutrition_dic.json", "r", encoding="utf-8") as file:
+            nutrients_infos = json.load(file)
+        unit_trans_csv = pd.read_csv("Labels/weight_trans.csv")
+        nutrient = {
+            "主要栄養素": [
+                "カロリー (kcal)",
+                "たんぱく質 (g)",
+                "脂質 (g)",
+                "炭水化物 (g)",
+                "塩分 (g)",
+            ],
+        }
+        nutrient_codes = ["ENERC_KCAL", "PROT-", "FAT-", "CHOAVLM", "NACL_EQ"]
+
+        predicted_ingre_names = []
+        ingre_infos = {}
+        for i, row in data_df.iterrows():
+            item = st.session_state.selected_ingres[i - 1]
+            amount = row["amount"]
+            unit = row["unit"]
+
+            ingre_id = ingre_ids[i - 1]
+            result = (
+                unit_trans_csv.loc[
+                    unit_trans_csv["食品番号"] == int(ingre_id), unit
+                ].iloc[0]
+                if unit != "g"
+                else 1
             )
+            result = max(result, 0)
+            weight = amount * result
 
-            if st.button("入力完了"):
-                st.session_state.dataframe_finish = True
-                with open("Labels/nutrition_dic.json", "r", encoding="utf-8") as file:
-                    nutrients_infos = json.load(file)
-                unit_trans_csv = pd.read_csv("Labels/weight_trans.csv")
-                nutrient = {
-                    "主要栄養素": [
-                        "カロリー (kcal)",
-                        "たんぱく質 (g)",
-                        "脂質 (g)",
-                        "炭水化物 (g)",
-                        "塩分 (g)",
-                    ],
-                }
-                nutrient_codes = ["ENERC_KCAL", "PROT-", "FAT-", "CHOAVLM", "NACL_EQ"]
+            ingre_infos[ingre_id] = {
+                "amount": amount,
+                "unit": unit,
+                "weight": weight,
+            }
+            # data_df.at[i, 'weight'] = weight
 
-                predicted_ingre_names = []
-                ingre_infos = {}
-                for i, row in data_df.iterrows():
-                    item = st.session_state.selected_ingres[i - 1]
-                    amount = row["amount"]
-                    unit = row["unit"]
+            st.session_state.edited_amount.append(amount)
+            st.session_state.edited_unit.append(unit)
+            # st.session_state.edited_weight.append(weight)
 
-                    ingre_id = ingre_ids[i - 1]
-                    result = (
-                        unit_trans_csv.loc[
-                            unit_trans_csv["食品番号"] == int(ingre_id), unit
-                        ].iloc[0]
-                        if unit != "g"
-                        else 1
+            print("idx:", item, "ingreid:", ingre_id, "weight:", weight)
+            nutri_list = []
+            for code in nutrient_codes:
+                try:
+                    nutri_list.append(
+                        float(nutrients_infos[ingre_id][code]) * weight / 100
                     )
-                    result = max(result, 0)
-                    weight = amount * result
+                except ValueError:
+                    nutri_list.append(float(0))
 
-                    ingre_infos[ingre_id] = {
-                        "amount": amount,
-                        "unit": unit,
-                        "weight": weight,
-                    }
-                    # data_df.at[i, 'weight'] = weight
+            new_ing_dic = {ingres[item]: nutri_list}
+            nutrient.update(new_ing_dic)
+            predicted_ingre_names.append(ingres[item])
+        st.session_state.nutrient = nutrient
 
-                    st.session_state.edited_amount.append(amount)
-                    st.session_state.edited_unit.append(unit)
-                    # st.session_state.edited_weight.append(weight)
+        total_df = pd.DataFrame(st.session_state.nutrient)
+        total_df["主要栄養素"] = pd.Categorical(
+            total_df["主要栄養素"],
+            categories=[
+                "カロリー (kcal)",
+                "たんぱく質 (g)",
+                "脂質 (g)",
+                "炭水化物 (g)",
+                "塩分 (g)",
+            ],
+            ordered=True,
+        )
 
-                    print("idx:", item, "ingreid:", ingre_id, "weight:", weight)
-                    nutri_list = []
-                    for code in nutrient_codes:
-                        try:
-                            nutri_list.append(
-                                float(nutrients_infos[ingre_id][code]) * weight / 100
-                            )
-                        except ValueError:
-                            nutri_list.append(float(0))
-
-                    new_ing_dic = {ingres[item]: nutri_list}
-                    nutrient.update(new_ing_dic)
-                    predicted_ingre_names.append(ingres[item])
-                st.session_state.nutrient = nutrient
-
-                if st.session_state.dataframe_finish:
-                    total_df = pd.DataFrame(st.session_state.nutrient)
-                    total_df["主要栄養素"] = pd.Categorical(
-                        total_df["主要栄養素"],
-                        categories=[
-                            "カロリー (kcal)",
-                            "たんぱく質 (g)",
-                            "脂質 (g)",
-                            "炭水化物 (g)",
-                            "塩分 (g)",
-                        ],
-                        ordered=True,
-                    )
-
-                    st.bar_chart(
-                        total_df, x="主要栄養素", y=predicted_ingre_names
-                    )  # , color=custom_colors
+        st.bar_chart(
+            total_df, x="主要栄養素", y=predicted_ingre_names
+        )  # , color=custom_colors
 
 
 credentials = {
@@ -600,11 +565,6 @@ def authenticate(username, password):
 
 
 def main():
-    if "register" not in st.session_state:
-        st.session_state.register = False
-
-    if "username" not in st.session_state:
-        st.session_state.username = ""
 
     st.set_page_config(
         page_title="RecipeLog2023",
@@ -613,34 +573,25 @@ def main():
         initial_sidebar_state="collapsed",
     )
 
-    if not st.session_state.register:
+    if "register" not in st.session_state:
         st.title("Login")
-        c1, c2, c3 = st.columns((1, 1, 1))
+        c1, _, _ = st.columns((1, 1, 1))
         username = c1.text_input(
             "アカウント:",
         )
         password = c1.text_input("パスワード:", type="password")
 
         if c1.button("Login"):
-            if authenticate(username, password):
-                c1.success("Success! Welcome {}".format(username))
+            if not authenticate(username, password):
+                c1.error("アカウント／パスワードが正しくありません")
+            else:
                 st.session_state.username = username
                 st.session_state.register = True
                 st.rerun()
-            else:
-                c1.error("アカウント／パスワードが正しくありません")
-
-    if st.session_state.register:
-        methods = ["method_1", "method_2"]
+    else:
         if "predict_method" not in st.session_state:
-            st.session_state.predict_method = random.choice(methods)
-            # st.session_state.predict_method = "method_2"
-
-        if "now_page" not in st.session_state:
-            st.session_state.now_page = 1
-
-        if st.session_state.now_page == 1:
-            page_1()
+            st.session_state.predict_method = random.choice(["method_1", "method_2"])
+        page_1()
 
 
 if __name__ == "__main__":
