@@ -40,6 +40,32 @@ def get_ingres_name():
 
 
 @st.cache_data
+def get_canonical_ingres_name() -> dict[str, str]:
+    """
+    Label -> Canonical Name
+    ex) 1: 砂糖
+    3(NA, 水) is excluded
+    """
+    label_to_canonical_name = {}
+    with open("Labels/foodid_dict.json", "r", encoding="utf-8") as file:
+        ingredient_dict = json.load(file)
+    id_to_canonical_name = {}
+    for record in pd.read_csv("Labels/ingre_id_label_expression_table.csv").to_dict(
+        "records"
+    ):
+        id_to_canonical_name[record["ingredientid"]] = record["ingredient_exp2"]
+    for label, info_list in ingredient_dict.items():
+        if label == "3":
+            continue
+        ingredient_id = int(info_list[0])
+        if ingredient_id in id_to_canonical_name:
+            label_to_canonical_name[label] = id_to_canonical_name[ingredient_id]
+        else:
+            label_to_canonical_name[label] = info_list[2]
+    return label_to_canonical_name
+
+
+@st.cache_data
 def get_normalized_co_occurrence_matrix():
     co_occurrence_matrix = np.load("Labels/co_occurrence_matrix.npy", allow_pickle=True)
     row_sums = co_occurrence_matrix.sum(axis=1, keepdims=True)
@@ -255,7 +281,8 @@ def page_1():
 
     c1, c2, c3 = st.columns((1, 1, 1))
     candidate_nums = 10
-    ingres, name2idx = get_ingres_name()
+    label_to_canonical_name = get_canonical_ingres_name()
+    canonical_name_to_label = {v: k for k, v in label_to_canonical_name.items()}
 
     if st.session_state.uploaded_image:
         c1.image(st.session_state.uploaded_image, use_column_width=False, width=150)
@@ -303,26 +330,29 @@ def page_1():
     if not st.session_state.stage >= 2:
         return
     c2.write("食材候補：料理に含まれている材料をチェックしてください")
-    print("now:", st.session_state.predict_ingres)
+    debug_print("now:", st.session_state.predict_ingres)
 
     if "start_time" not in st.session_state:
         st.session_state.start_time = datetime.now()
 
     for item in st.session_state.predict_ingres:
         st.session_state.selected_options[item] = c2.checkbox(
-            ingres[int(item)]
+            label_to_canonical_name[str(int(item) + 1)]
         )  # key=f'ingre_{item}')
 
-    ingres_without_NA = ingres[:2] + ingres[3:]
-    options = c2.multiselect("リストにない食材を検索:", ingres_without_NA, [])
-    st.session_state.selected_ingres = [
+    not_in_list_multiselect = c2.multiselect(
+        "リストにない食材を検索:", label_to_canonical_name.values(), []
+    )
+    st.session_state.selected_ingres = [  # 0-indexed int label
         item for item, selected in st.session_state.selected_options.items() if selected
     ]
     # st.session_state.click_dict["checkbox"] += 1
-    if options:
-        for option in options:
-            st.session_state.selected_ingres.append(name2idx[option])
-        st.session_state.click_dict["input_text"] = len(options)
+    if not_in_list_multiselect:
+        for name in not_in_list_multiselect:
+            st.session_state.selected_ingres.append(
+                int(canonical_name_to_label[name]) - 1
+            )
+        st.session_state.click_dict["input_text"] = len(not_in_list_multiselect)
 
     if st.session_state.predict_method == "method_1":
         st.session_state.mask = update_mask_method1(
@@ -360,7 +390,9 @@ def page_1():
     c3.divider()
     c3.write("選択された食材リスト:")
     for item in st.session_state.selected_ingres:
-        checkbox_value = c3.checkbox(ingres[int(item)], value=True)
+        checkbox_value = c3.checkbox(
+            label_to_canonical_name[str(int(item) + 1)], value=True
+        )
         if not checkbox_value:
             st.session_state.selected_options[item] = False
     c3.divider()
@@ -375,16 +407,14 @@ def page_1():
         len(st.session_state.selected_ingres)
         - st.session_state.click_dict["input_text"]
     )
-    st.session_state.selected_ingres = [
-        item for item, selected in st.session_state.selected_options.items() if selected
-    ]
+
     if "saved" not in st.session_state:
         save_results(
             st.session_state.username,
             image,
             st.session_state.predict_method,
             st.session_state.selected_ingres,
-            ingres,
+            list(label_to_canonical_name.values()),
             st.session_state.click_dict,
         )
         st.session_state.saved = True
@@ -404,7 +434,7 @@ def page_1():
         label_id = int(item) + 1
         ingre_id = foodid_dic[str(label_id)][0]
         ingre_ids.append(ingre_id)
-        ingre_names.append(foodid_dic[str(label_id)][2])
+        ingre_names.append(label_to_canonical_name[str(label_id)])
         ingre_exps.append(foodid_dic[str(label_id)][1])
         median_weights.append(ingre_id_to_weights[ingre_id][1])
 
@@ -527,9 +557,9 @@ def page_1():
                 except ValueError:
                     nutri_list.append(float(0))
 
-            new_ing_dic = {ingres[item]: nutri_list}
+            new_ing_dic = {label_to_canonical_name[str(int(item) + 1)]: nutri_list}
             nutrient.update(new_ing_dic)
-            predicted_ingre_names.append(ingres[item])
+            predicted_ingre_names.append(label_to_canonical_name[str(int(item) + 1)])
         st.session_state.nutrient = nutrient
 
         total_df = pd.DataFrame(st.session_state.nutrient)
