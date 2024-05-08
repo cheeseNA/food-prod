@@ -1,7 +1,12 @@
+# id, label, name について
+
 foodid_dict と IngredientList588.txt は行番号・名前が対応している. 齟齬があるのは"水"または"N/A"の 1 行のみ.
 よって ingres や name2idx といったコード中の変数は安全に破棄できる.
 
 ingre_id_label_expression_table.csv は 0-indexed である. 以下のズレがある.
+
+<details>
+<summary>ズレ</summary>
 
 ```
 >>> for i in range(len(lines)):
@@ -168,7 +173,12 @@ ingre_id_label_expression_table.csv は 0-indexed である. 以下のズレが�
 587 リコッタチーズ ['13058', '＜牛乳及び乳製品＞ （チーズ類） ナチュラルチーズ リコッタ', 'リコッタチーズ', ['リコッタチーズ']] None
 ```
 
+</details>
+
 ingredient id で調査してみたが, そちらも駄目.
+
+<details>
+<summary>ingredient id で調査</summary>
 
 ```
 >>> for key, value in foodid.items():
@@ -335,3 +345,10 @@ ingredient id で調査してみたが, そちらも駄目.
 6049 かぼちゃの煮物 None
 13058 リコッタチーズ None
 ```
+
+</details>
+
+# method について
+
+- method1 は古いものっぽく, normalized cooccurence を使用していない模様.
+- よって無印, method2 を使用する.

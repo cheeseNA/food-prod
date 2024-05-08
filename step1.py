@@ -620,7 +620,8 @@ def main():
                 st.rerun()
     else:
         if "predict_method" not in st.session_state:
-            st.session_state.predict_method = random.choice(["method_1", "method_2"])
+            # st.session_state.predict_method = random.choice(["method_1", "method_2"])
+            st.session_state.predict_method = "method_2"
         page_1()
 
 
