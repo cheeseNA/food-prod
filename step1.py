@@ -1,6 +1,5 @@
 import json
 import os
-import random
 from datetime import datetime
 
 # import japanese_clip as ja_clip
@@ -186,7 +185,12 @@ def get_ingre_prob_from_model(uploaded_image):
 
 
 @st.cache_data
-def update_mask(selected_items, mask, normalized_matrix):
+def update_mask(selected_items, mask):
+    normalized_matrix = get_normalized_co_occurrence_matrix()
+    threshold = 0.5
+    normalized_matrix = np.where(
+        normalized_matrix < threshold / 100, 0, normalized_matrix
+    )
     for selected in selected_items:
         distances = normalized_matrix[selected]
         dist_mask = np.where(distances == 0, 0, 1)
@@ -215,6 +219,13 @@ def get_current_candidate_method1(candidate_nums, flat_list, mask):
     return top_k_indices.tolist()
 
 
+@st.cache_data
+def get_json_from_file(file_path):
+    with open(file_path, "r", encoding="utf-8") as file:
+        data = json.load(file)
+    return data
+
+
 def save_results(username, image_file, method, ingredients, ingres_convert, click_dict):
     current_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     end_time = datetime.now()
@@ -238,7 +249,7 @@ def save_results(username, image_file, method, ingredients, ingres_convert, clic
 
     filename = f"image_{next_serial_number}.png"
     image_path = os.path.join(directory, filename)
-    print(image_path)
+    debug_print(image_path)
     image_file.save(image_path)
 
     result_data = {
@@ -270,75 +281,54 @@ def page_1():
     uploaded_image = st.file_uploader(
         "食事の写真をアップロードしてください", type=["jpg", "jpeg", "png"]
     )
-    st.session_state.uploaded_image = uploaded_image
-
-    debug_print("(0)stage:", st.session_state.stage)
-
-    debug_print("uploaded_image:", st.session_state.uploaded_image)
+    c1, c2, c3 = st.columns((1, 1, 1))
+    if uploaded_image:
+        c1.image(uploaded_image, use_column_width=False, width=150)
+        image = Image.open(uploaded_image)
 
     if uploaded_image and st.session_state.stage == 0:
         st.session_state.stage += 1
 
-    c1, c2, c3 = st.columns((1, 1, 1))
+    debug_print("(0)stage:", st.session_state.stage)
+
     candidate_nums = 10
     label_to_canonical_name = get_canonical_ingres_name()
     canonical_name_to_label = {v: k for k, v in label_to_canonical_name.items()}
 
-    if st.session_state.uploaded_image:
-        c1.image(st.session_state.uploaded_image, use_column_width=False, width=150)
-        image = Image.open(st.session_state.uploaded_image)
-
     if st.session_state.stage == 1:
         st.session_state.stage += 1
 
+        st.session_state.start_time = datetime.now()
+
         text_probs = get_ingre_prob_from_model(uploaded_image)
-        st.session_state.probability_scores = [
+        probability_scores = [
             item for sublist in text_probs.tolist() for item in sublist
         ]
-        st.session_state.pos_probability = get_pos_probability(
-            st.session_state.probability_scores
-        )
-        normalized_matrix = get_normalized_co_occurrence_matrix()
-        threshold = 0.5
-        st.session_state.normalized_matrix = np.where(
-            normalized_matrix < threshold / 100, 0, normalized_matrix
-        )
-        # if 'mask' not in st.session_state:
+        st.session_state.pos_probability = get_pos_probability(probability_scores)
         mask = [1] * 588
         mask[2] = 0
         mask = np.array(mask)
         st.session_state.mask = mask
-        # if 'selected_options' not in st.session_state:
         st.session_state.selected_options = {}
 
-        st.session_state.init_prediction = True
-        if st.session_state.predict_method == "method_1":
-            st.session_state.predict_ingres = get_current_candidate_method1(
-                candidate_nums,
-                st.session_state.probability_scores,
-                st.session_state.mask,
-            )
-        if st.session_state.predict_method == "method_2":
-            st.session_state.predict_ingres = get_current_candidate(
-                candidate_nums,
-                st.session_state.pos_probability,
-                st.session_state.mask,
-            )
+        st.session_state.predict_ingres = get_current_candidate(
+            candidate_nums,
+            st.session_state.pos_probability,
+            st.session_state.mask,
+        )
 
     debug_print("(2)stage:", st.session_state.stage)
 
     if not st.session_state.stage >= 2:
         return
+
     c2.write("食材候補：料理に含まれている材料をチェックしてください")
     debug_print("now:", st.session_state.predict_ingres)
-
-    if "start_time" not in st.session_state:
-        st.session_state.start_time = datetime.now()
 
     for item in st.session_state.predict_ingres:
         st.session_state.selected_options[item] = c2.checkbox(
             label_to_canonical_name[str(int(item) + 1)]
-        )  # key=f'ingre_{item}')
+        )
 
     not_in_list_multiselect = c2.multiselect(
         "リストにない食材を検索:", label_to_canonical_name.values(), []
@@ -346,7 +336,6 @@ def page_1():
     st.session_state.selected_ingres = [  # 0-indexed int label
         item for item, selected in st.session_state.selected_options.items() if selected
     ]
-    # st.session_state.click_dict["checkbox"] += 1
     if not_in_list_multiselect:
         for name in not_in_list_multiselect:
             st.session_state.selected_ingres.append(
@@ -354,16 +343,10 @@ def page_1():
             )
         st.session_state.click_dict["input_text"] = len(not_in_list_multiselect)
 
-    if st.session_state.predict_method == "method_1":
-        st.session_state.mask = update_mask_method1(
-            st.session_state.selected_ingres, st.session_state.mask
-        )
-    if st.session_state.predict_method == "method_2":
-        st.session_state.mask = update_mask(
-            st.session_state.selected_ingres,
-            st.session_state.mask,
-            st.session_state.normalized_matrix,
-        )
+    st.session_state.mask = update_mask(
+        st.session_state.selected_ingres,
+        st.session_state.mask,
+    )
 
     if c2.button("新しい食材候補を生成する"):
         st.session_state.click_dict["button"] += 1
@@ -371,20 +354,13 @@ def page_1():
             st.session_state.predict_ingres, st.session_state.mask
         )  # delete other unselected ingredients
 
-        if st.session_state.predict_method == "method_1":
-            st.session_state.predict_ingres = get_current_candidate_method1(
-                candidate_nums,
-                st.session_state.probability_scores,
-                st.session_state.mask,
-            )
-        if st.session_state.predict_method == "method_2":
-            st.session_state.predict_ingres = get_current_candidate(
-                candidate_nums,
-                st.session_state.pos_probability,
-                st.session_state.mask,
-            )
+        st.session_state.predict_ingres = get_current_candidate(
+            candidate_nums,
+            st.session_state.pos_probability,
+            st.session_state.mask,
+        )
 
-        print("generate:", st.session_state.predict_ingres)
+        debug_print("generate:", st.session_state.predict_ingres)
         st.rerun()
 
     c3.divider()
@@ -412,7 +388,7 @@ def page_1():
         save_results(
             st.session_state.username,
             image,
-            st.session_state.predict_method,
+            "method_2",
             st.session_state.selected_ingres,
             list(label_to_canonical_name.values()),
             st.session_state.click_dict,
@@ -420,11 +396,10 @@ def page_1():
         st.session_state.saved = True
     c3.success("回答を記録しました！次のページに進んでください。")
 
-    with open("Labels/foodid_dict.json", "r", encoding="utf-8") as file:
-        foodid_dic = json.load(file)  # {"1": [id, exp, label_name, [whole_exps]]}
-
-    with open("Labels/weight_median.json", "r", encoding="utf-8") as f:
-        ingre_id_to_weights = json.load(f)
+    foodid_dic = get_json_from_file(
+        "Labels/foodid_dict.json"
+    )  # {"1": [id, exp, label_name, [whole_exps]]}
+    ingre_id_to_weights = get_json_from_file("Labels/weight_median.json")
 
     ingre_names = []
     ingre_exps = []
@@ -438,30 +413,18 @@ def page_1():
         ingre_exps.append(foodid_dic[str(label_id)][1])
         median_weights.append(ingre_id_to_weights[ingre_id][1])
 
-    if "generate_value" not in st.session_state:
-        st.session_state.generate_value = False
-
-    if not st.session_state.generate_value:
-        st.session_state.edited_amount = median_weights
-        st.session_state.edited_unit = ["g"] * len(st.session_state.selected_ingres)
-        st.session_state.generate_value = True
-
     data = pd.DataFrame(
         {
             "ingredients": ingre_names,
             "standard_exp": ingre_exps,
-            "amount": st.session_state.edited_amount,
-            "unit": st.session_state.edited_unit,
+            "amount": median_weights,
+            "unit": ["g"] * len(st.session_state.selected_ingres),
         }
     )
-
     data["index"] = data.index + 1
     data.set_index("index", inplace=True)
-
-    debug_print(f"selected_ingres: {st.session_state.selected_ingres}")
     debug_print(data)
 
-    # data_df is the editable version of the data
     data_df = st.data_editor(
         data,
         column_config={
@@ -541,13 +504,8 @@ def page_1():
                 "unit": unit,
                 "weight": weight,
             }
-            # data_df.at[i, 'weight'] = weight
 
-            st.session_state.edited_amount.append(amount)
-            st.session_state.edited_unit.append(unit)
-            # st.session_state.edited_weight.append(weight)
-
-            print("idx:", item, "ingreid:", ingre_id, "weight:", weight)
+            debug_print("idx:", item, "ingreid:", ingre_id, "weight:", weight)
             nutri_list = []
             for code in nutrient_codes:
                 try:
@@ -560,9 +518,8 @@ def page_1():
             new_ing_dic = {label_to_canonical_name[str(int(item) + 1)]: nutri_list}
             nutrient.update(new_ing_dic)
             predicted_ingre_names.append(label_to_canonical_name[str(int(item) + 1)])
-        st.session_state.nutrient = nutrient
 
-        total_df = pd.DataFrame(st.session_state.nutrient)
+        total_df = pd.DataFrame(nutrient)
         total_df["主要栄養素"] = pd.Categorical(
             total_df["主要栄養素"],
             categories=[
@@ -595,7 +552,6 @@ def authenticate(username, password):
 
 
 def main():
-
     st.set_page_config(
         page_title="RecipeLog2023",
         page_icon=":curry:",
@@ -619,9 +575,6 @@ def main():
                 st.session_state.register = True
                 st.rerun()
     else:
-        if "predict_method" not in st.session_state:
-            # st.session_state.predict_method = random.choice(["method_1", "method_2"])
-            st.session_state.predict_method = "method_2"
         page_1()
 
 
