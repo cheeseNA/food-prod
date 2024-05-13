@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime
+from enum import IntEnum
 
 # import japanese_clip as ja_clip
 import numpy as np
@@ -206,15 +207,11 @@ def update_mask_method1(selected_items, mask):
 
 
 @st.cache_data
-def get_current_candidate(candidate_nums, flat_list, mask):
-    cur_prob = flat_list * mask
-    top_k_indices = np.argsort(cur_prob)[-candidate_nums:][::-1]
-    return top_k_indices.tolist()
-
-
-@st.cache_data
-def get_current_candidate_method1(candidate_nums, flat_list, mask):
-    cur_prob = flat_list * mask
+def get_current_candidate(candidate_nums, uploaded_image, mask):
+    text_probs = get_ingre_prob_from_model(uploaded_image)
+    probability_scores = [item for sublist in text_probs.tolist() for item in sublist]
+    pos_probability = get_pos_probability(probability_scores)
+    cur_prob = pos_probability * mask
     top_k_indices = np.argsort(cur_prob)[-candidate_nums:][::-1]
     return top_k_indices.tolist()
 
@@ -270,41 +267,53 @@ def save_results(username, image_file, method, ingredients, ingres_convert, clic
         json.dump(result_data, file, ensure_ascii=False, indent=4)
 
 
+class StreamlitStep(IntEnum):
+    SESSION_WHILE_INIT = 0
+    WAIT_FOR_IMAGE = 1
+    IMAGE_UPLOADED = 2
+    WAIT_FOR_INGREDIENT_SELECTION = 3
+    AFTER_INGREDIENT_SELECTION_INIT = 4
+    WAIT_FOR_AMOUNT_INPUT = 5
+
+    def __str__(self):
+        return self.name
+
+
 def page_1():
     st.title("材料リストによる食事管理")
+    debug_print(st.session_state)
 
-    if "init_1" not in st.session_state:
-        st.session_state.init_1 = True
+    if st.session_state.stage == StreamlitStep.SESSION_WHILE_INIT:
+        st.session_state.stage = StreamlitStep.WAIT_FOR_IMAGE
         st.session_state.click_dict = {"button": 0, "checkbox": 0, "input_text": 0}
-        st.session_state.stage = 0
+
+    def change_stage_to_image_uploaded():
+        st.session_state.stage = StreamlitStep.IMAGE_UPLOADED
 
     uploaded_image = st.file_uploader(
-        "食事の写真をアップロードしてください", type=["jpg", "jpeg", "png"]
+        "食事の写真をアップロードしてください",
+        type=["jpg", "jpeg", "png"],
+        on_change=change_stage_to_image_uploaded,
     )
-    c1, c2, c3 = st.columns((1, 1, 1))
+
+    if st.session_state.stage <= StreamlitStep.WAIT_FOR_IMAGE:
+        return
+
+    c1, c2, c3 = st.columns((1, 1, 1))  # visual statements
     if uploaded_image:
-        c1.image(uploaded_image, use_column_width=False, width=150)
+        c1.image(uploaded_image)
         image = Image.open(uploaded_image)
 
-    if uploaded_image and st.session_state.stage == 0:
-        st.session_state.stage += 1
-
-    debug_print("(0)stage:", st.session_state.stage)
-
-    candidate_nums = 10
+    candidate_nums = 10  # stateless variables
     label_to_canonical_name = get_canonical_ingres_name()
     canonical_name_to_label = {v: k for k, v in label_to_canonical_name.items()}
 
-    if st.session_state.stage == 1:
-        st.session_state.stage += 1
-
+    if (
+        st.session_state.stage == StreamlitStep.IMAGE_UPLOADED
+    ):  # initializations should be done before next stage
+        st.session_state.stage = StreamlitStep.WAIT_FOR_INGREDIENT_SELECTION
         st.session_state.start_time = datetime.now()
 
-        text_probs = get_ingre_prob_from_model(uploaded_image)
-        probability_scores = [
-            item for sublist in text_probs.tolist() for item in sublist
-        ]
-        st.session_state.pos_probability = get_pos_probability(probability_scores)
         mask = [1] * 588
         mask[2] = 0
         mask = np.array(mask)
@@ -313,26 +322,21 @@ def page_1():
 
         st.session_state.predict_ingres = get_current_candidate(
             candidate_nums,
-            st.session_state.pos_probability,
+            uploaded_image,
             st.session_state.mask,
         )
-
-    debug_print("(2)stage:", st.session_state.stage)
-
-    if not st.session_state.stage >= 2:
+    if st.session_state.stage <= StreamlitStep.IMAGE_UPLOADED:
         return
 
     c2.write("食材候補：料理に含まれている材料をチェックしてください")
-    debug_print("now:", st.session_state.predict_ingres)
-
     for item in st.session_state.predict_ingres:
         st.session_state.selected_options[item] = c2.checkbox(
             label_to_canonical_name[str(int(item) + 1)]
         )
-
     not_in_list_multiselect = c2.multiselect(
         "リストにない食材を検索:", label_to_canonical_name.values(), []
     )
+
     st.session_state.selected_ingres = [  # 0-indexed int label
         item for item, selected in st.session_state.selected_options.items() if selected
     ]
@@ -374,9 +378,9 @@ def page_1():
     c3.divider()
 
     if c3.button("完了"):
-        st.session_state.ingre_finish = True
+        st.session_state.stage = StreamlitStep.AFTER_INGREDIENT_SELECTION_INIT
 
-    if "ingre_finish" not in st.session_state:
+    if st.session_state.stage <= StreamlitStep.WAIT_FOR_INGREDIENT_SELECTION:
         return
 
     st.session_state.click_dict["checkbox"] = (
@@ -384,7 +388,7 @@ def page_1():
         - st.session_state.click_dict["input_text"]
     )
 
-    if "saved" not in st.session_state:
+    if st.session_state.stage == StreamlitStep.AFTER_INGREDIENT_SELECTION_INIT:
         save_results(
             st.session_state.username,
             image,
@@ -393,7 +397,7 @@ def page_1():
             list(label_to_canonical_name.values()),
             st.session_state.click_dict,
         )
-        st.session_state.saved = True
+        st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
     c3.success("回答を記録しました！次のページに進んでください。")
 
     foodid_dic = get_json_from_file(
@@ -423,7 +427,6 @@ def page_1():
     )
     data["index"] = data.index + 1
     data.set_index("index", inplace=True)
-    debug_print(data)
 
     data_df = st.data_editor(
         data,
@@ -504,8 +507,6 @@ def page_1():
                 "unit": unit,
                 "weight": weight,
             }
-
-            debug_print("idx:", item, "ingreid:", ingre_id, "weight:", weight)
             nutri_list = []
             for code in nutrient_codes:
                 try:
@@ -559,7 +560,7 @@ def main():
         initial_sidebar_state="collapsed",
     )
 
-    if "register" not in st.session_state:
+    if "stage" not in st.session_state:
         st.title("Login")
         c1, _, _ = st.columns((1, 1, 1))
         username = c1.text_input(
@@ -573,6 +574,7 @@ def main():
             else:
                 st.session_state.username = username
                 st.session_state.register = True
+                st.session_state.stage = StreamlitStep.SESSION_WHILE_INIT
                 st.rerun()
     else:
         page_1()
