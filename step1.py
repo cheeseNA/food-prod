@@ -360,7 +360,7 @@ def page_1():
 
         st.session_state.predict_ingres = get_current_candidate(
             candidate_nums,
-            st.session_state.pos_probability,
+            uploaded_image,
             st.session_state.mask,
         )
 
