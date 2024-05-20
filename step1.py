@@ -40,7 +40,7 @@ def get_ingres_name():
 
 
 @st.cache_data
-def get_canonical_ingres_name() -> dict[str, str]:
+def get_canonical_ingres_name():
     """
     Label -> Canonical Name
     ex) 1: 砂糖
