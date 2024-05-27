@@ -12,6 +12,7 @@ import torch.nn as nn
 import torch.optim
 import torchvision.transforms as transforms
 from PIL import Image
+from plotly import express as px
 
 from src.dataloader import VireoLoader
 from src.model_clip import Recognition
@@ -223,6 +224,20 @@ def get_json_from_file(file_path):
     return data
 
 
+@st.cache_data
+def get_percent_df(df, kcal, protein, fat, carb, salt):
+    percent_df = df.copy()
+    percent_df["target"] = [kcal, protein, fat, carb, salt]
+    percent_df.iloc[:, 1:] = (
+        percent_df.iloc[:, 1:].div(percent_df["target"], axis=0) * 100
+    )
+    percent_df.drop("target", axis=1, inplace=True)
+    print(percent_df)
+    percent_df["主要栄養素"] = ["カロリー", "たんぱく質", "脂質", "炭水化物", "塩分"]
+    percent_df = percent_df.round(2)
+    return percent_df
+
+
 def save_results(username, image_file, method, ingredients, ingres_convert, click_dict):
     current_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     end_time = datetime.now()
@@ -274,6 +289,7 @@ class StreamlitStep(IntEnum):
     WAIT_FOR_INGREDIENT_SELECTION = 3
     AFTER_INGREDIENT_SELECTION_INIT = 4
     WAIT_FOR_AMOUNT_INPUT = 5
+    FINISH = 6
 
     def __str__(self):
         return self.name
@@ -434,9 +450,7 @@ def page_1():
             "index": st.column_config.Column("index", width=50),
             "ingredients": "食材名",
             "standard_exp": st.column_config.Column("食品名", width=100),
-            "amount": st.column_config.NumberColumn(
-                "重さ",
-            ),
+            "amount": st.column_config.NumberColumn("重さ"),
             "unit": st.column_config.SelectboxColumn(
                 "単位",
                 help="The category of the unit",
@@ -463,90 +477,105 @@ def page_1():
                 ],
                 required=True,
             ),
-            # "weight": "Weight(g)",
         },
-        # width = 500,
         hide_index=False,
     )
 
     if st.button("入力完了"):
-        with open("Labels/nutrition_dic.json", "r", encoding="utf-8") as file:
-            nutrients_infos = json.load(file)
-        unit_trans_csv = pd.read_csv("Labels/weight_trans.csv")
-        nutrient = {
-            "主要栄養素": [
-                "カロリー (kcal)",
-                "たんぱく質 (g)",
-                "脂質 (g)",
-                "炭水化物 (g)",
-                "塩分 (g)",
-            ],
-        }
-        nutrient_codes = ["ENERC_KCAL", "PROT-", "FAT-", "CHOAVLM", "NACL_EQ"]
+        st.session_state.stage = StreamlitStep.FINISH
+    if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
+        return
 
-        predicted_ingre_names = []
-        ingre_infos = {}
-        for i, row in data_df.iterrows():
-            item = st.session_state.selected_ingres[i - 1]
-            amount = row["amount"]
-            unit = row["unit"]
+    with open("Labels/nutrition_dic.json", "r", encoding="utf-8") as file:
+        nutrients_infos = json.load(file)
+    unit_trans_csv = pd.read_csv("Labels/weight_trans.csv")
+    nutrient = {
+        "主要栄養素": [
+            "カロリー (kcal)",
+            "たんぱく質 (g)",
+            "脂質 (g)",
+            "炭水化物 (g)",
+            "塩分 (g)",
+        ],
+    }
+    nutrient_codes = ["ENERC_KCAL", "PROT-", "FAT-", "CHOAVLM", "NACL_EQ"]
 
-            ingre_id = ingre_ids[i - 1]
-            result = (
-                unit_trans_csv.loc[
-                    unit_trans_csv["食品番号"] == int(ingre_id), unit
-                ].iloc[0]
-                if unit != "g"
-                else 1
-            )
-            result = max(result, 0)
-            weight = amount * result
+    ingre_infos = {}
+    for i, row in data_df.iterrows():
+        item = st.session_state.selected_ingres[i - 1]
+        amount = row["amount"]
+        unit = row["unit"]
 
-            ingre_infos[ingre_id] = {
-                "amount": amount,
-                "unit": unit,
-                "weight": weight,
-            }
-            nutri_list = []
-            for code in nutrient_codes:
-                try:
-                    nutri_list.append(
-                        float(nutrients_infos[ingre_id][code]) * weight / 100
-                    )
-                except ValueError:
-                    nutri_list.append(float(0))
-
-            new_ing_dic = {label_to_canonical_name[str(int(item) + 1)]: nutri_list}
-            nutrient.update(new_ing_dic)
-            predicted_ingre_names.append(label_to_canonical_name[str(int(item) + 1)])
-
-        total_df = pd.DataFrame(nutrient)
-        total_df["主要栄養素"] = pd.Categorical(
-            total_df["主要栄養素"],
-            categories=[
-                "カロリー (kcal)",
-                "たんぱく質 (g)",
-                "脂質 (g)",
-                "炭水化物 (g)",
-                "塩分 (g)",
-            ],
-            ordered=True,
+        ingre_id = ingre_ids[i - 1]
+        to_gram = (
+            unit_trans_csv.loc[unit_trans_csv["食品番号"] == int(ingre_id), unit].iloc[
+                0
+            ]
+            if unit != "g"
+            else 1
         )
+        to_gram = max(to_gram, 0)
+        weight = amount * to_gram
 
-        st.bar_chart(
-            total_df, x="主要栄養素", y=predicted_ingre_names
-        )  # , color=custom_colors
+        ingre_infos[ingre_id] = {
+            "amount": amount,
+            "unit": unit,
+            "weight": weight,
+        }
+        nutri_list = []
+        for code in nutrient_codes:
+            try:
+                nutri_list.append(float(nutrients_infos[ingre_id][code]) * weight / 100)
+            except ValueError:
+                nutri_list.append(float(0))
+
+        new_ing_dic = {label_to_canonical_name[str(int(item) + 1)]: nutri_list}
+        nutrient.update(new_ing_dic)
+
+    total_df = pd.DataFrame(nutrient)
+    total_df["主要栄養素"] = pd.Categorical(  # walk-around needed for auto-sorting bug
+        total_df["主要栄養素"],
+        categories=[
+            "カロリー (kcal)",
+            "たんぱく質 (g)",
+            "脂質 (g)",
+            "炭水化物 (g)",
+            "塩分 (g)",
+        ],
+        ordered=True,
+    )
+
+    percent_df = get_percent_df(
+        total_df, kcal=2000 / 3, protein=30, fat=60, carb=310, salt=2.5
+    )
+    percent_fig = px.bar(
+        percent_df,
+        x="主要栄養素",
+        y=percent_df.columns[1:].tolist(),
+    )
+    st.plotly_chart(percent_fig)
 
 
-credentials = {
-    "test": "test",
+users = {
+    "test": {
+        "password": "test",
+        "physical_activity_level": 2,
+        "age": 24,
+        "sex": "male",
+    },
+    "test2": {
+        "password": "test2",
+        "physical_activity_level": 1,
+        "age": 30,
+        "sex": "female",
+    },
 }
 
 
 def authenticate(username, password):
-    stored_password = credentials.get(username)
-
-    if password == stored_password:
+    if username not in users:
+        return False
+    if users[username]["password"] == password:
         return True
     else:
         return False
