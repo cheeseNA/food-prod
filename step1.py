@@ -14,6 +14,7 @@ import torchvision.transforms as transforms
 from PIL import Image
 from plotly import express as px
 
+import nutrient_calculate
 from src.dataloader import VireoLoader
 from src.model_clip import Recognition
 
@@ -545,14 +546,22 @@ def page_1():
         ordered=True,
     )
 
-    percent_df = get_percent_df(
-        total_df, kcal=2000 / 3, protein=30, fat=60, carb=310, salt=2.5
+    necessary_nutrients = nutrient_calculate.calculate_necessary_nutrients(
+        users[st.session_state.username]["sex"],
+        users[st.session_state.username]["age"],
+        users[st.session_state.username]["physical_activity_level"],
     )
+    necessary_nutrients_per_meal = {
+        key: value / 3 for key, value in necessary_nutrients.items()
+    }
+    debug_print("necessary nutrients per meal", necessary_nutrients_per_meal)
+
+    percent_df = get_percent_df(total_df, **necessary_nutrients_per_meal)
     percent_fig = px.bar(
         percent_df,
         x="主要栄養素",
         y=percent_df.columns[1:].tolist(),
-    )
+    ).update_layout(yaxis_title="1食の目安量に対する割合 (%)")
     st.plotly_chart(percent_fig)
 
 
