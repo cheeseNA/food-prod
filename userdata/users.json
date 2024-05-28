@@ -1,0 +1,14 @@
+{
+    "test": {
+        "sex": "male",
+        "age": 26,
+        "physical_activity_level": 1,
+        "password": "test"
+    },
+    "test2": {
+        "password": "test2",
+        "physical_activity_level": 1,
+        "age": 30,
+        "sex": "female"
+    }
+}

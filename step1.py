@@ -448,9 +448,9 @@ def page_1():
     data_df = st.data_editor(
         data,
         column_config={
-            "index": st.column_config.Column("index", width=50),
+            "index": st.column_config.Column("index"),
             "ingredients": "食材名",
-            "standard_exp": st.column_config.Column("食品名", width=100),
+            "standard_exp": st.column_config.Column("食品名"),
             "amount": st.column_config.NumberColumn("重さ"),
             "unit": st.column_config.SelectboxColumn(
                 "単位",
@@ -562,23 +562,17 @@ def page_1():
         x="主要栄養素",
         y=percent_df.columns[1:].tolist(),
     ).update_layout(yaxis_title="1食の目安量に対する割合 (%)")
+    percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
     st.plotly_chart(percent_fig)
+    st.write("あなたの1食あたりの目標栄養摂取量は")
+    st.write(f"カロリー {necessary_nutrients_per_meal['kcal']:.2f} kcal")
+    st.write(f"たんぱく質 {necessary_nutrients_per_meal['protein']:.2f} g")
+    st.write(f"脂質 {necessary_nutrients_per_meal['fat']:.2f} g")
+    st.write(f"炭水化物 {necessary_nutrients_per_meal['carb']:.2f} g")
+    st.write(f"塩分 {necessary_nutrients_per_meal['salt']:.2f} g です")
 
 
-users = {
-    "test": {
-        "password": "test",
-        "physical_activity_level": 2,
-        "age": 24,
-        "sex": "male",
-    },
-    "test2": {
-        "password": "test2",
-        "physical_activity_level": 1,
-        "age": 30,
-        "sex": "female",
-    },
-}
+users = json.load(open("userdata/users.json", "r"))
 
 
 def authenticate(username, password):
