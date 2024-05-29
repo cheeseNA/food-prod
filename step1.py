@@ -558,10 +558,17 @@ def page_1():
 
     percent_df = get_percent_df(total_df, **necessary_nutrients_per_meal)
     percent_fig = px.bar(
-        percent_df,
-        x="主要栄養素",
-        y=percent_df.columns[1:].tolist(),
+        percent_df, x="主要栄養素", y=percent_df.columns[1:].tolist()
     ).update_layout(yaxis_title="1食の目安量に対する割合 (%)")
+    for trace in percent_fig.data:
+        raw_series = total_df[trace.name]
+        raw_series = raw_series.apply(lambda x: f"{x:.2f}").str.cat(
+            ["kcal", "g", "g", "g", "g"], sep=" "
+        )
+        trace["customdata"] = raw_series
+        trace["hovertemplate"] = (
+            f"{trace.name}<br>" + "%{customdata}<br>%{y:.2f}%<extra></extra>"
+        )
     percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
     st.plotly_chart(percent_fig)
     st.write("あなたの1食あたりの目標栄養摂取量は")
