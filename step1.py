@@ -424,12 +424,10 @@ def page_1():
 
     ingre_names = []
     ingre_exps = []
-    ingre_ids = []
     median_weights = []
     for item in st.session_state.selected_ingres:
         label_id = int(item) + 1
         ingre_id = foodid_dic[str(label_id)][0]
-        ingre_ids.append(ingre_id)
         ingre_names.append(label_to_canonical_name[str(label_id)])
         ingre_exps.append(foodid_dic[str(label_id)][1])
         median_weights.append(ingre_id_to_weights[ingre_id][1])
@@ -487,63 +485,19 @@ def page_1():
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
         return
 
-    with open("Labels/nutrition_dic.json", "r", encoding="utf-8") as file:
-        nutrients_infos = json.load(file)
-    unit_trans_csv = pd.read_csv("Labels/weight_trans.csv")
-    nutrient = {
-        "主要栄養素": [
-            "カロリー (kcal)",
-            "たんぱく質 (g)",
-            "脂質 (g)",
-            "炭水化物 (g)",
-            "塩分 (g)",
-        ],
-    }
-    nutrient_codes = ["ENERC_KCAL", "PROT-", "FAT-", "CHOAVLM", "NACL_EQ"]
-
-    ingre_infos = {}
+    food_label_amount_unit = []
     for i, row in data_df.iterrows():
-        item = st.session_state.selected_ingres[i - 1]
-        amount = row["amount"]
-        unit = row["unit"]
-
-        ingre_id = ingre_ids[i - 1]
-        to_gram = (
-            unit_trans_csv.loc[unit_trans_csv["食品番号"] == int(ingre_id), unit].iloc[
-                0
-            ]
-            if unit != "g"
-            else 1
+        label = st.session_state.selected_ingres[i - 1]
+        food_label_amount_unit.append(
+            {
+                "ingre_id": foodid_dic[str(int(label) + 1)][0],
+                "amount": row["amount"],
+                "unit": row["unit"],
+                "canonical_name": label_to_canonical_name[str(int(label) + 1)],
+            }
         )
-        to_gram = max(to_gram, 0)
-        weight = amount * to_gram
-
-        ingre_infos[ingre_id] = {
-            "amount": amount,
-            "unit": unit,
-            "weight": weight,
-        }
-        nutri_list = []
-        for code in nutrient_codes:
-            try:
-                nutri_list.append(float(nutrients_infos[ingre_id][code]) * weight / 100)
-            except ValueError:
-                nutri_list.append(float(0))
-
-        new_ing_dic = {label_to_canonical_name[str(int(item) + 1)]: nutri_list}
-        nutrient.update(new_ing_dic)
-
-    total_df = pd.DataFrame(nutrient)
-    total_df["主要栄養素"] = pd.Categorical(  # walk-around needed for auto-sorting bug
-        total_df["主要栄養素"],
-        categories=[
-            "カロリー (kcal)",
-            "たんぱく質 (g)",
-            "脂質 (g)",
-            "炭水化物 (g)",
-            "塩分 (g)",
-        ],
-        ordered=True,
+    nutrients_df = nutrient_calculate.get_nutri_df_from_food_dict(
+        food_label_amount_unit
     )
 
     necessary_nutrients = nutrient_calculate.calculate_necessary_nutrients(
@@ -554,14 +508,13 @@ def page_1():
     necessary_nutrients_per_meal = {
         key: value / 3 for key, value in necessary_nutrients.items()
     }
-    debug_print("necessary nutrients per meal", necessary_nutrients_per_meal)
 
-    percent_df = get_percent_df(total_df, **necessary_nutrients_per_meal)
+    percent_df = get_percent_df(nutrients_df, **necessary_nutrients_per_meal)
     percent_fig = px.bar(
         percent_df, x="主要栄養素", y=percent_df.columns[1:].tolist()
     ).update_layout(yaxis_title="1食の目安量に対する割合 (%)")
     for trace in percent_fig.data:
-        raw_series = total_df[trace.name]
+        raw_series = nutrients_df[trace.name]
         raw_series = raw_series.apply(lambda x: f"{x:.2f}").str.cat(
             ["kcal", "g", "g", "g", "g"], sep=" "
         )
@@ -571,6 +524,7 @@ def page_1():
         )
     percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
     st.plotly_chart(percent_fig)
+
     st.write("あなたの1食あたりの目標栄養摂取量は")
     st.write(f"カロリー {necessary_nutrients_per_meal['kcal']:.2f} kcal")
     st.write(f"たんぱく質 {necessary_nutrients_per_meal['protein']:.2f} g")
