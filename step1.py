@@ -202,13 +202,6 @@ def update_mask(selected_items, mask):
 
 
 @st.cache_data
-def update_mask_method1(selected_items, mask):
-    for selected in selected_items:
-        mask[selected] = 0
-    return mask
-
-
-@st.cache_data
 def get_current_candidate(candidate_nums, uploaded_image, mask):
     text_probs = get_ingre_prob_from_model(uploaded_image)
     probability_scores = [item for sublist in text_probs.tolist() for item in sublist]
@@ -239,10 +232,12 @@ def get_percent_df(df, kcal, protein, fat, carb, salt):
     return percent_df
 
 
-def save_results(username, image_file, method, ingredients, ingres_convert, click_dict):
+def save_results(
+    username, image_file, method, ingredients, ingres_convert, click_dict, start_time
+):
     current_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     end_time = datetime.now()
-    time_difference = end_time - st.session_state.start_time
+    time_difference = end_time - start_time
     directory = f"Results/{username}/"
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -371,9 +366,8 @@ def page_1():
 
     if c2.button("新しい食材候補を生成する"):
         st.session_state.click_dict["button"] += 1
-        st.session_state.mask = update_mask_method1(
-            st.session_state.predict_ingres, st.session_state.mask
-        )  # delete other unselected ingredients
+        for item in st.session_state.predict_ingres:
+            st.session_state.mask[item] = 0  # delete other unselected ingredients
 
         st.session_state.predict_ingres = get_current_candidate(
             candidate_nums,
@@ -391,7 +385,9 @@ def page_1():
             label_to_canonical_name[str(int(item) + 1)], value=True
         )
         if not checkbox_value:
-            st.session_state.selected_options[item] = False
+            st.session_state.selected_options[item] = (
+                False  # TODO: Fix this totally wrong impl.
+            )
     c3.divider()
 
     if c3.button("完了"):
@@ -413,6 +409,7 @@ def page_1():
             st.session_state.selected_ingres,
             list(label_to_canonical_name.values()),
             st.session_state.click_dict,
+            st.session_state.start_time,
         )
         st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
     c3.success("回答を記録しました！次のページに進んでください。")

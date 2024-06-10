@@ -379,3 +379,28 @@ ingredient id で調査してみたが, そちらも駄目.
   - stage がある一定になると都度初期化し stage を上げる, のようにする
   - 入力とか画像変更とかに応じて変わるものは初期化 stage で扱わない. 前処理とか変数の宣言のために初期化する.
   - というか, session_state に保存するようなやつは初期化が必要. それ以外の実行のたびに変わるやつは初期化 stage 使わない.
+
+# session_state の ingre 関連の変数についての整理
+
+- まず, checkbox が再実行を超えて stateful なことに注意.
+- mask: [1] \* 588 np.array
+  - 再描画のたびに`update_mask(selected_ingres, mask)`で更新される.
+    - `normalized_matrix`を用いて, 共起の可能性が一定度以上低い食材を倒している.
+  - 「新しい食材を生成」ボタンの際に, `predict_ingres`の食材が全部倒される.
+- predict_ingres: 0-indexed food label
+  - `[152, 54, 3, 411, 45, 46, 28, 1, 5, 7]`
+  - `get_current_candidate`により`mask`と画像を用いて生成. 長さ 10. 「新しい食材を生成」ボタンの際に, このリストを用いてマスクが更新され, 更新されたマスクをもとに`get_current_candidate`が再び呼ばれる.
+- selected_options: dict
+  - `{152: False, 54: False, 3: True, 411: False, 45: True, 46: False, 28: False, 1: False, 5: False, 7: False}`
+  - 初期化は画像アップロード時 (`{}`)
+  - 描画ごとに`predict_ingres`を用いて追加される. (`selected_options[item] = c2.checkbox(label_to_name[xxx])`)
+- selected_ingres
+
+  - `[3, 45]`
+  - これをもとに一番右の選択された食材 checklist が作成される.
+  - 描画のたびに初期化. `selected_options`が True の label.
+  - multiselect が選択されていればそれも追加される.
+  - 描画のたびにこれをもちいて mask が更新されている.
+  - こいつが後々のタスクで使われているもの.
+
+- click_dict はどうせ後で再設計するから容赦なく消す
