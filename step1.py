@@ -435,9 +435,9 @@ def page_1():
     data = pd.DataFrame(
         {
             "ingredients": ingre_names,
-            "standard_exp": ingre_exps,
             "amount": median_weights,
             "unit": ["g"] * len(st.session_state.selected_ingres),
+            "standard_exp": ingre_exps,
         }
     )
     data["index"] = data.index + 1
@@ -446,7 +446,6 @@ def page_1():
     data_df = st.data_editor(
         data,
         column_config={
-            "index": st.column_config.Column("index"),
             "ingredients": "食材名",
             "standard_exp": st.column_config.Column("食品名"),
             "amount": st.column_config.NumberColumn("重さ"),
@@ -477,7 +476,7 @@ def page_1():
                 required=True,
             ),
         },
-        hide_index=False,
+        hide_index=True,
     )
 
     if st.button("入力完了"):
