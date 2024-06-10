@@ -311,9 +311,9 @@ def page_1():
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_IMAGE:
         return
 
-    c1, c2, c3 = st.columns((1, 1, 1))  # visual statements
+    c1, c2 = st.columns((1, 1))  # visual statements
     if uploaded_image:
-        c1.image(uploaded_image)
+        c1.image(uploaded_image, width=500, use_column_width=False)
         image = Image.open(uploaded_image)
 
     candidate_nums = 10  # stateless variables
@@ -325,80 +325,59 @@ def page_1():
     ):  # initializations should be done before next stage
         st.session_state.stage = StreamlitStep.WAIT_FOR_INGREDIENT_SELECTION
         st.session_state.start_time = datetime.now()
+        st.session_state.selected_options = []
 
-        mask = [1] * 588
-        mask[2] = 0
-        mask = np.array(mask)
-        st.session_state.mask = mask
-        st.session_state.selected_options = {}
-
-        st.session_state.predict_ingres = get_current_candidate(
-            candidate_nums,
-            uploaded_image,
-            st.session_state.mask,
-        )
     if st.session_state.stage <= StreamlitStep.IMAGE_UPLOADED:
         return
 
-    c2.write("食材候補：料理に含まれている材料をチェックしてください")
-    for item in st.session_state.predict_ingres:
-        st.session_state.selected_options[item] = c2.checkbox(
-            label_to_canonical_name[str(int(item) + 1)]
-        )
-    not_in_list_multiselect = c2.multiselect(
-        "リストにない食材を検索:", label_to_canonical_name.values(), []
-    )
-
-    st.session_state.selected_ingres = [  # 0-indexed int label
-        item for item, selected in st.session_state.selected_options.items() if selected
+    # collect all selected ingredients
+    selected_ingres = [  # 0-indexed int label
+        item for item in st.session_state.selected_options
     ]
-    if not_in_list_multiselect:
-        for name in not_in_list_multiselect:
-            st.session_state.selected_ingres.append(
-                int(canonical_name_to_label[name]) - 1
-            )
-        st.session_state.click_dict["input_text"] = len(not_in_list_multiselect)
-
-    st.session_state.mask = update_mask(
-        st.session_state.selected_ingres,
-        st.session_state.mask,
+    # not_in_list_multiselect = c2.multiselect(
+    #     "リストにない食材を検索:", label_to_canonical_name.values(), []
+    # )
+    # if not_in_list_multiselect:  # TODO: use onchange to update selected_options
+    #     for name in not_in_list_multiselect:
+    #         selected_ingres.append(int(canonical_name_to_label[name]) - 1)
+    mask = update_mask(
+        selected_ingres,
+        np.array([1 if i != 2 else 0 for i in range(588)]),
     )
 
-    if c2.button("新しい食材候補を生成する"):
-        st.session_state.click_dict["button"] += 1
-        for item in st.session_state.predict_ingres:
-            st.session_state.mask[item] = 0  # delete other unselected ingredients
+    predict_ingres = get_current_candidate(  # TODO: remove current selections
+        candidate_nums,
+        uploaded_image,
+        mask,
+    )
+    debug_print("predict_ingres", predict_ingres)
+    debug_print("selected_options", selected_ingres)
 
-        st.session_state.predict_ingres = get_current_candidate(
-            candidate_nums,
-            uploaded_image,
-            st.session_state.mask,
+    c2.write("食材候補：料理に含まれている材料をチェックしてください")
+    for item in st.session_state.selected_options:
+        c2.checkbox(
+            label_to_canonical_name[str(int(item) + 1)],
+            value=True,
+            on_change=lambda x: st.session_state.selected_options.remove(x),
+            args=(item,),
         )
 
-        debug_print("generate:", st.session_state.predict_ingres)
-        st.rerun()
-
-    c3.divider()
-    c3.write("選択された食材リスト:")
-    for item in st.session_state.selected_ingres:
-        checkbox_value = c3.checkbox(
-            label_to_canonical_name[str(int(item) + 1)], value=True
+    for item in predict_ingres:
+        c2.checkbox(
+            label_to_canonical_name[str(int(item) + 1)],
+            value=False,
+            on_change=lambda x: st.session_state.selected_options.append(x),
+            args=(item,),
         )
-        if not checkbox_value:
-            st.session_state.selected_options[item] = (
-                False  # TODO: Fix this totally wrong impl.
-            )
-    c3.divider()
 
-    if c3.button("完了"):
+    if c2.button("完了"):
         st.session_state.stage = StreamlitStep.AFTER_INGREDIENT_SELECTION_INIT
 
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_INGREDIENT_SELECTION:
         return
 
     st.session_state.click_dict["checkbox"] = (
-        len(st.session_state.selected_ingres)
-        - st.session_state.click_dict["input_text"]
+        len(selected_ingres) - st.session_state.click_dict["input_text"]
     )
 
     if st.session_state.stage == StreamlitStep.AFTER_INGREDIENT_SELECTION_INIT:
@@ -406,13 +385,13 @@ def page_1():
             st.session_state.username,
             image,
             "method_2",
-            st.session_state.selected_ingres,
+            selected_ingres,
             list(label_to_canonical_name.values()),
             st.session_state.click_dict,
             st.session_state.start_time,
         )
         st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
-    c3.success("回答を記録しました！次のページに進んでください。")
+    c2.success("回答を記録しました！次のページに進んでください。")
 
     foodid_dic = get_json_from_file(
         "Labels/foodid_dict.json"
@@ -422,7 +401,7 @@ def page_1():
     ingre_names = []
     ingre_exps = []
     median_weights = []
-    for item in st.session_state.selected_ingres:
+    for item in selected_ingres:
         label_id = int(item) + 1
         ingre_id = foodid_dic[str(label_id)][0]
         ingre_names.append(label_to_canonical_name[str(label_id)])
@@ -433,7 +412,7 @@ def page_1():
         {
             "ingredients": ingre_names,
             "amount": median_weights,
-            "unit": ["g"] * len(st.session_state.selected_ingres),
+            "unit": ["g"] * len(selected_ingres),
             "standard_exp": ingre_exps,
         }
     )
@@ -483,7 +462,7 @@ def page_1():
 
     food_label_amount_unit = []
     for i, row in data_df.iterrows():
-        label = st.session_state.selected_ingres[i - 1]
+        label = selected_ingres[i - 1]
         food_label_amount_unit.append(
             {
                 "ingre_id": foodid_dic[str(int(label) + 1)][0],

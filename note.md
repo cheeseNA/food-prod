@@ -404,3 +404,13 @@ ingredient id で調査してみたが, そちらも駄目.
   - こいつが後々のタスクで使われているもの.
 
 - click_dict はどうせ後で再設計するから容赦なく消す
+
+新しい案
+
+- 今まで選択したものを selected_options で持っておく
+- これを用いて mask を生成, 更新する
+- これを用いて predict_ingres を生成する
+- selected_options と predict_ingres を用いて checklist を作成
+  - selected_options で生成された checkbox は, onchange で selected_options を消すように
+  - predict_ingres で生成された checkbox は, onchange で selected_ingres に追加するように
+- multiselect はその場で selected_options に追加される
