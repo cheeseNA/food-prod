@@ -30,7 +30,7 @@ def get_nutri_df_from_food_dict(food_label_amount_unit: dict):
         ingre_id = food_item["ingre_id"]
 
         to_gram = (
-            unit_trans_csv.loc[unit_trans_csv["食品番号"] == int(ingre_id), unit].iloc[
+            unit_trans_csv.loc[unit_trans_csv["食品番号"] == ingre_id, unit].iloc[
                 0
             ]
             if unit != "g"
@@ -42,7 +42,7 @@ def get_nutri_df_from_food_dict(food_label_amount_unit: dict):
         nutri_list = []
         for code in nutrient_codes:
             try:
-                nutri_list.append(float(nutrients_infos[ingre_id][code]) * weight / 100)
+                nutri_list.append(float(nutrients_infos[str(ingre_id)][code]) * weight / 100)
             except ValueError:
                 nutri_list.append(float(0))
         nutrient[canonical_name] = nutri_list

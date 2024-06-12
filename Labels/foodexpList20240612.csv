@@ -1,0 +1,616 @@
+﻿foodid,ingredient_label,JPN full,JPN Abbr,ENG full,ENG Abbr
+1004,264,えんばく　オートミール,オートミール,"Common oats*, oatmeal, raw
+［*Syn. Oats］",Oats
+1006,554,おおむぎ　押麦　乾,押し麦,"Barley, pressed grain, raw",Barley
+1015,14,こむぎ　［小麦粉］　薄力粉　1等,薄力粉,"Common wheat, soft flour, first grade",Wheat flour (soft)
+1018,328,こむぎ　［小麦粉］　中力粉　1等,中力粉,"Common wheat, medium-strength flour, first grade",Wheat flour (medium-strength)
+1020,31,こむぎ　［小麦粉］　強力粉　1等,強力粉,"Common wheat, hard flour, first grade",Wheat flour (hard)
+1023,566,こむぎ　［小麦粉］　強力粉　全粒粉,全粒粉,"Common wheat, hard flour, whole grain",Whole wheat flour (hard)
+1024,49,こむぎ　［小麦粉］　プレミックス粉　ホットケーキ用,ホットケーキミックス,"Common wheat, premixed flour for pancake",Pancake mix
+1025,203,こむぎ　［小麦粉］　プレミックス粉　天ぷら用,天ぷら粉,"Common wheat, premixed flour for Tempura",Tempura flour mix
+1026,74,こむぎ　［パン類］　角形食パン　食パン,食パン,"Common wheat, bread, white",White bread
+1031,258,こむぎ　［パン類］　フランスパン,フランスパン,"Common wheat, bread, French bread",French bread
+1034,469,こむぎ　［パン類］　ロールパン,ロールパン,"Common wheat, bread, soft rolls",Soft rolls
+1036,329,こむぎ　［パン類］　イングリッシュマフィン,イングリッシュマフィン,"Common wheat, bread, English muffins",English muffins
+1038,153,こむぎ　［うどん・そうめん類］　うどん　生,うどん（生）,"Common wheat, ""Udon"" (thick wheat noodles), uncooked","Udon (thick wheat noodles, uncooked)"
+1039,412,こむぎ　［うどん・そうめん類］　うどん　ゆで,うどん（ゆで）,"Common wheat, ""Udon"" (thick wheat noodles), boiled",Udon (boiled)
+1041,534,こむぎ　［うどん・そうめん類］　干しうどん　乾,うどん（乾）,"Common wheat, ""Udon"" (thick wheat noodles), dried noodles, uncooked ","Udon (dried noodles, uncooked)"
+1043,178,こむぎ　［うどん・そうめん類］　そうめん・ひやむぎ　乾,そうめん（乾）,"Common wheat, ""Somen and Hiyamugi"" (thin wheat noodles), dried noodles, uncooked","Somen and Hiyamugi (thin wheat noodles, dried noodles, uncooked)"
+1047,309,こむぎ　［中華めん類］　中華めん　生,中華麺（生）,"Common wheat, yellow alkaline noodles, uncooked","Yellow alkaline noodles, uncooked"
+1049,345,こむぎ　［中華めん類］　蒸し中華めん　蒸し中華めん,中華麺（蒸し）,"Common wheat, yellow alkaline noodles, steamed noodles","Yellow alkaline noodles, steamed noodles"
+1063,44,こむぎ　［マカロニ・スパゲッティ類］　マカロニ・スパゲッティ　乾,パスタ（乾）,"Durum wheat, macaroni and spaghetti, dry pasta, uncooked","Macaroni and spaghetti, dry pasta"
+1066,423,こむぎ　［ふ類］　焼きふ　釜焼きふ,麩,"Common wheat, ""Fu"" (wheat gluten cake), ""Kamayakifu"" (dried by oven baking) ","Fu (wheat gluten cake, Kamayakifu, dried by oven baking)"
+1068,564,こむぎ　［ふ類］　焼きふ　車ふ,車麩,"Common wheat, ""Fu"" (wheat gluten cake), ""Kurumafu"" (dried gluten cake by baking ring-shaped)","Fu (wheat gluten cake, Kurumafu, dried gluten cake by baking ring-shaped)"
+1074,149,こむぎ　［その他］　ぎょうざの皮　生,餃子の皮,"Common wheat, Outer steamed wheat ""Jiaozi *"" dough (*Chinese meat dumpling)","Dumpling dough (Chinese meat dumpling, Jiaozi)"
+1075,393,こむぎ　［その他］　しゅうまいの皮　生,しゅうまいの皮,"Common wheat, Outer steamed wheat ""Shumai *"" dough (*Chinese meat dumpling)","Shumai dough (Chinese meat dumpling, Shumai)"
+1076,403,こむぎ　［その他］　ピザ生地,ピザ生地,"Common wheat, pizza crust",Pizza crust
+1077,35,こむぎ　［その他］　パン粉　生,パン粉（生）,"Common wheat, bread crumbs, fresh","Bread crumbs, fresh"
+1079,417,こむぎ　［その他］　パン粉　乾燥,パン粉（乾）,"Common wheat, bread crumbs, dry ","Bread crumbs, dry"
+1083,66,こめ　［水稲穀粒］　精白米　うるち米,米,"Rice, paddy rice, non-glutinous, well-milled, raw ","Rice, non-glutinous, well-milled, raw"
+1085,361,こめ　［水稲めし］　玄米,炊いた玄米,"Rice, short grain, paddy rice, brown, ""meshi"" (cooked rice)","Rice, short grain, brown (meshi, cooked rice)"
+1088,23,こめ　［水稲めし］　精白米　うるち米,炊いたご飯,"Rice, short grain, paddy rice, nonglutinous rice, well-milled, ""meshi"" (cooked rice)","Rice, short grain, non-glutinous, well-milled (meshi, cooked rice)"
+1111,436,こめ　［うるち米製品］　おにぎり,おにぎり,"Rice, non-glutinous rice products, ""Onigiri"" (rice ball)",Onigiri (rice ball)
+1114,244,こめ　［うるち米製品］　上新粉,上新粉,"Rice, non-glutinous rice products, ""Joshinko"" (ordinary rice flour)",Joshinko (ordinary rice flour)
+1115,552,こめ　［うるち米製品］　ビーフン,ビーフン,"Rice, non-glutinous rice products, dried noodles, raw","Rice noodles, raw"
+1116,100,こめ　［うるち米製品］　米こうじ,米こうじ,"Rice, non-glutinous rice products, rice-koji",Rice-koji
+1117,277,こめ　［もち米製品］　もち,もち,"Rice, glutinous rice products, rice cake",Rice cake
+1120,187,こめ　［もち米製品］　白玉粉,白玉粉,"Rice, glutinous rice products, ""Shiratamako"" (flour milled in water)","Shiratamako (glutinous rice flour, milled in water)"
+1122,451,そば　そば粉　全層粉,そば粉,"Buckwheat flour, straight ",Buckwheat flour
+1129,385,そば　干しそば　乾,そば（乾）,"Buckwheat, dried noodles, uncooked ","Buckwheat noodles, dried"
+1132,479,とうもろこし　コーンミール　黄色種,コーンミール,"Corn, Corn meal, yellow kernel, raw","Corn meal, yellow kernel"
+1137,355,とうもろこし　コーンフレーク,コーンフレーク,"Corn, cornflakes",Cornflakes
+1142,391,ライむぎ　全粒粉,ライ麦粉,"Rye, whole flour",Rye flour
+1146,398,こむぎ　［小麦粉］　プレミックス粉　お好み焼き用,お好み焼き粉,"Common wheat, premixed flour for ""Okonomiyaki"" (Japanese-style savory pancake with various ingredients)",Okonomiyaki flour mix (Japanese-style savory pancake)
+1147,567,こむぎ　［小麦粉］　プレミックス粉　から揚げ用,から揚げ粉,"Common wheat, premixed flour for fried food",Flour mix for fried food
+1148,582,こむぎ　［パン類］　ベーグル,ベーグル,"Common wheat, bread, bagel",Bagel
+1151,207,こめ　［水稲穀粒］　精白米　もち米,もち米,"Rice, paddy rice, glutinous rice, well-milled, raw ","Glutinous rice, well-milled, raw"
+1158,165,こめ　［うるち米製品］　米粉,米粉,"Rice, non-glutinous rice products, fine flour",Fine rice flour
+1169,367,こめ　［うるち米製品］　ライスペーパー,ライスペーパー,"Rice, non-glutinous rice products, rice paper",Rice paper
+1172,221,こむぎ　［小麦粉］　プレミックス粉　天ぷら用　バッター　揚げ,天かす,"Common wheat, premixed flour for tempura batter, deep fried",Deep fried wheat
+1174,447,こむぎ　［パン類］　角形食パン　焼き,食パン（焼き）,Bread cubes Baked,Bread cubes Baked
+1175,556,こむぎ　［パン類］　角形食パン　耳を除いたもの,サンドイッチ用パン,Bread cubes without crust,Bread cubes without crust
+1176,454,こむぎ　［パン類］　角形食パン　耳,パンの耳,Bread cubes without crust,Bread cubes without crust
+1179,176,こむぎ　［その他］　春巻きの皮　生,春巻きの皮,Spring roll skin Raw,Spring roll skin Raw
+2003,114,＜いも類＞　こんにゃく　板こんにゃく　精粉こんにゃく,こんにゃく,"Konjac, block, made from fine powder",Konjac block (made from fine powder)
+2005,240,＜いも類＞　こんにゃく　しらたき,しらたき,"Konjac, noodles",Konjac noodles
+2006,85,＜いも類＞　（さつまいも類）　さつまいも　塊根　皮なし　生,さつまいも,"Sweet potato, tuberous root, without skin, raw","Sweet potato, raw"
+2010,154,＜いも類＞　（さといも類）　さといも　球茎　生,里芋,"Taro, ""Satoimo"", corm, raw","Taro (Satoimo), raw"
+2017,26,＜いも類＞　じゃがいも　塊茎　皮なし　生,じゃがいも,"Potatoes, tuber, raw","Potato, raw"
+2020,563,＜いも類＞　じゃがいも　塊茎　皮なし　フライドポテト　（市販冷凍食品を揚げたもの）,冷凍ポテト,"Potatoes, french fries",French fries
+2021,462,＜いも類＞　じゃがいも　乾燥マッシュポテト,マッシュポテト（乾）,"Potatoes, dehydrated mashed potato",Dehydrated mashed potato
+2023,162,＜いも類＞　（やまのいも類）　ながいも　ながいも　塊根　生,長芋,"Yam, Chinese yam, ""Nagaimo"", tuberous root, raw","Chinese yam (Nagaimo), raw"
+2025,569,＜いも類＞　（やまのいも類）　ながいも　やまといも　塊根　生,やまといも,"Yam, Chinese yam, ""Yamatoimo"", tuberous root, raw","Chinese yam (Yamatoimo), raw"
+2028,526,＜でん粉・でん粉製品＞　（でん粉類）　キャッサバでん粉,タピオカ粉,"Starch, cassava starch",Cassava starch
+2029,570,＜でん粉・でん粉製品＞　（でん粉類）　くずでん粉,葛粉,"Starch, kudzu starch",Kudzu starch
+2034,15,＜でん粉・でん粉製品＞　（でん粉類）　じゃがいもでん粉,片栗粉,"Starch, potato starch",Potato starch
+2035,134,＜でん粉・でん粉製品＞　（でん粉類）　とうもろこしでん粉,コーンスターチ,"Starch, corn starch",Corn starch
+2039,151,＜でん粉・でん粉製品＞　（でん粉製品）　はるさめ　緑豆はるさめ　乾,緑豆はるさめ（乾),"Starch products, ""Harusame"" (thin starch noodles), made from mung bean starch, dried, uncooked","Harusame (thin starch noodles, made from mung bean starch, dried, uncooked)"
+2040,438,＜でん粉・でん粉製品＞　（でん粉製品）　はるさめ　普通はるさめ　乾,普通はるさめ（乾),"Starch products, ""Harusame"" (thin starch noodles), made from potato and sweet potato starches, dried, uncooked","Harusame (thin starch noodles, made from potato and sweet potato starches, dried, uncooked)"
+2045,560,＜いも類＞　（さつまいも類）　さつまいも　塊根　皮つき　生,さつまいも,"Sweet potato, tuberous root, with skin, raw","Sweet potato with skin, raw"
+2054,578,＜いも類＞　ヤーコン　塊根　生,ヤーコン,"Yacon, tuber, raw","Yacon, raw"
+3001,219,（砂糖類）　黒砂糖,黒砂糖,"Sugars, brown sugar lump",Brown sugar lump
+3003,1,（砂糖類）　車糖　上白糖,砂糖,"Sugars, soft sugars, white",Soft white sugar
+3004,135,（砂糖類）　車糖　三温糖,三温糖,"Sugars, soft sugars, yellow",Soft yellow sugar
+3005,36,（砂糖類）　ざらめ糖　グラニュー糖,グラニュー糖,"Sugars, hard sugars, granulated ",Granulated sugar
+3009,296,（砂糖類）　加工糖　氷砂糖,氷砂糖,"Sugars, reprocessed sugars, ""Korizato"" (crystal candy sugar)",Korizato (crystal candy sugar)
+3011,141,（砂糖類）　加工糖　粉糖,粉砂糖,"Sugars, reprocessed, powdered",Powdered sugar
+3022,45,（その他）　はちみつ,はちみつ,Honey,Honey
+3023,157,（その他）　メープルシロップ,メープルシロップ,Maple syrup,Maple syrup
+3024,315,（でん粉糖類）　水あめ　酵素糖化,水あめ,"Starch sweeteners, glucose syrup, enzyme-converted",Glucose syrup (enzyme-converted)
+3027,273,（でん粉糖類）　異性化液糖　果糖ぶどう糖液糖,シロップ,"Starch sweeteners, fructose glucose syrup ",Fructose glucose syrup
+3029,300,（その他）　黒蜜,黒蜜,Brown sugar syrup ,Brown sugar syrup
+3030,166,（砂糖類）　てんさい含蜜糖,きび砂糖,"Sugar, epicondensable molasses",Molasses
+3031,227,（でん粉糖類）　還元麦芽糖,パルスイート,"Starch sugars, reduction maltose",Maltose syrup
+4001,325,あずき　全粒　乾,小豆（乾）,"Adzuki beans, mature seeds, whole, raw","Adzuki beans, raw"
+4002,522,あずき　全粒　ゆで,ゆであずき,"Adzuki beans, mature seeds, whole, boiled","Adzuki beans, boiled"
+4004,255,あずき　あん　こし生あん,こしあん,"Adzuki beans, mature seeds, ""An"" (bean paste), ""Koshi-an""(strained bean paste)","Adzuki bean paste (An, Koshi-an, strained)"
+4006,432,あずき　あん　つぶし練りあん,粒あん,"Adzuki beans, mature seeds, ""An"" (bean paste), ""Tsubushi-an"" (mushed sweet bean paste)","Adzuki bean paste (An, Tsubushi-an, mushed sweet)"
+4007,531,いんげんまめ　全粒　乾,インゲン豆（乾）,"Kidney beans, mature seeds, whole, raw","Kidney beans, raw"
+4008,528,いんげんまめ　全粒　ゆで,インゲン豆（ゆで）,"Kidney beans, mature seeds, whole, boiled","Kidney beans, boiled"
+4019,537,そらまめ　全粒　乾,そらまめ（乾）,"Broad beans, mature seeds, whole, raw","Broad beans, raw"
+4023,371,だいず　［全粒・全粒製品］　全粒　黄大豆　国産　乾,だいず（乾）,"Soybeans, mature seeds, whole, domestic, yellow seed coats, raw","Soybeans, raw"
+4028,311,だいず　［全粒・全粒製品］　水煮缶詰　黄大豆,だいず（水煮）,"Soybeans, mature seeds, whole, yellow seed coats, boiled, canned in water, drained ","Soybeans, boiled, canned"
+4029,173,だいず　［全粒・全粒製品］　きな粉　黄大豆　全粒大豆,きな粉,"Soybeans, ""Kinako"" (roasted and ground beans), made from whole beans with yellow seed coats ",Kinako (roasted and ground soybeans)
+4032,94,だいず　［豆腐・油揚げ類］　木綿豆腐,木綿豆腐,"Soybeans, tofu, ""Momen-tofu"" (regular tofu)",Momen-tofu (regular tofu)
+4033,51,だいず　［豆腐・油揚げ類］　絹ごし豆腐,絹ごし豆腐,"Soybeans, tofu, ""Kinugoshi-tofu"" (silken tofu)",Kinugoshi-tofu (silken tofu)
+4038,437,だいず　［豆腐・油揚げ類］　焼き豆腐,焼き豆腐,"Soybeans, tofu, ""Yaki-tofu"" (grilled tofu)",Yaki-tofu (grilled tofu)
+4039,143,だいず　［豆腐・油揚げ類］　生揚げ,厚揚げ（生）,"Soybeans, tofu, ""Nama-age"" (fried slices of drained tofu)",Nama-age (fried slices of drained tofu)
+4040,75,だいず　［豆腐・油揚げ類］　油揚げ　生,油揚げ（生）,"Soybeans, tofu, ""Abura-age"" (fried thin slices of pressed tofu), uncooked","Abura-age (fried thin slices of pressed tofu, uncooked)"
+4041,548,だいず　［豆腐・油揚げ類］　がんもどき,がんもどき,"Soybeans, tofu, ""Ganmodoki"" (fried mixture of crushed tofu, vegetables and ground yam)","Ganmodoki (fried mixture of crushed tofu, vegetables and ground yam)"
+4042,213,だいず　［豆腐・油揚げ類］　凍り豆腐　乾,高野豆腐（乾）,"Soybeans, tofu, ""Kori-dofu"" (freeze dried tofu), uncooked","Kori-dofu (freeze dried tofu, uncooked)"
+4046,81,だいず　［納豆類］　糸引き納豆,糸引き納豆,"Soybeans, natto, ""Itohiki-natto"" (fermented whole soybean) ",Itohiki-natto (fermented whole soybean)
+4047,472,だいず　［納豆類］　挽きわり納豆,挽きわり納豆,"Soybeans, natto, ""Hikiwari-natto"" (fermented dehulled and split soybean)",Hikiwari-natto (fermented dehulled and split soybean)
+4051,132,だいず　［その他］　おから　生,おから（生）,"Soybeans, ""Okara"" (insoluble residue from soy milk processing), fresh","Okara (insoluble residue from soy milk processing), fresh"
+4052,72,だいず　［その他］　豆乳　豆乳,豆乳,"Soybeans, soy milk, regular","Soy milk, regular"
+4053,411,だいず　［その他］　豆乳　調製豆乳,調整豆乳,"Soybeans, soy milk, reconstituted","Soy milk, reconstituted"
+4065,517,ひよこまめ　全粒　乾,ひよこまめ（乾）,"Chickpeas*, mature seeds, whole, raw
+［*Syn. Garbanzo beans］","Chickpeas (Garbanzo beans), raw"
+4066,333,ひよこまめ　全粒　ゆで,ひよこまめ（ゆで）,"Chickpeas*, mature seeds, whole, boiled
+［*Syn. Garbanzo beans］","Chickpeas (Garbanzo beans), boiled"
+4089,382,だいず　［その他］　おから　乾燥,おから（乾）,"Soybeans, ""Okara"" (insoluble residue from soy milk processing), dried","Okara (insoluble residue from soy milk processing), dried"
+4101,363,あずき　あん　こし練りあん　（並あん）,ねりあん,Azuki bean paste with koshi knead,Sweet bean paste
+4106,282,だいず　［全粒・全粒製品］　全粒　黒大豆　国産　ゆで,黒豆（ゆで）,"DIZU [whole grain / whole grain products] whole black soybeans, produced in Japan, boiled","Black beans, boiled"
+5001,127,アーモンド　乾,アーモンド（乾),"Almonds, raw","Almonds, raw"
+5002,562,アーモンド　フライ　味付け,アーモンド（味付き）,"Almonds, oil-roasted and salted","Almonds, oil-roasted and salted"
+5005,360,カシューナッツ　フライ　味付け,カシューナッツ（味付き）,"Cashew nuts, oil-roasted and salted","Cashew nuts, oil-roasted and salted"
+5008,543,ぎんなん　生,ぎんなん,"Ginkgo nuts, raw","Ginkgo nuts, raw"
+5010,312,（くり類）　日本ぐり　生,栗(生),"Chestnuts, Japanese chestnuts, raw","Japanese chestnuts, raw"
+5012,377,（くり類）　日本ぐり　甘露煮,栗の甘露煮,"Chestnuts, Japanese chestnuts, Kanroni (boiled and sweetened), drained ","Japanese chestnuts, Kanroni (boiled and sweetened)"
+5014,152,くるみ　いり,くるみ（炒り),"Walnuts, roasted ","Walnuts, roasted"
+5016,490,ココナッツ　ココナッツパウダー,ココナッツファイン,"Coconut, powder",Coconut powder
+5017,88,ごま　乾,ごま(乾),"Sesame seeds, whole, dried","Sesame seeds, whole, dried"
+5018,163,ごま　いり,いりごま,"Sesame seeds, whole, dried and roasted","Sesame seeds, dried and roasted"
+5019,431,ごま　むき,むきごま,"Sesame seeds, dried and hulled",Hulled sesame seeds
+5031,523,マカダミアナッツ　いり　味付け,マカダミアナッツ（味付き）,"Macadamia nuts, roasted and salted","Macadamia nuts, roasted and salted"
+5032,318,まつ　生,松の実,"Pine nuts, raw","Pine nuts, raw"
+5034,390,らっかせい　大粒種　乾,ピーナッツ,"Peanuts, mature seeds, Virginia type, raw","Peanuts, raw"
+5037,416,らっかせい　ピーナッツバター,ピーナッツバター,"Peanuts, peanut butter",Peanut butter
+5042,376,ごま　ねり,練りゴマ,"Sesame seeds, paste",Sesame paste
+6003,317,あさつき　葉　生,あさつき,"Chive, ""Asatsuki"", leaves, raw","Chive (Asatsuki), raw"
+6007,133,アスパラガス　若茎　生,アスパラ,"Asparagus, green, shoots, raw","Asparagus, raw"
+6010,161,いんげんまめ　さやいんげん　若ざや　生,いんげん,"Kidney beans, ""Sayaingen"", immature pods, raw","Japanese spikenard (Udo), raw"
+6012,539,（うど類）　うど　茎　生,うど,"Japanese spikenard, ""Udo"", blanching cultivation, stem, raw",Japanese spikenard (Udo)
+6015,188,えだまめ　生,枝豆,"Soybeans, immature*, raw
+［*Syn. Green soybeans］",Edamame (raw)
+6017,410,えだまめ　冷凍,冷凍枝豆,"Soybeans, immature*, frozen 
+［*Syn. Green soybeans］",Edamame (frozen)
+6019,280,（えんどう類）　トウミョウ　茎葉　生,豆苗,"Peas, stem and leaves, raw",Pea shoots
+6020,265,（えんどう類）　さやえんどう　若ざや　生,さやえんどう,"Peas, snow peas, immature pods, raw",Snow peas
+6022,272,（えんどう類）　スナップえんどう　若ざや　生,スナップえんどう,"Peas, snap peas, immature pods, raw",Snap peas
+6023,344,（えんどう類）　グリンピース　生,グリンピース,"Peas, green peas, raw",Green peas
+6030,541,おかひじき　茎葉　生,おかひじき（生）,"Japanese saltwort, stems and leaves, raw",Saltwort
+6032,103,オクラ　果実　生,オクラ,"Okra, pods, raw",Okra
+6034,429,かぶ　葉　生,かぶの葉,"Turnip, leaves, raw",Turnip greens
+6038,220,かぶ　根　皮なし　生,かぶ,"Turnip, root, without skin, raw",Turnip (peeled)
+6048,59,（かぼちゃ類）　西洋かぼちゃ　果実　生,西洋かぼちゃ（生）,"Pumpkin and squash, winter squash*, fruit, raw
+［*Syn. Pumpkin］",Winter squash (raw)
+6049,587,（かぼちゃ類）　西洋かぼちゃ　果実　ゆで,西洋かぼちゃ（ゆで）,"Pumpkin and squash, winter squash*, fruit, boiled
+［*Syn. Pumpkin］",Winter squash (boiled)
+6050,538,（かぼちゃ類）　西洋かぼちゃ　果実　冷凍,西洋かぼちゃ（冷凍）,"Pumpkin and squash, winter squash*, fruit, frozen
+［*Syn. Pumpkin］",Winter squash (frozen)
+6054,274,カリフラワー　花序　生,カリフラワー,"Cauliflower, inflorescence, raw",Cauliflower
+6056,502,かんぴょう　乾,かんぴょう（乾）,"Gourd, ""Kanpyo"" (dried gourd strips), raw",Dried gourd strips (Kanpyo)
+6061,21,（キャベツ類）　キャベツ　結球葉　生,キャベツ,"Cabbage, common, head, raw",Cabbage
+6065,25,きゅうり　果実　生,きゅうり,"Cucumber, fruit, raw",Cucumber
+6070,425,きゅうり　漬物　ピクルス　サワー型,ピクルス,"Cucumber, fruit, pickles, sour type (processed by lactic acid fermentation)",Sour pickled cucumber
+6072,89,みずな　葉　生,みずな,"Leaf green, ""Mizuna"", leaves, raw",Mizuna
+6077,349,クレソン　茎葉　生,クレソン,"Watercress, stems and leaves, raw",Watercress
+6084,83,ごぼう　根　生,ごぼう,"Edible burdock, root, raw",Burdock root
+6086,106,こまつな　葉　生,こまつな,"Spinach mustard, ""Komatsuna"", leaves, raw",Komatsuna
+6088,321,ザーサイ　漬物,ザーサイ,"Stem mustard,  pickles",Pickled mustard stem
+6093,261,ししとう　果実　生,ししとう,"Sweet peppers, ""Shishito"", fruit, raw",Shishito peppers
+6095,48,しそ　葉　生,しそ,"Perilla, ""Shiso"", leaves, raw",Shiso leaves
+6099,215,しゅんぎく　葉　生,しゅんぎく,"Garland chrysanthemum, leaves, raw",Garland chrysanthemum
+6103,43,（しょうが類）　しょうが　根茎　皮なし　生,しょうが,"Ginger, mature rhizome, raw",Ginger (raw)
+6104,281,（しょうが類）　しょうが　漬物　酢漬,紅しょうが,"Ginger, mature rhizome, pickles",Pickled ginger
+6116,122,ズッキーニ　果実　生,ズッキーニ,"Zucchini, fruit, raw",Zucchini
+6117,571,せり　茎葉　生,せり,"Water dropwort, stems and leaves, raw",Water dropwort
+6119,91,セロリ　葉柄　生,セロリ,"Celery, petiole, raw",Celery
+6124,357,そらまめ　未熟豆　生,そらまめ（生）,"Broad beans, immature beans, raw",Broad beans
+6128,259,（だいこん類）　かいわれだいこん　芽ばえ　生,かいわれ大根,"Japanese radishes, Daikon, sprouts, raw",Daikon sprouts
+6130,256,（だいこん類）　だいこん　葉　生,大根の葉,"Japanese radishes, Daikon, leaves, raw",Daikon leaves
+6132,359,（だいこん類）　だいこん　根　皮つき　生,だいこん（皮つき）,"Japanese radishes, Daikon, root with skin, raw",Daikon (with skin)
+6134,29,（だいこん類）　だいこん　根　皮なし　生,だいこん（皮なし）,"Japanese radishes, Daikon, root without skin, raw",Daikon (peeled)
+6136,249,（だいこん類）　切干しだいこん　乾,切り干し大根（乾）,"Japanese radishes, Daikon, ""Kiriboshi-daikon"" (cut and dried Daikon root), raw",Kiriboshi-daikon (dried daikon)
+6139,379,（だいこん類）　漬物　たくあん漬　干しだいこん漬,たくあん,"Japanese radishes, Daikon,  root, pickles, ""Takuan-zuke"" (pickled with rice bran and salt), made of sun-dried Daikon",Takuan-zuke (pickled daikon)
+6147,474,たかな　葉　生,高菜（生）,"Leaf mustard, ""Takana"", leaves, raw",Takana (raw)
+6148,545,たかな　たかな漬,高菜漬け,"Leaf mustard, ""Takana"", leaves, salted pickles",Pickled Takana
+6149,238,たけのこ　若茎　生,たけのこ（生）,"Bamboo shoots, raw",Bamboo shoots (raw)
+6150,478,たけのこ　若茎　ゆで,たけのこ（ゆで）,"Bamboo shoots, boiled",Bamboo shoots (boiled)
+6151,270,たけのこ　水煮缶詰,たけのこ（水煮）,"Bamboo shoots, canned in water",Bamboo shoots (canned)
+6152,559,たけのこ　めんま　塩蔵　塩抜き,メンマ,"Bamboo shoots, ""Shinachiku"" (boiled, fermented and salted bamboo shoots), desalted",Desalted Shinachiku
+6153,10,（たまねぎ類）　たまねぎ　りん茎　生,玉ねぎ,"Onions, bulb, raw",Onions
+6156,434,（たまねぎ類）　赤たまねぎ　りん茎　生,赤たまねぎ,"Onions, red onions, bulb, raw",Red onions
+6160,243,チンゲンサイ　葉　生,チンゲンサイ,"Green bok choy, leaves, raw",Green bok choy
+6169,549,とうがらし　葉･果実　生,とうがらし（葉・果実・生）,"Hot peppers, leaves and fruits, raw",Hot peppers (leaves and fruits)
+6171,395,とうがらし　果実　生,とうがらし（果実・生）,"Hot peppers, fruit, raw",Hot peppers (raw)
+6172,93,とうがらし　果実　乾,とうがらし（乾）,"Hot peppers, fruit, dried",Dried hot peppers
+6173,303,とうがん　果実　生,冬瓜,"Chinese preserving melon, fruit, raw",Chinese preserving melon
+6175,120,（とうもろこし類）　スイートコーン　未熟種子　生,スイートコーン（生）,"Corn, sweet corn, immature kernels, raw",Sweet corn (raw)
+6178,267,（とうもろこし類）　スイートコーン　未熟種子　カーネル　冷凍,スイートコーン（冷凍）,"Corn, sweet corn, immature kernels, frozen",Sweet corn (frozen)
+6179,536,（とうもろこし類）　スイートコーン　缶詰　クリームスタイル,スイートコーン（缶詰クリーム）,"Corn, sweet corn, canned products, cream style","Sweet corn (cream style, canned)"
+6180,246,（とうもろこし類）　スイートコーン　缶詰　ホールカーネルスタイル,スイートコーン（缶詰）,"Corn, sweet corn, canned products, whole kernel style","Sweet corn (whole kernel, canned)"
+6181,476,（とうもろこし類）　ヤングコーン　幼雌穂　生,ヤングコーン,"Corn, sweet corn, young ear, raw",Young sweet corn
+6182,28,（トマト類）　赤色トマト　果実　生,トマト,"Tomatoes, fruit, raw",Tomatoes
+6183,102,（トマト類）　赤色ミニトマト　果実　生,ミニトマト,"Tomatoes, cherry tomatoes, fruit, raw",Cherry tomatoes
+6184,130,（トマト類）　加工品　ホール　食塩無添加,トマト缶,"Tomatoes, canned products, whole, without salt","Canned tomatoes (whole, without salt)"
+6185,250,（トマト類）　加工品　トマトジュース　食塩添加,トマトジュース,"Tomatoes, canned products, juice, with salt",Tomato juice (with salt)
+6191,77,（なす類）　なす　果実　生,なす,"Eggplant*, Japanese type, fruit, raw
+［*Syn. Aubergine］",Japanese eggplant (raw)
+6201,191,（なばな類）　和種なばな　花らい・茎　生,菜の花,"Turnip rape, flower buds and stems, raw",Turnip rape
+6205,109,にがうり　果実　生,ゴーヤ,"Bitter melon, fruit, raw",Bitter melon
+6207,87,（にら類）　にら　葉　生,ニラ,"Chinese chive, leaves, raw",Chinese chives
+6214,17,（にんじん類）　にんじん　根　皮なし　生,人参,"Carrot, regular (European type), root without skin, raw",Carrot (peeled)
+6223,18,（にんにく類）　にんにく　りん茎　生,にんにく,"Garlic, bulb, raw",Garlic
+6224,362,（にんにく類）　茎にんにく　花茎　生,にんにくの芽,"Garlic, scape, raw",Garlic scapes
+6226,55,（ねぎ類）　根深ねぎ　葉　軟白　生,長ネギ,"Welsh onions, ""Nebuka-negi"" (large variety, blanching cultivation), leaves, raw",Welsh onions (Nebuka-negi)
+6227,180,（ねぎ類）　葉ねぎ　葉　生,青ネギ,"Welsh onions, ""Ha-negi"" (large variety, green), leaves, raw",Welsh onions (Ha-negi)
+6228,186,（ねぎ類）　こねぎ　葉　生,万能ねぎ,"Welsh onions, ""Konegi"" (small variety), leaves, raw",Welsh onions (Konegi)
+6233,52,はくさい　結球葉　生,はくさい,"Chinese cabbage, head, raw",Chinese cabbage (raw)
+6236,105,はくさい　漬物　キムチ,白菜キムチ,"Chinese cabbage, head, pickles, Kimchi ",Kimchi (Chinese cabbage pickles)
+6238,123,バジル　葉　生,バジル（生）,"Basil, leaves, raw",Basil leaves (raw)
+6239,68,パセリ　葉　生,パセリ（生）,"Parsley, leaves, raw",Parsley leaves (raw)
+6240,439,はつかだいこん　根　生,ラディッシュ,"Little radish, root, raw",Little radish (raw)
+6245,27,（ピーマン類）　青ピーマン　果実　生,ピーマン,"Sweet peppers, fruit, green, raw",Green sweet peppers (raw)
+6247,131,（ピーマン類）　赤ピーマン　果実　生,赤パプリカ,"Sweet peppers, fruit, red, raw",Red sweet peppers (raw)
+6249,356,（ピーマン類）　黄ピーマン　果実　生,黄パプリカ,"Sweet peppers, fruit, yellow, raw",Yellow sweet peppers (raw)
+6256,458,（ふき類）　ふき　葉柄　生,ふき,"Japanese butterbur, petiole, raw","Japanese butterbur (petiole, raw)"
+6258,547,（ふき類）　ふきのとう　花序　生,ふきのとう,"Japanese butterbur, inflorescence, raw","Japanese butterbur (inflorescence, raw)"
+6263,69,ブロッコリー　花序　生,ブロッコリー,"Broccoli, inflorescence, raw",Broccoli (raw)
+6267,61,ほうれんそう　葉　通年平均　生,ほうれんそう（生）,"Spinach, leaves, all season, raw",Spinach (raw)
+6269,573,ほうれんそう　葉　冷凍,ほうれんそう（冷凍）,"Spinach, leaves, frozen",Frozen spinach
+6276,422,（みつば類）　根みつば　葉　生,根みつば,"Japanese hornwort, ""Ne-mitsuba"" (branched by covering with soil), leaves, raw",Ne-mitsuba (raw)
+6278,189,（みつば類）　糸みつば　葉　生,糸みつば,"Japanese hornwort, ""Ito-mitsuba"" (young plants), leaves, raw",Ito-mitsuba (raw)
+6280,160,（みょうが類）　みょうが　花穂　生,みょうが,"Japanese ginger, ""Myoga"", spike, raw","Japanese ginger (Myoga, raw)"
+6283,509,めキャベツ　結球葉　生,芽キャベツ,"Brussels sprouts, head, raw",Brussels sprouts (raw)
+6287,407,（もやし類）　だいずもやし　生,だいずもやし,"Bean sprouts, soybean sprouts, raw",Soybean sprouts (raw)
+6291,39,（もやし類）　りょくとうもやし　生,りょくとうもやし,"Bean sprouts, mung bean sprouts, raw",Mung bean sprouts (raw)
+6293,287,モロヘイヤ　茎葉　生,モロヘイヤ,"Nalta jute*, stems and leaves, raw
+［*Syn. Tossa jute］",Nalta jute (raw)
+6298,550,ようさい　茎葉　生,空心菜,"Water convolvulus, stems and leaves, raw",Water convolvulus (raw)
+6305,501,（らっきょう類）　らっきょう　りん茎　生,らっきょう（生）,"Japanese scallion, ""Rakkyo"", mature bulb, raw","Japanese scallion (Rakkyo, raw)"
+6312,50,（レタス類）　レタス　土耕栽培　結球葉　生,レタス,"Lettuce, head lettuce, crisp type, soil culture, head, raw",Crisp lettuce (raw)
+6313,334,（レタス類）　サラダな　葉　生,サラダ菜,"Lettuce, head lettuce, butter type, leaves, raw",Butter lettuce (raw)
+6315,234,（レタス類）　サニーレタス　葉　生,サニーレタス,"Lettuce, red leaf lettuce, leaves, raw",Red leaf lettuce (raw)
+6317,145,れんこん　根茎　生,れんこん,"East Indian lotus root, rhizome, raw",Lotus root (raw)
+6319,339,ルッコラ　葉　生,ルッコラ,"Rocket salad, leaves, raw",Rocket salad (raw)
+6320,324,わけぎ　葉　生,わけぎ,"Green onion, ""Wakegi"", leaves, raw","Green onion (Wakegi, raw)"
+6322,404,わさび　根茎　生,わさび（生）,"Wasabi, rhizome, raw",Wasabi rhizome (raw)
+6323,574,わさび　わさび漬,わさび漬,"Wasabi, pickled with Sake lees ",Pickled wasabi
+6340,546,（トマト類）　加工品　トマトジュース　食塩無添加,トマトジュース無塩,"Tomatoes, canned products, juice, without salt",Canned tomato juice (without salt)
+6349,420,（にんにく類）　にんにく　りん茎　油いため,フライドガーリック,"Garlic, bulb, sautéed",Sautéed garlic
+6354,524,ブロッコリー　芽ばえ　生,ブロッコリースプラウト,"Broccoli, sprouts, raw",Broccoli sprouts (raw)
+6365,164,（しょうが類）　しょうが　根茎　皮なし　生　おろし,しょうが（おろし）,Raw grated rhizome of ginger without peel,"Grated ginger (without peel, raw)"
+6366,292,（しょうが類）　しょうが　根茎　皮なし　生　おろし汁,しょうが汁,Raw grated ginger without peel,"Grated ginger (without peel, raw)"
+6367,144,（だいこん類）　だいこん　根　皮なし　生　おろし,大根おろし,"Radish root, peelless, raw, grated","Grated radish root (without peel, raw)"
+6370,413,（トマト類）　ドライトマト,ドライトマト,"Tomatoes, dried tomatoes",Dried tomatoes
+6382,209,（その他）　ミックスベジタブル　冷凍,ミックスベジタブル（冷凍）,"Mixed vegetable, frozen",Frozen mixed vegetables
+6385,322,コリアンダー　葉　生,コリアンダー（生）,"Coriander Leaves, fresh",Fresh coriander leaves
+6386,380,（しょうが類）　新しょうが　根茎　生,新しょうが,"Fresh Ginger rhizome, raw",Fresh ginger rhizome (raw)
+6399,373,（その他）　野菜ミックスジュース　通常タイプ,野菜ジュース,"Vegetable mixed juice, normal type",Vegetable mixed juice (normal type)
+7006,82,アボカド　生,アボカド,"Avocados, raw",Avocados (raw)
+7010,483,あんず　ジャム　高糖度,アプリコットジャム,"Apricots, jam, heavily sweetened",Apricot jam (heavily sweetened)
+7012,167,いちご　生,いちご,"Strawberries, raw",Strawberries (raw)
+7013,518,いちご　ジャム　高糖度,いちごジャム（高糖度）,"Strawberries, jam, heavily sweetened",Strawberry jam (heavily sweetened)
+7014,378,いちご　ジャム　低糖度,いちごジャム（低糖度）,"Strawberries, jam, lightly sweetened",Strawberry jam (lightly sweetened)
+7015,461,いちじく　生,いちじく,"Figs, raw",Figs (raw)
+7019,305,うめ　生,梅（生）,"Mume*, raw
+［*Syn. Japanese apricots］",Japanese apricots (raw)
+7020,453,うめ　梅漬　塩漬,梅漬（塩漬）,"Mume*, salted pickles
+［*Syn. Japanese apricots］",Salted Japanese apricots
+7021,198,うめ　梅漬　調味漬,梅漬（調味漬）,"Mume*, pickles, seasoned
+［*Syn. Japanese apricots］",Seasoned pickled Japanese apricots
+7023,129,うめ　梅干し　調味漬,梅干し（調味漬）,"Mume*, ""Umeboshi"" (pickled and dried mume),  seasoned pickles
+［*Syn. Japanese apricots］",Umeboshi (seasoned pickled and dried Japanese apricots)
+7029,401,（かんきつ類）　うんしゅうみかん　砂じょう　普通　生,うんしゅうみかん,"Satsuma mandarins, juice sacs, normal ripening type, raw",Satsuma mandarins (raw)
+7035,572,（かんきつ類）　うんしゅうみかん　缶詰　果肉,みかん（缶詰）,"Satsuma mandarins, canned in light syrup, solids",Canned Satsuma mandarins (light syrup)
+7037,386,オリーブ　塩漬　グリーンオリーブ,オリーブ（塩漬）,"Olives, in brine, green",Green olives (in brine)
+7038,427,オリーブ　塩漬　ブラックオリーブ,ブラックオリーブ（塩漬）,"Olives, in brine, ripe",Ripe olives (in brine)
+7040,252,（かんきつ類）　オレンジ　ネーブル　砂じょう　生,ネーブルオレンジ,"Oranges, navel, juice sacs, raw",Navel oranges (raw)
+7041,368,（かんきつ類）　オレンジ　バレンシア　米国産　砂じょう　生,バレンシアオレンジ,"Oranges, Valencia, imported from the U.S.A., juice sacs, raw",Valencia oranges (raw)
+7044,327,（かんきつ類）　オレンジ　バレンシア　果実飲料　50%果汁入り飲料,オレンジジュース（５０％果汁入り）,"Oranges, Valencia, 50 % fruit juice beverage",50% Valencia orange juice beverage
+7046,326,（かんきつ類）　オレンジ　バレンシア　マーマレード　高糖度,マーマレード（高糖度）,"Oranges, Valencia, marmalade, heavily sweetened",Heavily sweetened Valencia orange marmalade
+7047,457,（かんきつ類）　オレンジ　バレンシア　マーマレード　低糖度,マーマレード（低糖度）,"Oranges, Valencia, marmalade, lightly sweetened",Lightly sweetened Valencia orange marmalade
+7049,268,かき　甘がき　生,柿,"Japanese persimmons*, nonastringent, raw 
+［*Syn. Kaki］","Japanese persimmons (Kaki, raw)"
+7054,278,キウイフルーツ　緑肉種　生,キウイ,"Kiwifruit, green flesh type, raw","Kiwifruit (green flesh, raw)"
+7062,284,（かんきつ類）　グレープフルーツ　白肉種　砂じょう　生,グレープフルーツ,"Grapefruit, white flesh type, juice sacs, raw",White grapefruit (raw)
+7077,506,すいか　赤肉種　生,スイカ,"Watermelon, red flesh type, raw","Watermelon (red flesh, raw)"
+7078,435,（かんきつ類）　すだち　果皮　生,すだち,"Citrus, ""Sudachi"", peel, raw",Sudachi peel (raw)
+7081,443,（すもも類）　プルーン　生,プルーン,"Plums, European plums, raw",European plums (raw)
+7088,387,（なし類）　日本なし　生,梨,"Pears, sand pears*, raw
+［Syn. Nashi pears］",Nashi pears (raw)
+7097,384,パインアップル　生,パイナップル（生）,"Pineapple, raw",Pineapple (raw)
+7102,553,パインアップル　缶詰,パイナップル（缶詰）,"Pineapple, canned in heavy syrup",Pineapple (canned in heavy syrup)
+7107,71,バナナ　生,バナナ,"Bananas, raw",Bananas (raw)
+7117,113,ぶどう　干しぶどう,レーズン,"Grapes, raisins",Raisins
+7124,288,ブルーベリー　生,ブルーベリー,"Blueberries, raw",Blueberries (raw)
+7125,330,ブルーベリー　ジャム,ブルーベリージャム,"Blueberries, jam",Blueberry jam
+7132,495,マンゴー　生,マンゴー,"Mangoes, raw",Mangoes (raw)
+7134,576,メロン　温室メロン　生,メロン,"Muskmelon, greenhouse culture, raw",Muskmelon (raw)
+7136,354,（もも類）　もも　白肉種　生,桃,"Peaches, raw",Peaches (raw)
+7142,350,（かんきつ類）　ゆず　果皮　生,柚子,"Citrus, ""Yuzu"", peel, raw",Yuzu peel (raw)
+7145,456,（かんきつ類）　ライム　果汁　生,ライム,"Limes, juice, fresh",Fresh lime juice
+7146,508,ラズベリー　生,ラズベリー,"Red raspberries, raw",Red raspberries (raw)
+7148,101,りんご　皮なし　生,りんご,"Apples, without skin, raw","Apples (without skin, raw)"
+7152,491,りんご　果実飲料　30%果汁入り飲料,リンゴジュース（30％果汁入り）,"Apples, 30 % fruit juice beverage",30% apple juice beverage
+7155,108,（かんきつ類）　レモン　全果　生,レモン,"Lemons, whole, raw",Lemons (raw)
+7156,22,（かんきつ類）　レモン　果汁　生,レモン汁,"Lemons, juice, fresh",Fresh lemon juice
+7157,568,ココナッツ　ココナッツウォーター,ココナッツウォーター,"Coconut, coconut water",Coconut water
+7158,262,ココナッツ　ココナッツミルク,ココナッツミルク,"Coconut, coconut milk",Coconut milk
+7179,561,マンゴー　ドライマンゴー,ドライマンゴー,Dried mango,Dried mango
+7185,494,くこ　実　乾,クコの実,Kuko dried,Kuko dried
+8001,96,えのきたけ　生,えのきたけ（生）,"Mushrooms, winter mushrooms*, raw
+［*Syn. Enokitake, Enoki］",Enoki mushrooms (raw)
+8003,449,えのきたけ　味付け瓶詰,えのきたけ（味付け瓶詰）,"Mushrooms, winter mushrooms*, bottled in seasoning
+［*Syn. Enokitake, Enoki］",Bottled Enoki mushrooms (seasoned)
+8006,319,（きくらげ類）　きくらげ　乾,きくらげ（乾),"Mushrooms, tree ears, Cloud ear, dried, raw",Cloud ear mushrooms (raw)
+8013,192,しいたけ　乾しいたけ　乾,干し椎茸,"Mushrooms, ""Shiitake"", dried, raw",Dried shiitake mushrooms (raw)
+8016,34,（しめじ類）　ぶなしめじ　生,しめじ,"Mushrooms, beech mushrooms, raw",Beech mushrooms (raw)
+8020,275,なめこ　株採り　生,なめこ,"Mushrooms, ""Nameko"", raw",Nameko mushrooms (raw)
+8025,84,（ひらたけ類）　エリンギ　生,エリンギ,"Mushrooms, king oyster mushrooms, raw",King oyster mushrooms (raw)
+8028,159,まいたけ　生,舞茸,"Mushrooms, ""Maitake"", raw",Maitake mushrooms (raw)
+8031,155,マッシュルーム　生,マッシュルーム,"Mushrooms, button mushrooms, fresh, raw",Button mushrooms (raw)
+8039,90,しいたけ　生しいたけ　菌床栽培　生,しいたけ,"Mushrooms, ""Shiitake"", bed-log cultivation, fresh, raw　","Shiitake mushrooms (fresh, bed-log cultivation)"
+9002,174,あおのり　素干し,青のり,"Algae, green laver, dried",Dried green laver
+9004,70,あまのり　焼きのり,焼きのり,"Algae, purple laver, dried, toasted",Toasted purple laver
+9005,383,あまのり　味付けのり,味付けのり,"Algae, purple laver, dried, seasoned and toasted",Seasoned and toasted purple laver
+9017,136,（こんぶ類）　まこんぶ　素干し　乾,昆布（乾）,"Algae, kombu, ""Ma-kombu,"" dried",Dried Kombu
+9020,470,（こんぶ類）　刻み昆布,刻み昆布,"Algae, kombu, ""Kizami-kombu"" (dried and cut into thin strips)",Kizami-kombu
+9021,353,（こんぶ類）　削り昆布,削り昆布,"Algae, kombu, ""Kezuri-kombu"" (dried and thinly shaved) ",Kezuri-kombu
+9022,147,（こんぶ類）　塩昆布,塩昆布,"Algae, kombu, ""Shio-kombu""  (seasoned and dried) ",Shio-kombu
+9038,492,（もずく類）　もずく　塩蔵　塩抜き,もずく（塩抜き）,"Algae, ""Mozuku"", salted products, desalted",Mozuku
+9039,216,わかめ　原藻　生,わかめ（生）,"Algae, ""Wakame"", raw","Wakame, raw"
+9040,224,わかめ　乾燥わかめ　素干し,わかめ（乾）,"Algae, ""Wakame"", dried","Wakame, dried"
+9045,581,わかめ　湯通し塩蔵わかめ　塩抜き　生,わかめ（湯通し塩抜き）,"Algae,  ""Wakame"", blanched and salted products, desalted","Wkame, blanched"
+9047,424,わかめ　めかぶわかめ　生,めかぶわかめ（生）,"Algae, ""Wakame"", fruit-bearing leaves, raw","Wakame, fruit-bearing leaves, raw"
+9049,201,てんぐさ　粉寒天,粉寒天,"Algae, ""Tengusa"", agar-agar powder","Tengusa, agar-agar powder"
+9050,217,ひじき　ほしひじき　ステンレス釜　乾,ひじき(乾),"Algae, ""Hijiki"", boiled and dried, stainless steel pot process, raw","Hijiki, boiled and dried, stainless"
+9051,544,ひじき　ほしひじき　ステンレス釜　ゆで,ひじき（ゆで）,"Algae, ""Hijiki"", boiled and dried, stainless steel pot process, rehydrated and boiled","Hijiki, boiled and dried, stainless"
+10003,489,＜魚類＞　（あじ類）　まあじ　皮つき　生,まあじ,"Fish, horse mackerel, Japanese Jack mackerel＊, with integument, raw
+［*Syn. horse mackerel］",Horse mackerel (raw)
+10045,557,＜魚類＞　（いわし類）　かたくちいわし　煮干し,煮干し,"Fish, sardine, Japanese anchovy, ""Niboshi"" (boiled and dried whole)",Japanese anchovy (Niboshi)
+10047,409,＜魚類＞　（いわし類）　まいわし　生,いわし,"Fish, sardine, Japanese pilchard, raw",Japanese pilchard (raw)
+10055,426,＜魚類＞　（いわし類）　しらす干し　微乾燥品,しらす干し,"Fish, sardine, ""Shirasuboshi"" (boiled and dried whitebait), mild dried",Shirasuboshi (mild dried whitebait)
+10056,181,＜魚類＞　（いわし類）　しらす干し　半乾燥品,ちりめんじゃこ,"Fish, sardine, ""Shirasuboshi"" (boiled and dried whitebait), semi-dried",Shirasuboshi (semi-dried whitebait)
+10063,477,＜魚類＞　（いわし類）　缶詰　油漬,オイルサーディン,"Fish, sardine,  Japanese pilchard, canned products, in oil",Japanese pilchard (canned in oil)
+10067,586,＜魚類＞　うなぎ　養殖　生,うなぎ,"Fish, eel, cultured, raw",Cultured eel (raw)
+10084,584,＜魚類＞　（かじき類）　まかじき　生,カジキマグロ,"Fish, striped marlin, raw",Striped marlin (raw)
+10086,565,＜魚類＞　（かつお類）　かつお　春獲り　生,かつお,"Fish, skipjack tuna*, caught in spring, raw
+［*Syn. bonito, skipjack］ ","Skipjack tuna (spring, raw)"
+10091,95,＜魚類＞　（かつお類）　加工品　かつお節,鰹節,"Fish, skipjack tuna, processed products, ""Katsuo-bushi"" (boiled, smoke-dried and fermented skipjack tuna fillet)",Katsuo-bushi (processed skipjack tuna)
+10092,313,＜魚類＞　（かつお類）　加工品　削り節,削り節,"Fish, skipjack tuna and frigate mackerel, processed products, ""Kezuri-bushi"" (shaved ""Katsuo-bushi""), uncooked  (cf. 10091""Katsuo-bushi"")",Kezuri-bushi (shaved Katsuo-bushi)
+10100,504,＜魚類＞　（かれい類）　まがれい　生,まがれい,"Fish, righteye flounder, brown sole, raw",Brown sole (raw)
+10134,199,＜魚類＞　（さけ・ます類）　しろさけ　生,しろさけ（生）,"Fish, salmon and trout, chum salmon, raw",Chum salmon (raw)
+10139,369,＜魚類＞　（さけ・ます類）　しろさけ　塩ざけ,しろさけ（塩ざけ）,"Fish, salmon and trout, chum salmon, ""Shiozake"" (salted salmon), raw","Shiozake (salted chum salmon, raw)"
+10140,372,＜魚類＞　（さけ・ます類）　しろさけ　イクラ,いくら,"Fish, salmon and trout, chum salmon, ""Ikura"" (salted roe) ",Ikura (salted salmon roe)
+10144,551,＜魚類＞　（さけ・ます類）　たいせいようさけ　養殖　皮つき　生,たいせいようさけ,"Fish, salmon and trout, Atlantic salmon, cultured, raw",Cultured Atlantic salmon (raw)
+10151,237,＜魚類＞　（さけ・ます類）　べにざけ　くん製,スモークサーモン,"Fish, salmon and trout, sockeye salmon, smoked",Smoked sockeye salmon
+10154,400,＜魚類＞　（さば類）　まさば　生,まさば,"Fish, mackerel, chub mackerel*,  raw
+［*Syn. mackerel］",Chub mackerel (raw)
+10173,271,＜魚類＞　さんま　皮つき　生,さんま,"Fish, Pacific saury, with integument, raw",Pacific saury (raw)
+10180,481,＜魚類＞　（ししゃも類）　ししゃも　生干し　生,ししゃも（生）,"Fish, Shishamo smelt, semi-dried, raw",Semi-dried Shishamo smelt (raw)
+10193,460,＜魚類＞　（たい類）　まだい　養殖　皮つき　生,まだい,"Fish, sea bream, red sea bream, cultured, with integument, raw",Cultured red sea bream (raw)
+10199,415,＜魚類＞　（たら類）　すけとうだら　生,すけとうだら,"Fish, cod, walleye pollock*, raw
+［*Syn. Alaska pollock］ ",Alaska pollock (raw)
+10202,230,＜魚類＞　（たら類）　すけとうだら　たらこ　生,たらこ（生),"Fish, cod, walleye pollock*, ""Tarako"" (salted roe), raw ［*Syn. Alaska pollock］ ","Tarako (salted pollock roe, raw)"
+10204,150,＜魚類＞　（たら類）　すけとうだら　からしめんたいこ,辛子明太子,"Fish, cod, walleye pollock*, ""Karashi-mentaiko"" (salted roe with red hot pepper powder) ［*Syn. Alaska pollock］ ",Karashi-mentaiko (spicy pollock roe)
+10205,482,＜魚類＞　（たら類）　まだら　生,まだら,"Fish, cod, Pacific cod, raw",Pacific cod (raw)
+10241,402,＜魚類＞　ぶり　成魚　生,ぶり,"Fish, yellowtail*, mature, raw
+［*Syn. five-ray yellowtail］",Yellowtail (raw)
+10260,455,＜魚類＞　（まぐろ類）　缶詰　水煮　フレーク　ライト,まぐろ缶詰（水煮）,"Fish, tuna, canned products, flaked light meat in brine",Canned tuna (flaked light meat in brine)
+10263,79,＜魚類＞　（まぐろ類）　缶詰　油漬　フレーク　ライト,まぐろ缶詰（油漬）,"Fish, tuna, canned products, flaked light meat in oil",Canned tuna (flaked light meat in oil)
+10281,204,＜貝類＞　あさり　生,あさり,"Mollusks, short-necked clam*, raw
+［*Syn. baby-neck clam, Manila clam, Japanese littleneck］",Manila clam (raw)
+10292,269,＜貝類＞　かき　養殖　生,牡蠣,"Mollusks, Pacific oyster, cultured, raw",Cultured Pacific oyster (raw)
+10311,335,＜貝類＞　ほたてがい　生,ほたて（生）,"Mollusks, giant ezo-scallop*, raw
+［*Syn. common scallop, Japanese scallop］",Giant ezo-scallop (raw)
+10315,542,＜貝類＞　ほたてがい　貝柱　水煮缶詰,ほたて（貝柱水煮缶）,"Mollusks, giant ezo-scallop*, adductor muscle,  canned products, boiled in brine ［*Syn. common scallop, Japanese scallop］",Canned ezo-scallop (boiled in brine)
+10319,521,＜えび・かに類＞　（えび類）　あまえび　生,あまえび,"Crustacean, northern shrimp*, raw
+［*Syn. pink shrimp］",Northern shrimp (raw)
+10328,299,＜えび・かに類＞　（えび類）　しばえび　生,小えび（生）,"Crustacean, Shiba shrimp, raw",Shiba shrimp (raw)
+10329,496,＜えび・かに類＞　（えび類）　ブラックタイガー　養殖　生,ブラックタイガー,"Crustacean, giant tiger prawn, cultured, raw",Cultured giant tiger prawn (raw)
+10330,374,＜えび・かに類＞　（えび類）　加工品　干しえび,干しえび,"Crustacean, processed shrimp, boiled and dried shrimp",Boiled and dried shrimp
+10340,430,＜えび・かに類＞　（かに類）　たらばがに　水煮缶詰,かに（缶詰）,"Crustacean, red king crab*, canned products, boiled in brine  ［*Syn. king crab］",Canned red king crab (boiled in brine)
+10345,205,＜いか・たこ類＞　（いか類）　するめいか　生,いか（生）,"Mollusks, Japanese common squid*, raw
+［*Syn. short-finned squid］",Japanese common squid (raw)
+10354,530,＜いか・たこ類＞　（いか類）　加工品　さきいか,さきいか,"Mollusks, processed squid,  ""Saki-ika"" (dried, seasoned and shredded squid)",Saki-ika (shredded dried squid)
+10358,585,＜いか・たこ類＞　（いか類）　加工品　塩辛,塩辛,"Mollusks, processed squid,  ""Shiokara"" (salted and fermented meat and liver) ",Shiokara (fermented squid)
+10361,320,＜いか・たこ類＞　（たこ類）　まだこ　生,まだこ（生）,"Mollusks, common octopus, raw",Common octopus (raw)
+10362,532,＜いか・たこ類＞　（たこ類）　まだこ　ゆで,まだこ（ゆで）,"Mollusks, common octopus, boiled",Boiled octopus
+10376,128,＜水産練り製品＞　かに風味かまぼこ,かにかま,"Surimi products, ""Kanifumi-kamaboko"" (imitation crab meat made from surimi) ",Kanifumi-kamaboko (imitation crab meat)
+10379,212,＜水産練り製品＞　蒸しかまぼこ,かまぼこ,"Surimi products, ""Mushi-kamaboko"" (steamed kamaboko)",Mushi-kamaboko (steamed fish cake)
+10381,98,＜水産練り製品＞　焼き竹輪,ちくわ,"Surimi products, ""Yaki-chikuwa"" (baked tubular kamaboko)",Yaki-chikuwa (baked fish cake)
+10385,182,＜水産練り製品＞　はんぺん,はんぺん,"Surimi products, ""Hanpen"" (boiled fishcake made of surimi, yam paste and starch)",Hanpen (boiled fish cake)
+10386,314,＜水産練り製品＞　さつま揚げ,さつま揚げ,"Surimi products, ""Satsuma-age"" (fried surimi)",Satsuma-age (fried fish cake)
+10388,194,＜水産練り製品＞　魚肉ソーセージ,魚肉ソーセージ,"Surimi products, fish sausage",Fish sausage
+10389,471,＜魚類＞　（あじ類）　まあじ　皮なし　生,まあじ（生）,"Fish, horse mackerel, Japanese Jack mackerel*, sashimi
+［*Syn. horse mackerel］",Horse mackerel (sashimi)
+10397,229,＜魚類＞　（いわし類）　缶詰　アンチョビ,アンチョビ,"Fish, sardine, anchovy, canned products, in oil",Canned anchovy (in oil)
+10415,184,＜えび・かに類＞　（えび類）　バナメイえび　養殖　生,バナメイえび,"Crustacean, whiteleg shrimp, raw",Whiteleg shrimp (raw)
+10431,290,＜えび・かに類＞　（えび類）　さくらえび　生,桜えび（生）,"Shrimps, crabs, ""Sakuraebi, raw",Sakura shrimp (raw)
+10438,286,＜魚類＞　（さけ・ます類）　たいせいようさけ　養殖　皮なし　生,たいせいようさけ（生）,"Salmon, cultured, skinless, raw","Cultured salmon (skinless, raw)"
+10445,172,＜魚類＞　（いわし類）　しらす　釜揚げしらす,釜揚げしらす,"Sardines, baby sardines, ""Kama-age Shirasu""",Kama-age Shirasu (boiled baby sardines)
+10448,446,＜魚類＞　（たら類）　加工品　桜でんぶ,桜でんぶ,"Cod, processed food, ""Sakura denbu""",Sakura denbu (processed cod)
+10450,343,＜魚類＞　（まぐろ類）　くろまぐろ　養殖　赤身　生,くろまぐろ（赤身）,"Bluefin tuna, cultured, lean, raw","Cultured bluefin tuna (lean, raw)"
+11034,171,＜畜肉類＞　うし　［乳用肥育牛肉］　かたロース　脂身つき　生,牛肩ロース,"Beef, dairy fattened steer, chuck roll, lean and fat, raw ",Beef chuck roll (raw)
+11064,351,＜畜肉類＞　うし　［輸入牛肉］　かたロース　脂身つき　生,牛肩ロース（輸入牛）,"Beef, imported beef, chuck roll, lean and fat, raw ",Imported beef chuck roll (raw)
+11067,512,＜畜肉類＞　うし　［輸入牛肉］　リブロース　脂身つき　生,牛リブロース,"Beef, imported beef, rib loin, lean and fat, raw",Imported beef rib loin (raw)
+11089,308,＜畜肉類＞　うし　［ひき肉］　生,牛ひき肉,"Beef, ground meat, raw",Ground beef (raw)
+11101,418,＜畜肉類＞　うし　［副生物］　腱　ゆで,牛すじ,"Beef, offal and by-products, sinew, boiled",Boiled beef sinew
+11105,394,＜畜肉類＞　うし　［加工品］　コンビーフ缶詰,コンビーフ,"Beef products, corned beef, canned",Canned corned beef
+11115,480,＜畜肉類＞　ぶた　［大型種肉］　かた　脂身つき　生,豚肩,"Pork, large type breed, picnic shoulder, lean and fat, raw",Pork picnic shoulder (raw)
+11119,485,＜畜肉類＞　ぶた　［大型種肉］　かたロース　脂身つき　生,豚肩ロース,"Pork, large type breed, Boston butt, lean and fat, raw",Pork Boston butt (raw)
+11123,76,＜畜肉類＞　ぶた　［大型種肉］　ロース　脂身つき　生,豚ロース,"Pork, large type breed, loin, lean and fat, raw",Pork loin (raw)
+11129,138,＜畜肉類＞　ぶた　［大型種肉］　ばら　脂身つき　生,豚ばら,"Pork, large type breed, belly, lean and fat, raw",Pork belly (raw)
+11130,421,＜畜肉類＞　ぶた　［大型種肉］　もも　脂身つき　生,豚もも,"Pork, large type breed, inside ham, lean and fat, raw",Pork inside ham (raw)
+11140,445,＜畜肉類＞　ぶた　［大型種肉］　ヒレ　赤肉　生,豚ヒレ,"Pork, large type breed, fillet, lean, raw",Pork fillet (raw)
+11163,86,＜畜肉類＞　ぶた　［ひき肉］　生,豚ひき肉,"Pork, ground meat, raw",Ground pork (raw)
+11166,583,＜畜肉類＞　ぶた　［副生物］　肝臓　生,豚レバー,"Pork, offal and by-products, liver, raw",Pork liver (raw)
+11176,56,＜畜肉類＞　ぶた　［ハム類］　ロースハム　ロースハム,ロースハム,"Pork, ham, loin",Pork ham (loin)
+11181,179,＜畜肉類＞　ぶた　［ハム類］　生ハム　促成,生ハム,"Pork, ham, uncooked ham, fresh",Uncooked pork ham
+11183,32,＜畜肉類＞　ぶた　［ベーコン類］　ばらベーコン,ベーコン,"Pork, bacon",Bacon
+11186,104,＜畜肉類＞　ぶた　［ソーセージ類］　ウインナーソーセージ　ウインナーソーセージ,ウインナーソーセージ,"Pork, sausage, Vienna",Vienna sausage
+11187,507,＜畜肉類＞　ぶた　［ソーセージ類］　セミドライソーセージ,サラミ,"Pork, sausage, semi-dry",Semi-dry sausage
+11189,291,＜畜肉類＞　ぶた　［ソーセージ類］　フランクフルトソーセージ,フランクフルト,"Pork, sausage, Frankfurter",Frankfurter sausage
+11195,466,＜畜肉類＞　ぶた　［その他］　焼き豚,焼き豚,"Pork, roast pork",Roast pork
+11198,110,＜畜肉類＞　ぶた　［その他］　ゼラチン,ゼラチン,"Pork, gelatin",Pork gelatin
+11212,452,＜鳥肉類＞　にわとり　［親・主品目］　手羽　皮つき　生,鶏手羽,"Chicken, culled, wing, meat with skin, raw",Chicken wing (raw)
+11215,341,＜鳥肉類＞　にわとり　［親・主品目］　もも　皮つき　生,鶏もも,"Chicken, culled, thigh, meat with skin, raw",Chicken thigh (raw)
+11217,358,＜鳥肉類＞　にわとり　［親・副品目］　ささみ　生,鶏ささみ,"Chicken, culled, tender, raw",Chicken tender (raw)
+11218,577,＜鳥肉類＞　にわとり　［若どり・主品目］　手羽　皮つき　生,若鶏手羽,"Chicken, broiler, wing, meat with skin, raw",Broiler chicken wing (raw)
+11219,118,＜鳥肉類＞　にわとり　［若どり・主品目］　むね　皮つき　生,若鶏むね,"Chicken, broiler, breast, meat with skin, raw",Broiler chicken breast (raw)
+11221,58,＜鳥肉類＞　にわとり　［若どり・主品目］　もも　皮つき　生,若鶏もも,"Chicken, broiler, thigh, meat with skin, raw",Broiler chicken thigh (raw)
+11227,195,＜鳥肉類＞　にわとり　［若どり・副品目］　ささみ　生,若鶏ささみ,"Chicken, broiler, tender, raw",Broiler chicken tender (raw)
+11230,148,＜鳥肉類＞　にわとり　［二次品目］　ひき肉　生,鶏ひき肉,"Chicken, ground meat, raw",Ground chicken (raw)
+11232,323,＜鳥肉類＞　にわとり　［副品目］　肝臓　生,鶏レバー,"Chicken, offal and by-products, liver, raw",Chicken liver (raw)
+11233,293,＜鳥肉類＞　にわとり　［副品目］　すなぎも　生,砂肝,"Chicken, offal and by-products, gizzard, raw",Chicken gizzard (raw)
+11234,473,＜鳥肉類＞　にわとり　［副品目］　皮　むね　生,鶏皮（むね）,"Chicken, offal and by-products, skin, breast, raw",Chicken breast skin (raw)
+11235,307,＜鳥肉類＞　にわとり　［副品目］　皮　もも　生,鶏皮（もも）,"Chicken, offal and by-products, skin, thigh, raw",Chicken thigh skin (raw)
+11285,251,＜鳥肉類＞　にわとり　［若どり・主品目］　手羽さき　皮つき　生,若鶏手羽先,"Chicken, broiler, wing tip, meat with skin, raw",Chicken wing tip (raw)
+11286,225,＜鳥肉類＞　にわとり　［若どり・主品目］　手羽もと　皮つき　生,若鶏手羽もと,"Chicken, broiler, wing stick, meat with skin, raw",Chicken wing stick (raw)
+12002,352,うずら卵　全卵　生,うずらの卵,"Eggs, Japanese quail, whole, raw",Japanese quail eggs (raw)
+12004,5,鶏卵　全卵　生,たまご,"Eggs, hen, whole, raw",Hen eggs (raw)
+12005,117,鶏卵　全卵　ゆで,ゆでたまご,"Eggs, hen, whole, boiled",Boiled hen eggs
+12010,37,鶏卵　卵黄　生,卵黄,"Eggs, hen, yolk, raw",Hen egg yolk (raw)
+12014,78,鶏卵　卵白　生,卵白,"Eggs, hen, white, raw",Hen egg white (raw)
+12018,428,鶏卵　たまご焼　厚焼きたまご,厚焼きたまご,"Eggs, hen, Tamago-yaki (Rolled omelet), Atsuyaki-tamago (sweet rolled omelet with Katsuo-bushi and kombu dashi)","Tamago-yaki (Atsuyaki-tamago, sweet rolled omelet)"
+12021,511,鶏卵　全卵　目玉焼き,目玉焼き,"Chicken egg, whole egg, fried",Fried chicken egg
+12022,331,鶏卵　全卵　いり,薄焼き卵・いり卵,scrambled eggs,Scrambled eggs
+13003,7,＜牛乳及び乳製品＞　（液状乳類）　普通牛乳,牛乳,"Liquid milk, whole milk",Whole milk
+13005,450,＜牛乳及び乳製品＞　（液状乳類）　加工乳　低脂肪,低脂肪乳,"Liquid milk, containing recombined milk, low fat",Low-fat milk
+13010,97,＜牛乳及び乳製品＞　（粉乳類）　脱脂粉乳,スキムミルク,"Milk powder, skimmed milk powder",Skimmed milk powder
+13011,448,＜牛乳及び乳製品＞　（粉乳類）　乳児用調製粉乳,粉ミルク,"Milk powder, infant formula",Infant formula
+13013,185,＜牛乳及び乳製品＞　（練乳類）　加糖練乳,練乳,"Condensed whole milk, sweetened",Sweetened condensed milk
+13014,20,＜牛乳及び乳製品＞　（クリーム類）　クリーム　乳脂肪,生クリーム,"Cream, milk fat",Milk cream
+13016,463,＜牛乳及び乳製品＞　（クリーム類）　クリーム　植物性脂肪,生クリーム（植物性）,"Cream substitute, vegetable fat",Cream substitute (vegetable fat)
+13017,257,＜牛乳及び乳製品＞　（クリーム類）　ホイップクリーム　乳脂肪,ホイップクリーム,"Whipping cream, milk fat, with added sugar",Sweetened whipping cream
+13021,397,＜牛乳及び乳製品＞　（クリーム類）　コーヒーホワイトナー　液状　乳脂肪・植物性脂肪,コーヒーフレッシュ,"Coffee whitener, liquid, milk and vegetable fats","Coffee whitener (liquid, milk and vegetable fats)"
+13025,80,＜牛乳及び乳製品＞　（発酵乳・乳酸菌飲料）　ヨーグルト　全脂無糖,ヨーグルト,"Yogurt, whole milk, unsweetened",Unsweetened yogurt
+13028,527,＜牛乳及び乳製品＞　（発酵乳・乳酸菌飲料）　乳酸菌飲料　乳製品,乳酸菌飲料,"Lactic acid bacteria beverages, not pasteurized after fermentation, milk solids-nonfat ≥ 3.0% ",Lactic acid bacteria beverage (unpasteurized)
+13029,464,＜牛乳及び乳製品＞　（発酵乳・乳酸菌飲料）　乳酸菌飲料　殺菌乳製品,乳酸菌飲料（殺菌）,"Lactic acid bacteria beverages, pasteurized after fermentation, milk solids-nonfat ≥ 3.0%",Lactic acid bacteria beverage (pasteurized)
+13033,316,＜牛乳及び乳製品＞　（チーズ類）　ナチュラルチーズ　カテージ,カッテージチーズ,"Cheese, cottage",Cottage cheese
+13034,304,＜牛乳及び乳製品＞　（チーズ類）　ナチュラルチーズ　カマンベール,カマンベールチーズ,"Cheese, Camembert",Camembert cheese
+13035,54,＜牛乳及び乳製品＞　（チーズ類）　ナチュラルチーズ　クリーム,クリームチーズ,"Cheese, cream",Cream cheese
+13036,467,＜牛乳及び乳製品＞　（チーズ類）　ナチュラルチーズ　ゴーダ,ゴーダチーズ,"Cheese, Gouda",Gouda cheese
+13037,347,＜牛乳及び乳製品＞　（チーズ類）　ナチュラルチーズ　チェダー,チェダーチーズ,"Cheese, Cheddar",Cheddar cheese
+13038,57,＜牛乳及び乳製品＞　（チーズ類）　ナチュラルチーズ　パルメザン,パルメザンチーズ,"Cheese, Parmesan",Parmesan cheese
+13039,498,＜牛乳及び乳製品＞　（チーズ類）　ナチュラルチーズ　ブルー,ブルーチーズ,"Cheese, blue",Blue cheese
+13040,53,＜牛乳及び乳製品＞　（チーズ類）　プロセスチーズ,プロセスチーズ,"Cheeses, processed",Processed cheese
+13042,310,＜牛乳及び乳製品＞　（アイスクリーム類）　アイスクリーム　高脂肪,アイスクリーム（高脂肪）,"Ice cream, high fat (milk solids ≥ 15%, milk fat ≥12%)",High-fat ice cream
+13048,529,＜牛乳及び乳製品＞　（その他）　カゼイン,カゼイン,Casein,Casein
+13055,441,＜牛乳及び乳製品＞　（チーズ類）　ナチュラルチーズ　マスカルポーネ,マスカルポーネチーズ,"Cheese, Mascarpone",Mascarpone cheese
+13056,254,＜牛乳及び乳製品＞　（チーズ類）　ナチュラルチーズ　モッツァレラ,モッツァレラチーズ,"Cheese, mozzarella",Mozzarella cheese
+13058,588,＜牛乳及び乳製品＞　（チーズ類）　ナチュラルチーズ　リコッタ,リコッタチーズ,"Cheese, Ricotta",Ricotta cheese
+14001,13,（植物油脂類）　オリーブ油,オリーブオイル,Olive oil,Olive oil
+14002,12,（植物油脂類）　ごま油,ごま油,Sesame oil,Sesame oil
+14006,16,（植物油脂類）　調合油,サラダ油,"Vegetable oil, blend       ",Vegetable oil blend
+14008,338,（植物油脂類）　なたね油,なたね油,Rapeseed oil,Rapeseed oil
+14013,579,（植物油脂類）　やし油,ココナッツオイル,Coconut oil,Coconut oil
+14015,503,（動物油脂類）　牛脂,牛脂,Beef tallow,Beef tallow
+14016,442,（動物油脂類）　ラード,ラード,Lard,Lard
+14017,9,（バター類）　無発酵バター　有塩バター,バター（有塩）,"Butter, salted butter",Salted butter
+14018,62,（バター類）　無発酵バター　食塩不使用バター,バター（無塩）,"Butter, unsalted butter",Unsalted butter
+14020,63,（マーガリン類）　マーガリン　家庭用　有塩,マーガリン（有塩）,"Margarine, soft type, home use",Soft margarine (home use)
+14022,239,（その他）　ショートニング　家庭用,ショートニング,"Shortening, home use",Shortening (home use)
+14028,389,（植物油脂類）　ぶどう油,グレープシードオイル,Grape seed oil,Grape seed oil
+14033,419,（マーガリン類）　マーガリン　家庭用　無塩,マーガリン（無塩）,"Margarine, household use, unsalted",unsalted margarine
+15001,414,＜和生菓子・和半生菓子類＞　甘納豆　あずき,甘納豆,"Traditional confectionery, ""Amanatto, Adzuki beans"" (candied Adzuki beans)",Candied Adzuki beans (Amanatto)
+15009,516,＜和生菓子・和半生菓子類＞　カステラ,カステラ,"Traditional confectionery, ""Kasutera"" (rectangle sponge cake)",Kasutera (sponge cake)
+15054,440,＜ビスケット類＞　中華風クッキー,中華風クッキー,"Biscuits, Chinese cookies containing lard",Chinese cookies with lard
+15074,365,＜ケーキ・ペストリー類＞　スポンジケーキ,スポンジケーキ,"Cake and pastry, sponge cake",Sponge cake
+15079,208,＜ケーキ・ペストリー類＞　パイ　パイ皮,パイシート,"Cake and pastry, pie pastry",Pie pastry
+15086,533,＜デザート菓子類＞　カスタードプリン,カスタードプリン,"Pudding and chilled dessert, caramel custard",Caramel custard
+15092,493,＜ビスケット類＞　ウエハース,ウエハース,"Biscuits, wafers ",Wafers
+15093,381,＜ビスケット類＞　クラッカー　オイルスプレークラッカー,クラッカー,"Biscuits, crackers, oil-sprayed",Oil-sprayed crackers
+15097,260,＜ビスケット類＞　ビスケット　ハードビスケット,ビスケット,"Biscuits, hard biscuits",Hard biscuits
+15105,514,＜キャンデー類＞　キャラメル,キャラメル,"Candy, caramel soft candy",Caramel candy
+15113,242,＜キャンデー類＞　マシュマロ,マシュマロ,"Candy, marshmallows",Marshmallows
+15115,297,＜チョコレート類＞　ホワイトチョコレート,ホワイトチョコレート,"Chocolate, white chocolate",White chocolate
+15116,156,＜チョコレート類＞　ミルクチョコレート,ミルクチョコレート,"Chocolate, milk chocolate",Milk chocolate
+15117,525,＜果実菓子類＞　マロングラッセ,マロングラッセ,"Candied fruits, Marron glacé (candied chestnuts) ",Candied chestnuts (Marron glacé)
+15133,279,＜ケーキ・ペストリー類＞　タルト　（洋菓子）,タルト,"Cake and pastry, tart",Tart
+15138,276,＜その他＞　カスタードクリーム,カスタードクリーム,Pastry cream,Pastry cream
+15180,555,＜その他＞　チョコレートクリーム,チョコレートクリーム,Chocolate cream,Chocolate cream
+16001,139,＜アルコール飲料類＞　（醸造酒類）　清酒　普通酒,清酒,"Fermented alcoholic beverage, ""Sake"", regular",Regular sake
+16006,444,＜アルコール飲料類＞　（醸造酒類）　ビール　淡色,ビール,"Fermented alcoholic beverage, beer, pale",Pale beer
+16010,65,＜アルコール飲料類＞　（醸造酒類）　ぶどう酒　白,白ワイン,"Fermented alcoholic beverage, wine, white",White wine
+16011,115,＜アルコール飲料類＞　（醸造酒類）　ぶどう酒　赤,赤ワイン,"Fermented alcoholic beverage, wine, red",Red wine
+16013,233,＜アルコール飲料類＞　（醸造酒類）　紹興酒,紹興酒,"Fermented alcoholic beverage, Shaoxing wine",Shaoxing wine
+16014,465,＜アルコール飲料類＞　（蒸留酒類）　しょうちゅう　連続式蒸留しょうちゅう,ホワイトリカー,"Distilled alcoholic beverage, ""Shochu"", distilled through a continuous still",Shochu (continuous still)
+16017,214,＜アルコール飲料類＞　（蒸留酒類）　ブランデー,ブランデー,"Distilled alcoholic beverage, brandy",Brandy
+16020,125,＜アルコール飲料類＞　（蒸留酒類）　ラム,ラム酒,"Distilled alcoholic beverage, rum",Rum
+16022,408,＜アルコール飲料類＞　（混成酒類）　梅酒,梅酒,"Compound alcoholic beverage, ""Umeshu"" (plum liquor made from Japanese apricots)",Umeshu (plum liquor)
+16025,8,＜アルコール飲料類＞　（混成酒類）　みりん　本みりん,本みりん,"Compound alcoholic beverage, ""Mirin"" (sweet liquor made from rice, rice koji and Shochu or distilled alcohol), regular",Mirin (sweet rice wine)
+16035,175,＜茶類＞　（緑茶類）　抹茶　茶,抹茶（茶葉）,"Green tea, ""Maccha"" (finely ground tea)",Matcha (green tea powder)
+16043,499,＜茶類＞　（発酵茶類）　紅茶　茶,紅茶（茶葉）,"Fermented tea, black tea, tea",Black tea
+16044,388,＜茶類＞　（発酵茶類）　紅茶　浸出液,紅茶（液体）,"Fermented tea, black tea, infusion",Black tea infusion
+16045,392,＜コーヒー・ココア類＞　コーヒー　浸出液,コーヒー（液体）,"Coffee, infusion",Coffee infusion
+16046,169,＜コーヒー・ココア類＞　コーヒー　インスタントコーヒー,インスタントコーヒー,"Coffee, instant coffee, granules",Instant coffee granules
+16048,124,＜コーヒー・ココア類＞　ココア　ピュアココア,ココア（粉）,"Cocoa, pure powder",Pure cocoa powder
+16049,487,＜コーヒー・ココア類＞　ココア　ミルクココア,ミルクココア（粉）,"Cocoa, chocolate milk powder",Chocolate milk powder
+16050,540,＜その他＞　甘酒,甘酒,"""Ama-zake"" (sweet beverage made from rice koji)",Amazake (sweet rice beverage)
+16051,168,＜その他＞　昆布茶,昆布茶（粉）,"""Kobu-cha"" (kombu powder for drink)",Kobu-cha (kombu drink powder)
+16053,520,＜その他＞　（炭酸飲料類）　コーラ,コーラ,"Carbonated beverage, cola",Cola
+16054,332,＜その他＞　（炭酸飲料類）　サイダー,サイダー,"Carbonated beverage, clear soda",Clear soda
+17001,99,＜調味料類＞　（ウスターソース類）　ウスターソース,ウスターソース,"Japanese Worcester sauce, common type",Worcester sauce (common type)
+17002,107,＜調味料類＞　（ウスターソース類）　中濃ソース,中濃ソース,"Japanese Worcester sauce, semi-thick type",Worcester sauce (semi-thick type)
+17003,294,＜調味料類＞　（ウスターソース類）　濃厚ソース,濃厚ソース,"Japanese Worcester sauce, thick type",Worcester sauce (thick type)
+17004,64,＜調味料類＞　（辛味調味料類）　トウバンジャン,豆板醤,"Hot seasoning, Doubanjiang",Doubanjiang (hot seasoning)
+17006,121,＜調味料類＞　（辛味調味料類）　ラー油,ラー油,"Hot seasoning, Chinese chili oil",Chinese chili oil
+17007,4,＜調味料類＞　（しょうゆ類）　こいくちしょうゆ,濃口醤油,"Soy sauce, ""Koikuchi-shoyu"" (common soy sauce)",Koikuchi soy sauce (common soy sauce)
+17008,116,＜調味料類＞　（しょうゆ類）　うすくちしょうゆ,薄口醤油,"Soy sauce, ""Usukuchi-shoyu"" (light color soy sauce)",Usukuchi soy sauce (light color soy sauce)
+17012,2,＜調味料類＞　（食塩類）　食塩,食塩,"Edible salt, common salt, sodium chloride ≥ 99%",Common salt (≥ 99% sodium chloride)
+17013,266,＜調味料類＞　（食塩類）　並塩,粗塩,"Edible salt, common salt, sodium chloride ≥ 95%",Common salt (≥ 95% sodium chloride)
+17015,19,＜調味料類＞　（食酢類）　穀物酢,穀物酢,"Vinegar, grain vinegar",Grain vinegar
+17016,218,＜調味料類＞　（食酢類）　米酢,米酢,"Vinegar, rice vinegar",Rice vinegar
+17017,263,＜調味料類＞　（食酢類）　果実酢　ぶどう酢,白ワインビネガー,"Vinegar, fruit vinegar, wine vinegar",Fruit vinegar (wine vinegar)
+17018,366,＜調味料類＞　（食酢類）　果実酢　りんご酢,りんご酢,"Vinegar, fruit vinegar, cider vinegar",Cider vinegar
+17019,342,＜調味料類＞　（だし類）　かつおだし　荒節,かつおだし（液体）,"Soup stock, ""Katsuo-bushi dashi"" (stock of ""Katsuo-bushi"") (cf. 10091 ""Katsuo-bushi"")",Katsuo-bushi dashi (bonito stock)
+17021,47,＜調味料類＞　（だし類）　かつお・昆布だし　荒節・昆布だし,合わせだし（液体）,"Soup stock, ""Katsuo-bushi and kombu dashi"" (stock of ""Katsuo-bushi"" and dried kombu)  (cf. 10091 ""Katsuo-bushi"")",Katsuo-bushi and kombu dashi (bonito and kelp stock)
+17024,236,＜調味料類＞　（だし類）　鶏がらだし,鶏がらだし（液体）,"Soup stock, chicken bone stock",Chicken bone stock
+17025,241,＜調味料類＞　（だし類）　中華だし,中華だし（液体）,"Soup stock, chicken, pork and vegetable stock","Chicken, pork, and vegetable stock"
+17026,235,＜調味料類＞　（だし類）　洋風だし,洋風だし（液体）,"Soup stock, beef and vegetable stock",Beef and vegetable stock
+17027,42,＜調味料類＞　（だし類）　固形ブイヨン,固形コンソメ・ブイヨン,"Stock cubes, meat and vegetable ",Meat and vegetable stock cubes
+17028,92,＜調味料類＞　（だし類）　顆粒和風だし,顆粒だし,"Stock powder, ""Katsuo-bushi"" (cf. 10091 ""Katsuo-bushi"") ",Katsuo-bushi stock powder
+17029,46,＜調味料類＞　（だし類）　めんつゆ　ストレート,めんつゆストレート,"Japanese noodle soup, non-concentrated (soy sauce base)",Non-concentrated soy sauce noodle soup
+17030,210,＜調味料類＞　（だし類）　めんつゆ　三倍濃縮,めんつゆ3倍濃縮,"Japanese noodle soup, triple-concentrated (soy sauce base)",Triple-concentrated soy sauce noodle soup
+17031,41,＜調味料類＞　（調味ソース類）　オイスターソース,オイスターソース,"Seasoning sauce, oyster sauce",Oyster sauce
+17033,298,＜調味料類＞　（調味ソース類）　ミートソース,ミートソース,"Seasoning sauce, meat sauce",Meat sauce
+17034,285,＜調味料類＞　（トマト加工品類）　トマトピューレー,トマトピューレ,"Tomato products, puree",Tomato puree
+17035,348,＜調味料類＞　（トマト加工品類）　トマトペースト,トマトペースト,"Tomato products, paste",Tomato paste
+17036,24,＜調味料類＞　（トマト加工品類）　トマトケチャップ,ケチャップ,"Tomato products, ketchup",Ketchup
+17037,231,＜調味料類＞　（トマト加工品類）　トマトソース,トマトソース,"Tomato products, tomato sauce",Tomato sauce
+17038,222,＜調味料類＞　（トマト加工品類）　チリソース,チリソース,"Tomato products, chili sauce",Chili sauce
+17039,337,＜調味料類＞　（ドレッシング類）　分離液状ドレッシング　和風ドレッシングタイプ調味料　ノンオイルタイプ,ノンオイル和風ドレッシング,"Dressing, soy sauce based, fat-free",Fat-free soy sauce-based dressing
+17042,11,＜調味料類＞　（ドレッシング類）　半固形状ドレッシング　マヨネーズ　全卵型,マヨネーズ,"Dressing, mayonnaise, whole egg type",Whole egg mayonnaise
+17043,535,＜調味料類＞　（ドレッシング類）　半固形状ドレッシング　マヨネーズ　卵黄型,マヨネーズ（卵黄）,"Dressing, mayonnaise, egg yolk type",Egg yolk mayonnaise
+17045,232,＜調味料類＞　（みそ類）　米みそ　淡色辛みそ,米みそ（淡色辛みそ）,"Miso, rice-koji miso, light yellow type",Light yellow rice-koji miso
+17046,33,＜調味料類＞　（みそ類）　米みそ　赤色辛みそ,米みそ（赤色辛みそ）,"Miso, rice-koji miso, red type",Red rice-koji miso
+17048,510,＜調味料類＞　（みそ類）　豆みそ,豆みそ,"Miso, soybean-koji miso",Soybean-koji miso
+17051,193,＜調味料類＞　（ルウ類）　カレールウ,カレールウ,"Roux, Japanese curry roux, instant",Instant Japanese curry roux
+17053,295,＜調味料類＞　（その他）　酒かす,酒かす,"""Sakekasu"" (sake lees)",Sake lees (Sakekasu)
+17055,223,＜香辛料類＞　オールスパイス　粉,オールスパイス（粉）,"Spices, allspice, ground ",Ground allspice
+17058,247,＜香辛料類＞　からし　練り,からし（練）,"Spices, mustard, paste ",Mustard paste
+17059,190,＜香辛料類＞　からし　練りマスタード,練りマスタード,"Spices, mustard, yellow mustard",Yellow mustard
+17060,119,＜香辛料類＞　からし　粒入りマスタード,粒入りマスタード,"Spices, mustard, whole grain mustard",Whole grain mustard
+17061,73,＜香辛料類＞　カレー粉,カレー粉,"Spices, curry powder",Curry powder
+17062,375,＜香辛料類＞　クローブ　粉,クローブ,"Spices, clove, ground",Ground clove
+17063,67,＜香辛料類＞　こしょう　黒　粉,黒こしょう,"Spices, pepper, black, ground",Ground black pepper
+17064,406,＜香辛料類＞　こしょう　白　粉,白こしょう,"Spices, pepper, white, ground",Ground white pepper
+17065,40,＜香辛料類＞　こしょう　混合　粉,こしょう,"Spices, pepper, black and white pepper mix, ground",Black and white pepper mix
+17066,364,＜香辛料類＞　さんしょう　粉,さんしょう,"Spices, ""Sansho"" (Japanese pepper), ground",Ground Sansho (Japanese pepper)
+17067,111,＜香辛料類＞　シナモン　粉,シナモン,"Spices, cinnamon, ground",Ground cinnamon
+17068,468,＜香辛料類＞　しょうが　粉,しょうが（粉）,"Spices, ginger, dried, ground",Ground dried ginger
+17069,197,＜香辛料類＞　しょうが　おろし,しょうが（おろし）,"Spices, ginger, paste",Ginger paste
+17070,558,＜香辛料類＞　セージ　粉,セージ,"Spice, sage, dried, ground",Ground sage
+17071,289,＜香辛料類＞　タイム　粉,タイム,"Spice, thyme, dried, ground",Ground thyme
+17072,253,＜香辛料類＞　チリパウダー,チリパウダー,"Spice, chili powder",Chili powder
+17073,177,＜香辛料類＞　とうがらし　粉,とうがらし（粉）,"Spice, red hot pepper, ground",Ground red hot pepper
+17074,137,＜香辛料類＞　ナツメグ　粉,ナツメグ,"Spice, nutmeg, ground",Ground nutmeg
+17075,146,＜香辛料類＞　にんにく　ガーリックパウダー　食塩無添加,ガーリックパウダー,"Spice, garlic, powder, without salt",Garlic powder (without salt)
+17076,126,＜香辛料類＞　にんにく　おろし,にんにく（おろし）,"Spice, garlic, paste",Garlic paste
+17077,206,＜香辛料類＞　バジル　粉,バジル（粉）,"Spice, basil, dried, ground",Ground basil
+17078,211,＜香辛料類＞　パセリ　乾,パセリ（乾）,"Spices, parsley, dried",Dried parsley
+17079,346,＜香辛料類＞　パプリカ　粉,パプリカ（粉）,"Spices, paprika ",Paprika
+17081,140,＜香辛料類＞　わさび　練り,わさび（練り）,"Spices, ""Wasabi"", paste  ",Wasabi paste
+17082,196,＜その他＞　酵母　パン酵母　圧搾,イースト（圧搾）,"Yeast, baker's yeast, compressed",Compressed baker's yeast
+17083,38,＜その他＞　酵母　パン酵母　乾燥,ドライイースト,"Yeast, baker's yeast, dried",Dried baker's yeast
+17084,30,＜その他＞　ベーキングパウダー,ベーキングパウダー,Baking powder,Baking powder
+17085,302,＜調味料類＞　（ウスターソース類）　お好み焼きソース,お好み焼きソース,"Japanese Worcester sauce, sweet thick type for ""Okonomiyaki"" (Japanese-style savory pancake with various ingredients)",Sweet thick Worcester sauce for Okonomiyaki
+17086,500,＜調味料類＞　（しょうゆ類）　こいくちしょうゆ　減塩,濃口醤油（減塩）,"Soy sauce, salt reduced",Reduced salt soy sauce
+17087,202,＜調味料類＞　（しょうゆ類）　だししょうゆ,だししょうゆ,"Soy sauce, pre-seasoned with soup stock",Pre-seasoned soy sauce with soup stock
+17088,484,＜調味料類＞　（しょうゆ類）　照りしょうゆ,照りしょうゆ,"Soy sauce, soy glazed",Soy glazed soy sauce
+17090,248,＜調味料類＞　（食酢類）　黒酢,黒酢,"Vinegar, black rice vinegar",Black rice vinegar
+17091,158,＜調味料類＞　（食酢類）　果実酢　バルサミコ酢,バルサミコ酢,"Vinegar, fruit vinegar, Balsamic vinegar ",Balsamic vinegar
+17093,112,＜調味料類＞　（だし類）　顆粒中華だし,顆粒中華だし,"Stock powder, chicken, pork and vegetable","Chicken, pork, and vegetable stock powder"
+17094,433,＜調味料類＞　（調味ソース類）　甘酢,甘酢,"Seasoning sauce, sweet vinegar",Sweet vinegar sauce
+17098,519,＜調味料類＞　（調味ソース類）　ごまだれ,ごまだれ,"Seasoning sauce, sesame sauce",Sesame sauce
+17099,475,＜調味料類＞　（調味ソース類）　三杯酢,三杯酢,"Seasoning sauce, ""Sanbaizu"" (vinegar mixture containing sesami, soy sauce and mirin)","Sanbaizu (vinegar mixture with sesame, soy sauce, and mirin)"
+17101,200,＜調味料類＞　（調味ソース類）　すし酢　ちらし・稲荷用,すし酢,"Seasoning sauce, sweetened vinegar for ""Inarizushi"" (fried tofu pouch filled with sushi rice) ",Sweetened vinegar for Inarizushi
+17105,370,＜調味料類＞　（調味ソース類）　デミグラスソース,デミグラスソース,"Seasoning sauce, demi-glace sauce",Demi-glace sauce
+17106,245,＜調味料類＞　（調味ソース類）　テンメンジャン,甜麺醤,"Seasoning sauce, Tian Mian Jiang (sweet soybean paste)",Tian Mian Jiang (sweet soybean paste)
+17107,142,＜調味料類＞　（調味ソース類）　魚醤油　ナンプラー,ナンプラー,"Seasoning sauce, Nam pla (fish sauce)",Nam pla (fish sauce)
+17109,226,＜調味料類＞　（調味ソース類）　ホワイトソース,ホワイトソース,"Seasoning sauce, white sauce",White sauce
+17110,60,＜調味料類＞　（調味ソース類）　ぽん酢しょうゆ,ぽん酢,"Seasoning sauce, ponzu vinegar with soy sauce",Ponzu vinegar with soy sauce
+17111,405,＜調味料類＞　（調味ソース類）　マリネ液,マリネ液,"Seasoning sauce, marinade",Marinade
+17113,228,＜調味料類＞　（調味ソース類）　焼き肉のたれ,焼き肉のたれ,"Seasoning sauce, barbecue sauce, soy sauce based",Soy sauce-based barbecue sauce
+17115,183,＜調味料類＞　（調味ソース類）　ゆずこしょう,ゆずこしょう,"Seasoning sauce, ""Yuzu kosho"" (spicy paste made from chili, yuzu zest and salt)","Yuzu kosho (spicy paste with chili, yuzu zest, and salt)"
+17116,170,＜調味料類＞　（ドレッシング類）　分離液状ドレッシング　和風ドレッシング　分離液状,和風ドレッシング,"Dressing, soy sauce based, with oil",Soy sauce-based dressing with oil
+17117,396,＜調味料類＞　（ドレッシング類）　乳化液状ドレッシング　ごまドレッシング,ごまドレッシング,"Dressing, sesame dressing",Sesame dressing
+17125,515,＜調味料類＞　（その他）　お茶漬けの素　さけ,お茶漬けの素（さけ）,"Seasoning mix for ""Ochazuke"" (bowl of rice soaked in dashi broth)",Ochazuke
+17127,486,＜調味料類＞　（その他）　ふりかけ　たまご,ふりかけ（たまご）,"""Furikake"" (Seasoning mix for rice, containing dried seaweed and egg)","Furikake"" (egg)"
+17128,497,＜香辛料類＞　にんにく　ガーリックパウダー　食塩添加,ガーリックパウダー,"Spice, garlic, powder, with salt",Garlic powder (with salt)
+17132,336,＜調味料類＞　（だし類）　昆布だし　煮出し,昆布だし（液）,Kelp dashi (liquid),Kelp dashi (liquid)
+17136,306,＜調味料類＞　（その他）　キムチの素,キムチの素,Kimchi stock,Kimchi stock
+17138,6,＜調味料類＞　（その他）　料理酒,料理酒,Cooking sake,Cooking sake
+17141,301,＜調味料類＞　（だし類）　めんつゆ　二倍濃縮,めんつゆ2倍濃縮,Mentsuyu (men-tsuyu) 2x concentrated,Mentsuyu (men-tsuyu) 2x concentrated
+17149,399,＜調味料類＞　（ドレッシング類）　乳化液状ドレッシング　フレンチドレッシング　乳化液状,フレンチドレッシング,French dressing,French dressing
+18002,505,中国料理　点心類　ぎょうざ,餃子,"Jiaozi (Chinese dumpling), frozen",Gyoza (dumplings)
+18015,459,洋風料理　素揚げ類　ミートボール,ミートボール,"Meatball, frozen",meatballs
+18018,580,洋風料理　コロッケ類　ポテトコロッケ,ポテトコロッケ,"Croquettes, potato-based, fried, frozen",Potato croquette
+18033,575,和風料理　煮物類　きんぴらごぼう,きんぴらごぼう,Sauteed burdock root,Sauteed burdock root
+18037,488,和風料理　煮物類　ひじきのいため煮,ひじきのいため煮,Braised Hijiki,Braised Hijiki
+18040,513,洋風料理　カレー類　チキンカレー,チキンカレー,Chicken Curry,Chicken Curry
+18041,283,洋風料理　カレー類　ポークカレー,ポークカレー,Pork Curry,Pork Curry
+18050,340,洋風料理　ハンバーグステーキ類　合いびきハンバーグ,ハンバーグ,hamburger steak,hamburger steak

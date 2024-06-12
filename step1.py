@@ -28,44 +28,22 @@ def debug_print(*args, **kwargs):
 
 
 @st.cache_data
-def get_ingres_name():
-    file_path = "Labels/IngredientList588.txt"
-    ingres = []
-    name2idx = {}
-    i = 0
-    with open(file_path, "r") as file:
-        for line in file:
-            line = line.rstrip("\n")
-            ingres.append(line)
-            name2idx[line] = i
-            i += 1
-    return ingres, name2idx
-
-
-@st.cache_data
-def get_canonical_ingres_name():
+def get_label_to_id_and_names():
     """
-    Label -> Canonical Name
-    ex) 1: 砂糖
-    3(NA, 水) is excluded
+    Water (3) is excluded from the list
+    label is 1-indexed
     """
-    label_to_canonical_name = {}
-    with open("Labels/foodid_dict.json", "r", encoding="utf-8") as file:
-        ingredient_dict = json.load(file)
-    id_to_canonical_name = {}
-    for record in pd.read_csv("Labels/ingre_id_label_expression_table.csv").to_dict(
-        "records"
-    ):
-        id_to_canonical_name[record["ingredientid"]] = record["ingredient_exp2"]
-    for label, info_list in ingredient_dict.items():
-        if label == "3":
-            continue
-        ingredient_id = int(info_list[0])
-        if ingredient_id in id_to_canonical_name:
-            label_to_canonical_name[label] = id_to_canonical_name[ingredient_id]
-        else:
-            label_to_canonical_name[label] = info_list[2]
-    return label_to_canonical_name
+    jpn_eng_expression_df = pd.read_csv("Labels/foodexpList20240612.csv")
+    label_to_id_and_names = {}
+    for record in jpn_eng_expression_df.to_dict("records"):
+        label_to_id_and_names[int(record["ingredient_label"])] = {
+            "id": int(record["foodid"]),
+            "ja_abbr": record["JPN Abbr"],
+            "ja_full": record["JPN full"],
+            "en_abbr": record["ENG Abbr"],
+            "en_full": record["ENG full"],
+        }
+    return label_to_id_and_names
 
 
 @st.cache_data
@@ -254,7 +232,7 @@ def save_results(
 
     ingre_names = []
     for item in ingredients:
-        ingre_names.append(ingres_convert[str(int(item) + 1)])
+        ingre_names.append(ingres_convert[int(item) + 1])
 
     filename = f"image_{next_serial_number}.png"
     image_path = os.path.join(directory, filename)
@@ -319,7 +297,8 @@ def page_1():
         image = Image.open(uploaded_image)
 
     candidate_nums = 10  # stateless variables
-    label_to_canonical_name = get_canonical_ingres_name()
+
+    label_to_id_and_names = get_label_to_id_and_names()
 
     if (
         st.session_state.stage == StreamlitStep.IMAGE_UPLOADED
@@ -357,7 +336,9 @@ def page_1():
     c2.write(l("食材候補：料理に含まれている材料をチェックしてください"))
     for item in st.session_state.selected_options:
         c2.checkbox(
-            label_to_canonical_name[str(int(item) + 1)],
+            label_to_id_and_names[int(item) + 1][
+                "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
+            ],
             value=True,
             on_change=lambda x: st.session_state.selected_options.remove(x),
             args=(item,),
@@ -367,7 +348,9 @@ def page_1():
         if item in st.session_state.selected_options:
             continue
         c2.checkbox(
-            label_to_canonical_name[str(int(item) + 1)],
+            label_to_id_and_names[int(item) + 1][
+                "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
+            ],
             value=False,
             on_change=lambda x: st.session_state.selected_options.append(x),
             args=(item,),
@@ -389,41 +372,44 @@ def page_1():
             image,
             "method_2",
             selected_ingres,
-            label_to_canonical_name,
+            {
+                label: id_and_names[
+                    "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
+                ]
+                for label, id_and_names in label_to_id_and_names.items()
+            },
             st.session_state.click_dict,
             st.session_state.start_time,
         )
         st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
     c2.success(l("回答を記録しました！次のページに進んでください。"))
 
-    foodid_dic = get_json_from_file(
-        "Labels/foodid_dict.json"
-    )  # {"1": [id, exp, label_name, [whole_exps]]}
     ingre_id_to_weights = get_json_from_file("Labels/weight_median.json")
-    eng_standard_exp = pd.read_csv(
-        "Labels/STANDARD TABLES OF FOOD COMPOSITION IN JAPAN - 2015.csv"
-    )
-    eng_standard_exp["foodid"] = eng_standard_exp["foodid"].astype(int)
+
+    jpn_eng_expression_df = pd.read_csv("Labels/foodexpList20240612.csv")
+    label_to_names_ids = {}
+    for record in jpn_eng_expression_df.to_dict("records"):
+        label_to_names_ids[record["ingredient_label"]] = {
+            "id": record["foodid"],
+            "ja_abbr": record["JPN Abbr"],
+            "ja_full": record["JPN full"],
+            "en_abbr": record["ENG Abbr"],
+            "en_full": record["ENG full"],
+        }
 
     ingre_names = []
     ingre_exps = []
     median_weights = []
     for item in selected_ingres:
         label_id = int(item) + 1
-        ingre_id = foodid_dic[str(label_id)][0]
-        ingre_names.append(label_to_canonical_name[str(label_id)])
+        ingre_id = label_to_names_ids[label_id]["id"]
         if st.session_state.lang == "ja":
-            ingre_exps.append(foodid_dic[str(label_id)][1])
+            ingre_names.append(label_to_names_ids[label_id]["ja_abbr"])
+            ingre_exps.append(label_to_names_ids[label_id]["ja_full"])
         else:
-            # get row whose foodid is ingre_id
-            eng_standard_exp_row = eng_standard_exp[
-                eng_standard_exp["foodid"] == int(ingre_id)
-            ]
-            if len(eng_standard_exp_row) == 0:
-                ingre_exps.append(foodid_dic[str(label_id)][1])  # fallback to japanese
-            else:
-                ingre_exps.append(eng_standard_exp_row["Tagnames"].values[0])
-        median_weights.append(ingre_id_to_weights[ingre_id][1])
+            ingre_names.append(label_to_names_ids[label_id]["en_abbr"])
+            ingre_exps.append(label_to_names_ids[label_id]["en_full"])
+        median_weights.append(ingre_id_to_weights[str(ingre_id)][1])
 
     data = pd.DataFrame(
         {
@@ -482,10 +468,12 @@ def page_1():
         label = selected_ingres[i - 1]
         food_label_amount_unit.append(
             {
-                "ingre_id": foodid_dic[str(int(label) + 1)][0],
+                "ingre_id": label_to_names_ids[int(label) + 1]["id"],
                 "amount": row["amount"],
                 "unit": row["unit"],
-                "canonical_name": label_to_canonical_name[str(int(label) + 1)],
+                "canonical_name": label_to_id_and_names[int(label) + 1][
+                    "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
+                ],
             }
         )
     nutrients_df = nutrient_calculate.get_nutri_df_from_food_dict(
