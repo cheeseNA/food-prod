@@ -15,6 +15,7 @@ from PIL import Image
 from plotly import express as px
 
 import nutrient_calculate
+from locales.locale import generate_localer, get_current_lang
 from src.dataloader import VireoLoader
 from src.model_clip import Recognition
 
@@ -253,7 +254,7 @@ def save_results(
 
     ingre_names = []
     for item in ingredients:
-        ingre_names.append(ingres_convert[int(item)])
+        ingre_names.append(ingres_convert[str(int(item) + 1)])
 
     filename = f"image_{next_serial_number}.png"
     image_path = os.path.join(directory, filename)
@@ -292,7 +293,8 @@ class StreamlitStep(IntEnum):
 
 
 def page_1():
-    st.title("材料リストによる食事管理")
+    l = generate_localer(st.session_state.lang)
+    st.title(l("材料リストによる食事管理"))
     debug_print(st.session_state)
 
     if st.session_state.stage == StreamlitStep.SESSION_WHILE_INIT:
@@ -303,7 +305,7 @@ def page_1():
         st.session_state.stage = StreamlitStep.IMAGE_UPLOADED
 
     uploaded_image = st.file_uploader(
-        "食事の写真をアップロードしてください",
+        l("食事の写真をアップロードしてください"),
         type=["jpg", "jpeg", "png"],
         on_change=change_stage_to_image_uploaded,
     )
@@ -318,7 +320,6 @@ def page_1():
 
     candidate_nums = 10  # stateless variables
     label_to_canonical_name = get_canonical_ingres_name()
-    canonical_name_to_label = {v: k for k, v in label_to_canonical_name.items()}
 
     if (
         st.session_state.stage == StreamlitStep.IMAGE_UPLOADED
@@ -353,7 +354,7 @@ def page_1():
     debug_print("predict_ingres", predict_ingres)
     debug_print("selected_options", selected_ingres)
 
-    c2.write("食材候補：料理に含まれている材料をチェックしてください")
+    c2.write(l("食材候補：料理に含まれている材料をチェックしてください"))
     for item in st.session_state.selected_options:
         c2.checkbox(
             label_to_canonical_name[str(int(item) + 1)],
@@ -363,6 +364,8 @@ def page_1():
         )
 
     for item in predict_ingres:
+        if item in st.session_state.selected_options:
+            continue
         c2.checkbox(
             label_to_canonical_name[str(int(item) + 1)],
             value=False,
@@ -370,7 +373,7 @@ def page_1():
             args=(item,),
         )
 
-    if c2.button("完了"):
+    if c2.button(l("完了")):
         st.session_state.stage = StreamlitStep.AFTER_INGREDIENT_SELECTION_INIT
 
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_INGREDIENT_SELECTION:
@@ -386,17 +389,21 @@ def page_1():
             image,
             "method_2",
             selected_ingres,
-            list(label_to_canonical_name.values()),
+            label_to_canonical_name,
             st.session_state.click_dict,
             st.session_state.start_time,
         )
         st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
-    c2.success("回答を記録しました！次のページに進んでください。")
+    c2.success(l("回答を記録しました！次のページに進んでください。"))
 
     foodid_dic = get_json_from_file(
         "Labels/foodid_dict.json"
     )  # {"1": [id, exp, label_name, [whole_exps]]}
     ingre_id_to_weights = get_json_from_file("Labels/weight_median.json")
+    eng_standard_exp = pd.read_csv(
+        "Labels/STANDARD TABLES OF FOOD COMPOSITION IN JAPAN - 2015.csv"
+    )
+    eng_standard_exp["foodid"] = eng_standard_exp["foodid"].astype(int)
 
     ingre_names = []
     ingre_exps = []
@@ -405,7 +412,17 @@ def page_1():
         label_id = int(item) + 1
         ingre_id = foodid_dic[str(label_id)][0]
         ingre_names.append(label_to_canonical_name[str(label_id)])
-        ingre_exps.append(foodid_dic[str(label_id)][1])
+        if st.session_state.lang == "ja":
+            ingre_exps.append(foodid_dic[str(label_id)][1])
+        else:
+            # get row whose foodid is ingre_id
+            eng_standard_exp_row = eng_standard_exp[
+                eng_standard_exp["foodid"] == int(ingre_id)
+            ]
+            if len(eng_standard_exp_row) == 0:
+                ingre_exps.append(foodid_dic[str(label_id)][1])  # fallback to japanese
+            else:
+                ingre_exps.append(eng_standard_exp_row["Tagnames"].values[0])
         median_weights.append(ingre_id_to_weights[ingre_id][1])
 
     data = pd.DataFrame(
@@ -422,32 +439,32 @@ def page_1():
     data_df = st.data_editor(
         data,
         column_config={
-            "ingredients": "食材名",
-            "standard_exp": st.column_config.Column("食品名"),
-            "amount": st.column_config.NumberColumn("重さ"),
+            "ingredients": l("食材名"),
+            "standard_exp": st.column_config.Column(l("食品名")),
+            "amount": st.column_config.NumberColumn(l("重さ")),
             "unit": st.column_config.SelectboxColumn(
-                "単位",
+                l("単位"),
                 help="The category of the unit",
                 options=[
                     "g",
-                    "無単位",
-                    "枚",
-                    "本",
-                    "個片丁株玉房",
-                    "杯/カップ",
-                    "半分",
-                    "摘/少",
-                    "小/小匙",
-                    "中",
-                    "大/大匙",
-                    "一掴",
-                    "袋",
-                    "箱",
-                    "缶/カン",
+                    l("無単位"),
+                    l("枚"),
+                    l("本"),
+                    l("個片丁株玉房"),
+                    l("杯/カップ"),
+                    l("半分"),
+                    l("摘/少"),
+                    l("小/小匙"),
+                    l("中"),
+                    l("大/大匙"),
+                    l("一掴"),
+                    l("袋"),
+                    l("箱"),
+                    l("缶/カン"),
                     "CC",
                     "cm",
-                    "束",
-                    "合",
+                    l("束"),
+                    l("合"),
                 ],
                 required=True,
             ),
@@ -455,7 +472,7 @@ def page_1():
         hide_index=True,
     )
 
-    if st.button("入力完了"):
+    if st.button(l("完了"), key="amount input done"):
         st.session_state.stage = StreamlitStep.FINISH
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
         return
@@ -485,9 +502,16 @@ def page_1():
     }
 
     percent_df = get_percent_df(nutrients_df, **necessary_nutrients_per_meal)
+    percent_df[l("主要栄養素")] = [
+        l("カロリー"),
+        l("たんぱく質"),
+        l("脂質"),
+        l("炭水化物"),
+        l("塩分"),
+    ]
     percent_fig = px.bar(
-        percent_df, x="主要栄養素", y=percent_df.columns[1:].tolist()
-    ).update_layout(yaxis_title="1食の目安量に対する割合 (%)")
+        percent_df, x=l("主要栄養素"), y=percent_df.columns[1:].tolist()
+    ).update_layout(yaxis_title=l("1食の目安量に対する割合 (%)"))
     for trace in percent_fig.data:
         raw_series = nutrients_df[trace.name]
         raw_series = raw_series.apply(lambda x: f"{x:.2f}").str.cat(
@@ -500,12 +524,12 @@ def page_1():
     percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
     st.plotly_chart(percent_fig)
 
-    st.write("あなたの1食あたりの目標栄養摂取量は")
-    st.write(f"カロリー {necessary_nutrients_per_meal['kcal']:.2f} kcal")
-    st.write(f"たんぱく質 {necessary_nutrients_per_meal['protein']:.2f} g")
-    st.write(f"脂質 {necessary_nutrients_per_meal['fat']:.2f} g")
-    st.write(f"炭水化物 {necessary_nutrients_per_meal['carb']:.2f} g")
-    st.write(f"塩分 {necessary_nutrients_per_meal['salt']:.2f} g です")
+    st.write(l("あなたの1食あたりの目標栄養摂取量は"))
+    st.write(l("カロリー {:.2f} kcal").format(necessary_nutrients_per_meal["kcal"]))
+    st.write(l("たんぱく質 {:.2f} g").format(necessary_nutrients_per_meal["protein"]))
+    st.write(l("脂質 {:.2f} g").format(necessary_nutrients_per_meal["fat"]))
+    st.write(l("炭水化物 {:.2f} g").format(necessary_nutrients_per_meal["carb"]))
+    st.write(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
 
 
 users = json.load(open("userdata/users.json", "r"))
@@ -521,8 +545,10 @@ def authenticate(username, password):
 
 
 def main():
+    st.session_state.lang = get_current_lang()
+    l = generate_localer(st.session_state.lang)
     st.set_page_config(
-        page_title="RecipeLog2023",
+        page_title="RecipeLog2024",
         page_icon=":curry:",
         layout="wide",
         initial_sidebar_state="collapsed",
@@ -532,13 +558,13 @@ def main():
         st.title("Login")
         c1, _, _ = st.columns((1, 1, 1))
         username = c1.text_input(
-            "アカウント:",
+            l("アカウント:"),
         )
-        password = c1.text_input("パスワード:", type="password")
+        password = c1.text_input(l("パスワード:"), type="password")
 
         if c1.button("Login"):
             if not authenticate(username, password):
-                c1.error("アカウント／パスワードが正しくありません")
+                c1.error(l("アカウント／パスワードが正しくありません"))
             else:
                 st.session_state.username = username
                 st.session_state.register = True
