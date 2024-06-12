@@ -1,14 +1,62 @@
 {
-    "test": {
-        "sex": "male",
-        "age": 26,
-        "physical_activity_level": 1,
-        "password": "test"
+    "demo01": {
+        "password": "foodlog",
+        "sex": "female",
+        "age": 25,
+        "physical_activity_level": 3
     },
-    "test2": {
-        "password": "test2",
-        "physical_activity_level": 1,
-        "age": 30,
-        "sex": "female"
+    "demo02": {
+        "password": "foodlog",
+        "sex": "male",
+        "age": 20,
+        "physical_activity_level": 1
+    },
+    "demo03": {
+        "password": "foodlog",
+        "sex": "female",
+        "age": 20,
+        "physical_activity_level": 1
+    },
+    "demo04": {
+        "password": "foodlog",
+        "sex": "male",
+        "age": 20,
+        "physical_activity_level": 1
+    },
+    "demo05": {
+        "password": "foodlog",
+        "sex": "female",
+        "age": 20,
+        "physical_activity_level": 1
+    },
+    "demo06": {
+        "password": "foodlog",
+        "sex": "male",
+        "age": 20,
+        "physical_activity_level": 1
+    },
+    "demo07": {
+        "password": "foodlog",
+        "sex": "female",
+        "age": 20,
+        "physical_activity_level": 1
+    },
+    "demo08": {
+        "password": "foodlog",
+        "sex": "male",
+        "age": 20,
+        "physical_activity_level": 1
+    },
+    "demo09": {
+        "password": "foodlog",
+        "sex": "female",
+        "age": 20,
+        "physical_activity_level": 1
+    },
+    "demo10": {
+        "password": "foodlog",
+        "sex": "male",
+        "age": 20,
+        "physical_activity_level": 1
     }
 }
