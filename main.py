@@ -165,9 +165,11 @@ def page_1():
     ingre_names = []
     ingre_exps = []
     median_weights = []
+    ingre_ids = []
     for item in selected_ingres:
         label_id = int(item) + 1
         ingre_id = label_to_names_ids[label_id]["id"]
+        ingre_ids.append(ingre_id)
         if st.session_state.lang == "ja":
             ingre_names.append(label_to_names_ids[label_id]["ja_abbr"])
             ingre_exps.append(label_to_names_ids[label_id]["ja_full"])
@@ -217,29 +219,6 @@ def page_1():
     data["index"] = data.index + 1
     data.set_index("index", inplace=True)
 
-    #if st.button(l("完了"), key="amount input done"):
-    #    st.session_state.stage = StreamlitStep.FINISH
-    #if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
-    #    return
-
-    print([label_to_id_and_names[idv][
-                "ja_full" if st.session_state.lang == "ja" else "en_full"] for idv in selected_ingres])
-
-    if st.session_state.stage == StreamlitStep.FINISH:
-        save_results(
-            st.session_state.username,
-            image,
-            "method_2",
-            [label_to_id_and_names[idv]['id'] for idv in selected_ingres],
-            [label_to_id_and_names[idv][
-                "ja_full" if st.session_state.lang == "ja" else "en_full"] for idv in selected_ingres],
-            median_weights,
-            st.session_state.click_dict,
-            st.session_state.start_time,
-        )
-        st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
-    c2.success(l("食事記録を保存しました。"))
-
     food_label_amount_unit = []
     for i, row in data.iterrows():
         label = selected_ingres[i - 1]
@@ -280,7 +259,6 @@ def page_1():
     ).update_layout(
         yaxis_title=l("1食の目安量に対する割合 (%)"),
         height=300,
-        width=380,
         legend=dict(itemwidth=30),
     )
     for trace in percent_fig.data:
@@ -293,7 +271,21 @@ def page_1():
             f"{trace.name}<br>" + "%{customdata}<br>%{y:.1f}%<extra></extra>"
         )
     percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
-    st.plotly_chart(percent_fig)
+
+    pfc_df = calc_pfc(nutrients_df)
+    print('pfc\n', pfc_df.tolist())
+    percent_fig2 = px.pie(
+        values=pfc_df.tolist(),
+        names=["Protain", "Fat", "Carb"],
+        height=350,
+    )
+
+    tab3, tab4 = st.tabs([l("グラフ"), l("PFCバランス")])
+    with tab3:
+        st.plotly_chart(percent_fig, use_container_width=True)
+    with tab4:
+        st.plotly_chart(percent_fig2, use_container_width=True)
+        
 
     with st.expander("See table"):
         data_df = st.data_editor(
@@ -341,6 +333,28 @@ def page_1():
             },
             hide_index=True,
         )
+
+    if st.button(l("保存"), key="amount input done"):
+        st.session_state.stage = StreamlitStep.FINISH
+    if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
+        return
+
+    print('ingre_names', ingre_names)
+    print('ingre_labels', )
+
+    if st.session_state.stage == StreamlitStep.FINISH:
+        save_results(
+            st.session_state.username,
+            image,
+            "method_2",
+            ingre_ids,
+            ingre_names,
+            median_weights,
+            st.session_state.click_dict,
+            st.session_state.start_time,
+        )
+        st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
+    c2.success(l("食事記録を保存しました。"))
 
     necessary_nutrients = calculate_necessary_nutrients(
         users[st.session_state.username]["sex"],

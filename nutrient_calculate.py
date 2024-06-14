@@ -3,7 +3,13 @@ import json
 import pandas as pd
 import streamlit as st
 
-
+CARB_CALORIE_RATIO = 0.575
+FAT_CALORIE_RATIO = 0.25
+PROTAIN_CALORIE_PAR_GRAM = 4
+CARB_CALORIE_PAR_GRAM = 4
+FAT_CALORIE_PAR_GRAM = 9
+NECESSARY_SALT = 6  ## TODO: rethink this value
+    
 @st.cache_data
 def get_nutri_df_from_food_dict(food_label_amount_unit: dict):
     """
@@ -76,6 +82,16 @@ def get_percent_df(df, kcal, protein, fat, carb, salt):
     percent_df = percent_df.round(2)
     return percent_df
 
+@st.cache_data
+def calc_pfc(df):
+    pfc_df = df.copy().iloc[1:4,1:].sum(axis=1)
+    pfc_df.iloc[0] = pfc_df.iloc[0]*PROTAIN_CALORIE_PAR_GRAM
+    pfc_df.iloc[1] = pfc_df.iloc[1]*FAT_CALORIE_PAR_GRAM
+    pfc_df.iloc[2] = pfc_df.iloc[2]*CARB_CALORIE_PAR_GRAM
+    print('nutrients_df\n', df)
+    print('nutrients_df\n', pfc_df)#.sum(axis=1)
+    return pfc_df
+
 def get_necessary_calories(sex: str, age: int, physical_activity_level: int) -> int:
     calorie_data = pd.read_csv("Labels/necessary_nutrients/calories.csv")
     filtered_data = calorie_data[
@@ -105,11 +121,6 @@ def calculate_necessary_nutrients(sex: str, age: int, physical_activity_level: i
     Return dictionary with keys 'kcal', 'protein', 'fat', 'carb', 'salt'.
     If some data is missing, return None.
     """
-    CARB_CALORIE_RATIO = 0.575
-    FAT_CALORIE_RATIO = 0.25
-    CARB_CALORIE_PAR_GRAM = 4
-    FAT_CALORIE_PAR_GRAM = 9
-    NECESSARY_SALT = 6  ## TODO: rethink this value
     necessary_calories = get_necessary_calories(sex, age, physical_activity_level)
     necessary_protein = get_necessary_protein(sex, age)
     if necessary_calories is None or necessary_protein is None:

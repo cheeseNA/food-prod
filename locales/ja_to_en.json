@@ -57,5 +57,8 @@
     "一食分に使った量は何グラムですか？":"How many grams for one serving?",
     "メイン":"Main",
     "ユーザ情報":"User Profile",
-    "食事記録を保存しました。":"Data saved successfully."
+    "食事記録を保存しました。":"Data saved successfully.",
+    "グラフ":"Bar graph",
+    "PFCバランス":"PFC Valance",
+    "保存":"Save"
 }
