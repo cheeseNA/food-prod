@@ -7,264 +7,14 @@ from enum import IntEnum
 import numpy as np
 import pandas as pd
 import streamlit as st
-import torch
-import torch.nn as nn
-import torch.optim
-import torchvision.transforms as transforms
 from PIL import Image
 from plotly import express as px
 
-import nutrient_calculate
+from nutrient_calculate import *
 from locales.locale import generate_localer, get_current_lang
-from src.dataloader import VireoLoader
-from src.model_clip import Recognition
 
-DEBUG = True
-
-
-def debug_print(*args, **kwargs):
-    if DEBUG:
-        print(*args, **kwargs)
-
-
-@st.cache_data
-def get_label_to_id_and_names():
-    """
-    Water (3) is excluded from the list
-    label is 1-indexed
-    """
-    jpn_eng_expression_df = pd.read_csv("Labels/foodexpList20240612.csv")
-    label_to_id_and_names = {}
-    for record in jpn_eng_expression_df.to_dict("records"):
-        label_to_id_and_names[int(record["ingredient_label"])] = {
-            "id": int(record["foodid"]),
-            "ja_abbr": record["JPN Abbr"],
-            "ja_full": record["JPN full"],
-            "en_abbr": record["ENG Abbr"],
-            "en_full": record["ENG full"],
-        }
-    return label_to_id_and_names
-
-@st.cache_data
-def get_name_to_label(label_to_id_and_names):
-    name_to_label = {}
-    for k in label_to_id_and_names.keys():
-        name_to_label[label_to_id_and_names[k][
-            "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
-                      ] = k
-    return name_to_label
-
-
-@st.cache_data
-def get_normalized_co_occurrence_matrix():
-    co_occurrence_matrix = np.load("Labels/co_occurrence_matrix.npy", allow_pickle=True)
-    row_sums = co_occurrence_matrix.sum(axis=1, keepdims=True)
-    normalized_matrix = co_occurrence_matrix / row_sums
-    return normalized_matrix
-
-
-@st.cache_data
-def relative_pos():
-    relative_pos = np.load("Labels/relative_pos.npy", allow_pickle=True)
-    flipped_relative_pos = 1 - relative_pos
-    return flipped_relative_pos
-
-
-@st.cache_data
-def get_pos_probability(text_probs):
-    alpha = 0.1
-    flipped_relative_pos = relative_pos()
-    text_probs = np.array(text_probs)
-    flipped_relative_pos = np.array(flipped_relative_pos)
-    final_probs = (1 - alpha) * text_probs + alpha * flipped_relative_pos
-    # st.write("text_probs:",text_probs)
-    # st.write("flipped_relative_pos",flipped_relative_pos)
-    return final_probs.tolist()
-
-
-@st.cache_data
-def get_ingre_probability(ingres, uploaded_image):
-    # Load CLIP model
-    device = "cpu"
-    model, preprocess = ja_clip.load("rinna/japanese-cloob-vit-b-16", device=device)
-    tokenizer = ja_clip.load_tokenizer()
-
-    input_image = preprocess(uploaded_image).unsqueeze(0).to(device)
-    search = model.get_image_features(input_image).cpu()
-
-    encodings = ja_clip.tokenize(
-        texts=[f"{ing}を使った料理" for ing in ingres],
-        max_seq_len=77,
-        device=device,
-        tokenizer=tokenizer,  # this is optional. if you don't pass, load tokenizer each time
-    )
-
-    with torch.no_grad():
-        ingre_text_features = model.get_text_features(**encodings)
-        image_features = search.to(device)
-        # text_probs = (100.0 * image_features @ ingre_text_features.T).softmax(dim=-1)
-        text_probs = 100.0 * image_features @ ingre_text_features.T
-        # values, indices = text_probs.topk(10)
-        # for item in indices[0]:
-        #     res_label.append(item.cpu().numpy().astype(int))
-
-    return text_probs
-
-
-@st.cache_data
-def get_ingre_prob_from_model(uploaded_image):
-    model_path = "Models/clip_v32_epoch21_20.938.pth"
-
-    device = torch.device("cpu")
-    model = Recognition()
-    model = nn.DataParallel(model)
-    model.to(device)
-    # model.load_state_dict(torch.load(model_path))
-    model.load_state_dict(torch.load(model_path, map_location=device))
-    # model.to(device)
-    model.eval()
-    for param in model.parameters():
-        param.requires_grad = False
-
-    criterions = [
-        nn.CrossEntropyLoss().to("cpu"),
-        nn.BCELoss(reduction="none").to("cpu"),
-    ]
-
-    normalize = transforms.Normalize(
-        mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
-    )
-
-    test_loader = torch.utils.data.DataLoader(
-        VireoLoader(
-            uploaded_image,
-            transforms.Compose(
-                [
-                    transforms.Resize(256),
-                    transforms.CenterCrop(224),
-                    transforms.ToTensor(),
-                    normalize,
-                ]
-            ),
-        ),
-        batch_size=1,
-        shuffle=True,
-        timeout=1000,
-        num_workers=1,
-        # pin_memory=True,
-    )
-
-    for i, inputs in enumerate(test_loader):
-        imgs = inputs[0].to("cpu")
-        outputs = model(imgs)
-
-    text_probs = outputs[1].cpu()
-    # text_probs = torch.from_numpy(np.load('/home/l_wang/vireofood251/RA-CLIP/ingre_feature_pasta.npy'))
-    min_value = torch.min(text_probs)
-    abs_min_value = torch.abs(min_value)
-    normalized_tensor = text_probs + abs_min_value
-    # to positive
-
-    min_normalized_value = torch.min(normalized_tensor)
-    max_normalized_value = torch.max(normalized_tensor)
-    normalized_tensor = (normalized_tensor - min_normalized_value) / (
-        max_normalized_value - min_normalized_value
-    )
-    # 0-1
-
-    return normalized_tensor
-
-
-@st.cache_data
-def update_mask(selected_items, mask):
-    normalized_matrix = get_normalized_co_occurrence_matrix()
-    threshold = 0.5
-    normalized_matrix = np.where(
-        normalized_matrix < threshold / 100, 0, normalized_matrix
-    )
-    for selected in selected_items:
-        distances = normalized_matrix[selected]
-        dist_mask = np.where(distances == 0, 0, 1)
-        mask = dist_mask & mask
-    return mask
-
-
-@st.cache_data
-def get_current_candidate(candidate_nums, uploaded_image, mask):
-    text_probs = get_ingre_prob_from_model(uploaded_image)
-    probability_scores = [item for sublist in text_probs.tolist() for item in sublist]
-    pos_probability = get_pos_probability(probability_scores)
-    cur_prob = pos_probability * mask
-    top_k_indices = np.argsort(cur_prob)[-candidate_nums:][::-1]
-    return top_k_indices.tolist()
-
-
-@st.cache_data
-def get_json_from_file(file_path):
-    with open(file_path, "r", encoding="utf-8") as file:
-        data = json.load(file)
-    return data
-
-
-@st.cache_data
-def get_percent_df(df, kcal, protein, fat, carb, salt):
-    percent_df = df.copy()
-    percent_df["target"] = [kcal, protein, fat, carb, salt]
-    percent_df.iloc[:, 1:] = (
-        percent_df.iloc[:, 1:].div(percent_df["target"], axis=0) * 100
-    )
-    percent_df.drop("target", axis=1, inplace=True)
-    print(percent_df)
-    percent_df["主要栄養素"] = ["カロリー", "たんぱく質", "脂質", "炭水化物", "塩分"]
-    percent_df = percent_df.round(2)
-    return percent_df
-
-
-def save_results(
-    username, image_file, method, ingredients, ingres_convert, click_dict, start_time
-):
-    current_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-    end_time = datetime.now()
-    time_difference = end_time - start_time
-    directory = f"Results/{username}/"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    existing_files = [
-        file
-        for file in os.listdir(directory)
-        if file.startswith("result") and file.endswith(".json")
-    ]
-    next_serial_number = len(existing_files) + 1
-
-    output_path = f"{directory}result_{next_serial_number}_{method}_{current_time}.json"
-
-    ingre_names = []
-    for item in ingredients:
-        ingre_names.append(ingres_convert[int(item) + 1])
-
-    filename = f"image_{next_serial_number}.png"
-    image_path = os.path.join(directory, filename)
-    debug_print(image_path)
-    image_file.save(image_path)
-
-    result_data = {
-        "username": username,
-        "image": {
-            "filename": filename,
-            "path": image_path,
-        },
-        "method": method,
-        "ingredients": ingredients,
-        "ingre_names": ingre_names,
-        "click_dict": click_dict,
-        "used_time": time_difference.total_seconds(),
-        "current_time": current_time,
-    }
-
-    with open(output_path, "w", encoding="utf-8") as file:
-        json.dump(result_data, file, ensure_ascii=False, indent=4)
-
+from recipelog import *
+from imageproc import *
 
 class StreamlitStep(IntEnum):
     SESSION_WHILE_INIT = 0
@@ -281,7 +31,8 @@ class StreamlitStep(IntEnum):
 
 def page_1():
     l = generate_localer(st.session_state.lang)
-    st.title(l("材料リストによる食事管理"))
+    st.title("RecipeLog Web")
+    st.subheader(l("材料リストによる食事管理"))
     debug_print(st.session_state)
 
     label_to_id_and_names = get_label_to_id_and_names()
@@ -538,11 +289,11 @@ def page_1():
                 ],
             }
         )
-    nutrients_df = nutrient_calculate.get_nutri_df_from_food_dict(
+    nutrients_df = get_nutri_df_from_food_dict(
         food_label_amount_unit
     )
 
-    necessary_nutrients = nutrient_calculate.calculate_necessary_nutrients(
+    necessary_nutrients = calculate_necessary_nutrients(
         users[st.session_state.username]["sex"],
         users[st.session_state.username]["age"],
         users[st.session_state.username]["physical_activity_level"],
@@ -577,12 +328,6 @@ def page_1():
     percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
     st.plotly_chart(percent_fig)
 
-    st.write(l("あなたの1食あたりの目標栄養摂取量は"))
-    st.write(l("カロリー {:.1f} kcal").format(necessary_nutrients_per_meal["kcal"]))
-    st.write(l("たんぱく質 {:.1f} g").format(necessary_nutrients_per_meal["protein"]))
-    st.write(l("脂質 {:.1f} g").format(necessary_nutrients_per_meal["fat"]))
-    st.write(l("炭水化物 {:.1f} g").format(necessary_nutrients_per_meal["carb"]))
-    st.write(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
 
 
 users = json.load(open("userdata/users.json", "r"))
@@ -595,6 +340,66 @@ def authenticate(username, password):
         return True
     else:
         return False
+
+
+def user_page():
+    l = generate_localer(st.session_state.lang)
+    users = json.load(open("userdata/users.json"))
+    current_sex = users[st.session_state.username]["sex"]
+
+    st.title("User Page")
+    sex_option = st.selectbox(
+        l("性別"),
+        (l("男性"), l("女性")),
+        index=0 if current_sex == "male" else 1,
+    )
+    age = st.slider(l("年齢"), min_value=1,
+        max_value=100,
+        value=users[st.session_state.username]["age"],
+    )
+    physical_activity_level = st.selectbox(
+        l("身体活動レベル"),
+        ("I", "II", "III"),
+        index=users[st.session_state.username]["physical_activity_level"] - 1,
+    )
+    st.write(l("身体活動レベル I: 生活の大部分が座位で、静的な活動が中心の場合"))
+    st.write(
+        l(
+            "身体活動レベル II: 座位中心の仕事だが、職場内での移動や立位での作業・接客等、通勤・買い物での歩行、家事、軽いスポーツ、のいずれかを含む場合"
+        )
+    )
+    st.write(
+        l(
+            "身体活動レベル III: 移動や立位の多い仕事への従事者、あるいは、スポーツ等余暇における活発な運動習慣を持っている場合"
+        )
+    )
+    if st.button(l("更新")):
+        users[st.session_state.username]["sex"] = (
+            "male" if sex_option == l("男性") else "female"
+        )
+        users[st.session_state.username]["age"] = age
+        users[st.session_state.username]["physical_activity_level"] = (
+            1
+            if physical_activity_level == "I"
+            else 2 if physical_activity_level == "II" else 3
+        )
+        json.dump(users, open("userdata/users.json", "w"), indent=4)
+    
+    necessary_nutrients = calculate_necessary_nutrients(
+        users[st.session_state.username]["sex"],
+        users[st.session_state.username]["age"],
+        users[st.session_state.username]["physical_activity_level"],
+    )
+    necessary_nutrients_per_meal = {
+        key: value / 3 for key, value in necessary_nutrients.items()
+    }
+    output = '<b>' + str(l("あなたの1食あたりの目標栄養摂取量は")) + '</b><br>\n'\
+        + str(l("カロリー {:.1f} kcal").format(necessary_nutrients_per_meal["kcal"])) + '<br>\n'\
+        +str(l("たんぱく質 {:.1f} g").format(necessary_nutrients_per_meal["protein"])) + '<br>\n'\
+        +str(l("脂質 {:.1f} g").format(necessary_nutrients_per_meal["fat"])) + '<br>\n'\
+        +str(l("炭水化物 {:.1f} g").format(necessary_nutrients_per_meal["carb"])) + '<br>\n'\
+        +str(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
+    st.html(output)
 
 
 def main():
@@ -614,7 +419,7 @@ def main():
             l("アカウント:"),
         )
         password = c1.text_input(l("パスワード:"), type="password")
-
+        
         if c1.button("Login"):
             if not authenticate(username, password):
                 c1.error(l("アカウント／パスワードが正しくありません"))
@@ -624,8 +429,12 @@ def main():
                 st.session_state.stage = StreamlitStep.SESSION_WHILE_INIT
                 st.rerun()
     else:
-        page_1()
+        tab1, tab2 = st.tabs(["main", "user profile"])
+        with tab1:
+            page_1()
 
+        with tab2:
+            user_page()
 
 if __name__ == "__main__":
     main()
