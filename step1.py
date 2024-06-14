@@ -45,6 +45,15 @@ def get_label_to_id_and_names():
         }
     return label_to_id_and_names
 
+@st.cache_data
+def get_name_to_label(label_to_id_and_names):
+    name_to_label = {}
+    for k in label_to_id_and_names.keys():
+        name_to_label[label_to_id_and_names[k][
+            "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
+                      ] = k
+    return name_to_label
+
 
 @st.cache_data
 def get_normalized_co_occurrence_matrix():
@@ -275,9 +284,8 @@ def page_1():
     st.title(l("材料リストによる食事管理"))
     debug_print(st.session_state)
 
-    if st.session_state.stage == StreamlitStep.SESSION_WHILE_INIT:
-        st.session_state.stage = StreamlitStep.WAIT_FOR_IMAGE
-        st.session_state.click_dict = {"button": 0, "checkbox": 0, "input_text": 0}
+    label_to_id_and_names = get_label_to_id_and_names()
+    name_to_label = get_name_to_label(label_to_id_and_names)
 
     def change_stage_to_image_uploaded():
         st.session_state.stage = StreamlitStep.IMAGE_UPLOADED
@@ -288,17 +296,19 @@ def page_1():
         on_change=change_stage_to_image_uploaded,
     )
 
+    if st.session_state.stage == StreamlitStep.SESSION_WHILE_INIT:
+        st.session_state.stage = StreamlitStep.WAIT_FOR_IMAGE
+        st.session_state.click_dict = {"button": 0, "checkbox": 0, "input_text": 0}
+
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_IMAGE:
         return
 
     c1, c2 = st.columns((1, 1))  # visual statements
     if uploaded_image:
-        c1.image(uploaded_image, width=500, use_column_width=False)
+        c1.image(uploaded_image, width=250, use_column_width=False)
         image = Image.open(uploaded_image)
 
     candidate_nums = 10  # stateless variables
-
-    label_to_id_and_names = get_label_to_id_and_names()
 
     if (
         st.session_state.stage == StreamlitStep.IMAGE_UPLOADED
@@ -306,35 +316,32 @@ def page_1():
         st.session_state.stage = StreamlitStep.WAIT_FOR_INGREDIENT_SELECTION
         st.session_state.start_time = datetime.now()
         st.session_state.selected_options = []
-
+        st.session_state.mask = np.array([1 if i != 2 else 0 for i in range(588)])
+        
     if st.session_state.stage <= StreamlitStep.IMAGE_UPLOADED:
         return
 
+    unique = 0
     # collect all selected ingredients
     selected_ingres = [  # 0-indexed int label
         item for item in st.session_state.selected_options
     ]
-    # not_in_list_multiselect = c2.multiselect(
-    #     "リストにない食材を検索:", label_to_canonical_name.values(), []
-    # )
-    # if not_in_list_multiselect:  # TODO: use onchange to update selected_options
-    #     for name in not_in_list_multiselect:
-    #         selected_ingres.append(int(canonical_name_to_label[name]) - 1)
-    mask = update_mask(
+    st.session_state.mask = update_mask(
         selected_ingres,
-        np.array([1 if i != 2 else 0 for i in range(588)]),
+        st.session_state.mask,
     )
 
     predict_ingres = get_current_candidate(  # TODO: remove current selections
         candidate_nums,
         uploaded_image,
-        mask,
+        st.session_state.mask,
     )
     debug_print("predict_ingres", predict_ingres)
     debug_print("selected_options", selected_ingres)
 
     c2.write(l("食材候補：料理に含まれている材料をチェックしてください"))
     for item in st.session_state.selected_options:
+        unique+=1
         c2.checkbox(
             label_to_id_and_names[int(item) + 1][
                 "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
@@ -342,11 +349,13 @@ def page_1():
             value=True,
             on_change=lambda x: st.session_state.selected_options.remove(x),
             args=(item,),
+            key=unique
         )
 
     for item in predict_ingres:
         if item in st.session_state.selected_options:
             continue
+        unique+=1
         c2.checkbox(
             label_to_id_and_names[int(item) + 1][
                 "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
@@ -354,8 +363,32 @@ def page_1():
             value=False,
             on_change=lambda x: st.session_state.selected_options.append(x),
             args=(item,),
+            key=unique
         )
 
+    # Search box
+    unique+=1
+    not_in_list_multiselect = c2.multiselect(
+        l("リストにない食材を検索:"), [
+            it[1]["ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
+            for it in label_to_id_and_names.items()],[],
+        key=unique
+    )
+
+    if not_in_list_multiselect:  # TODO: use onchange to update selected_options
+        for name in not_in_list_multiselect:
+             st.session_state.selected_options.append(int(name_to_label[name]) - 1)
+        st.session_state.click_dict["input_text"] = len(not_in_list_multiselect)
+        st.rerun()
+    
+    if c2.button(l("新しい食材候補を生成する")):
+        st.session_state.click_dict["button"] += 1
+        for item in predict_ingres:
+            if item not in st.session_state.selected_options:
+                st.session_state.mask[item] = 0
+        st.rerun()
+
+        
     if c2.button(l("完了")):
         st.session_state.stage = StreamlitStep.AFTER_INGREDIENT_SELECTION_INIT
 
@@ -411,6 +444,25 @@ def page_1():
             ingre_exps.append(label_to_names_ids[label_id]["en_full"])
         median_weights.append(ingre_id_to_weights[str(ingre_id)][1])
 
+    st.write(l("一食分に使った量は何グラムですか？"))
+    for ii in range(len(ingre_names)):
+        value = round(float(median_weights[ii]), 1)
+        min_value = 0.0
+        max_value = value*2
+        step = 0.1
+        if value > 10:
+            value = round(value)
+            min_value=0
+            max_value=value*2
+            step = 1
+        print(ingre_names[ii], min_value, max_value, value )
+        if st.session_state.lang == "ja":
+            slidelabel = ingre_names[ii]
+        else:
+            slidelabel = ingre_names[ii]
+        median_weights[ii] = st.slider(slidelabel, min_value, max_value, value, step=step)
+
+        
     data = pd.DataFrame(
         {
             "ingredients": ingre_names,
@@ -425,11 +477,21 @@ def page_1():
     data_df = st.data_editor(
         data,
         column_config={
-            "ingredients": l("食材名"),
-            "standard_exp": st.column_config.Column(l("食品名")),
-            "amount": st.column_config.NumberColumn(l("重さ")),
+            "ingredients": st.column_config.Column(
+                l("食材名"),
+                width="medium"
+            ),
+            "standard_exp": st.column_config.Column(
+                l("食品名"),
+                width="large"
+            ),
+            "amount": st.column_config.NumberColumn(
+                l("重さ"),
+                width="small"
+            ),
             "unit": st.column_config.SelectboxColumn(
                 l("単位"),
+                width="small",
                 help="The category of the unit",
                 options=[
                     "g",
@@ -499,7 +561,10 @@ def page_1():
     ]
     percent_fig = px.bar(
         percent_df, x=l("主要栄養素"), y=percent_df.columns[1:].tolist()
-    ).update_layout(yaxis_title=l("1食の目安量に対する割合 (%)"))
+    ).update_layout(
+        yaxis_title=l("1食の目安量に対する割合 (%)"),
+        height=300
+    )
     for trace in percent_fig.data:
         raw_series = nutrients_df[trace.name]
         raw_series = raw_series.apply(lambda x: f"{x:.2f}").str.cat(
@@ -513,10 +578,10 @@ def page_1():
     st.plotly_chart(percent_fig)
 
     st.write(l("あなたの1食あたりの目標栄養摂取量は"))
-    st.write(l("カロリー {:.2f} kcal").format(necessary_nutrients_per_meal["kcal"]))
-    st.write(l("たんぱく質 {:.2f} g").format(necessary_nutrients_per_meal["protein"]))
-    st.write(l("脂質 {:.2f} g").format(necessary_nutrients_per_meal["fat"]))
-    st.write(l("炭水化物 {:.2f} g").format(necessary_nutrients_per_meal["carb"]))
+    st.write(l("カロリー {:.1f} kcal").format(necessary_nutrients_per_meal["kcal"]))
+    st.write(l("たんぱく質 {:.1f} g").format(necessary_nutrients_per_meal["protein"]))
+    st.write(l("脂質 {:.1f} g").format(necessary_nutrients_per_meal["fat"]))
+    st.write(l("炭水化物 {:.1f} g").format(necessary_nutrients_per_meal["carb"]))
     st.write(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
 
 

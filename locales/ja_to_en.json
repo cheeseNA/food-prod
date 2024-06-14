@@ -30,10 +30,10 @@
     "主要栄養素": "Main nutrients",
     "1食の目安量に対する割合 (%)": "Ratio (%) to the standard amount of one meal",
     "あなたの1食あたりの目標栄養摂取量は": "Your target nutrient intake per meal is",
-    "カロリー {:.2f} kcal": "Calories {:.2f} kcal",
-    "たんぱく質 {:.2f} g": "Protein {:.2f} g",
-    "脂質 {:.2f} g": "Fat {:.2f} g",
-    "炭水化物 {:.2f} g": "Carbohydrate {:.2f} g",
+    "カロリー {:.1f} kcal": "Calories {:.1f} kcal",
+    "たんぱく質 {:.1f} g": "Protein {:.1f} g",
+    "脂質 {:.1f} g": "Fat {:.1f} g",
+    "炭水化物 {:.1f} g": "Carbohydrate {:.1f} g",
     "塩分 {:.2f} g です": "Salt {:.2f} g",
     "カロリー": "Calories",
     "たんぱく質": "Protein",
@@ -50,5 +50,8 @@
     "身体活動レベル I: 生活の大部分が座位で、静的な活動が中心の場合": "Physical activity level I: Most of the life is spent sitting, with static activities being the main focus",
     "身体活動レベル II: 座位中心の仕事だが、職場内での移動や立位での作業・接客等、通勤・買い物での歩行、家事、軽いスポーツ、のいずれかを含む場合": "Physical activity level II: Work is centered around sitting, but includes moving around the workplace, working or serving customers in a standing position, walking to work or shopping, housework, and light sports",
     "身体活動レベル III: 移動や立位の多い仕事への従事者、あるいは、スポーツ等余暇における活発な運動習慣を持っている場合": "Physical activity level III: Engaged in work that involves a lot of movement or standing, or have an active exercise habit in sports or leisure",
-    "更新": "Update"
+    "更新": "Update",
+    "リストにない食材を検索:":"Search by ingredient name:",
+     "新しい食材候補を生成する":"Generate new candidates.",
+     "一食分に使った量は何グラムですか？":"How many grams did you use for one serving?"
 }
