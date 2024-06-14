@@ -215,15 +215,15 @@ def page_1():
             ),
             "standard_exp": st.column_config.Column(
                 l("食品名"),
-                width="large"
+                #width="large"
             ),
             "amount": st.column_config.NumberColumn(
                 l("重さ"),
-                width="small"
+                #width="small"
             ),
             "unit": st.column_config.SelectboxColumn(
                 l("単位"),
-                width="small",
+                #width="small",
                 help="The category of the unit",
                 options=[
                     "g",
@@ -374,20 +374,21 @@ def user_page():
         max_value=100,
         value=users[st.session_state.username]["age"],
     )
-    physical_activity_level = st.selectbox(
+    phsical_label = ["I", "II", "III"]
+    physical_activity_level = st.select_slider(
         l("身体活動レベル"),
-        ("I", "II", "III"),
-        index=users[st.session_state.username]["physical_activity_level"] - 1,
+        options=phsical_label,
+        value=phsical_label[users[st.session_state.username]["physical_activity_level"] - 1],
     )
-    st.write(l("身体活動レベル I: 生活の大部分が座位で、静的な活動が中心の場合"))
-    st.write(
+    st.html(l("<b>レベル I</b>:<br> 生活の大部分が座位で、静的な活動が中心の場合"))
+    st.html(
         l(
-            "身体活動レベル II: 座位中心の仕事だが、職場内での移動や立位での作業・接客等、通勤・買い物での歩行、家事、軽いスポーツ、のいずれかを含む場合"
+            "<b>レベル II</b>:<br> 座位中心の仕事だが、職場内での移動や立位での作業・接客等、通勤・買い物での歩行、家事、軽いスポーツ、のいずれかを含む場合"
         )
     )
-    st.write(
+    st.html(
         l(
-            "身体活動レベル III: 移動や立位の多い仕事への従事者、あるいは、スポーツ等余暇における活発な運動習慣を持っている場合"
+            "<b>レベル III</b>:<br> 移動や立位の多い仕事への従事者、あるいは、スポーツ等余暇における活発な運動習慣を持っている場合"
         )
     )
     if st.button(l("更新")):
