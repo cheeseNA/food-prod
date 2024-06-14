@@ -63,6 +63,18 @@ def get_nutri_df_from_food_dict(food_label_amount_unit: dict):
     )
     return nutrients_df
 
+@st.cache_data
+def get_percent_df(df, kcal, protein, fat, carb, salt):
+    percent_df = df.copy()
+    percent_df["target"] = [kcal, protein, fat, carb, salt]
+    percent_df.iloc[:, 1:] = (
+        percent_df.iloc[:, 1:].div(percent_df["target"], axis=0) * 100
+    )
+    percent_df.drop("target", axis=1, inplace=True)
+    print(percent_df)
+    percent_df["主要栄養素"] = ["カロリー", "たんぱく質", "脂質", "炭水化物", "塩分"]
+    percent_df = percent_df.round(2)
+    return percent_df
 
 def get_necessary_calories(sex: str, age: int, physical_activity_level: int) -> int:
     calorie_data = pd.read_csv("Labels/necessary_nutrients/calories.csv")
@@ -111,3 +123,4 @@ def calculate_necessary_nutrients(sex: str, age: int, physical_activity_level: i
         "carb": necessary_carb,
         "salt": NECESSARY_SALT,
     }
+
