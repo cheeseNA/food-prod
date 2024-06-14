@@ -28,7 +28,7 @@
     "缶/カン": "can",
     "束": "bunch",
     "合": "a handful",
-    "主要栄養素": "Main nutrients",
+    "主要栄養素": "Macronutrients",
     "1食の目安量に対する割合 (%)": "Standard amount per serving (%)",
     "あなたの1食あたりの目標栄養摂取量は": "Your target nutrient intake per serving is",
     "カロリー {:.1f} kcal": "Calories {:.1f} kcal",
@@ -53,9 +53,9 @@
     "<b>レベル III</b>:<br> 移動や立位の多い仕事への従事者、あるいは、スポーツ等余暇における活発な運動習慣を持っている場合": "<b>Level III</b>:<br> Engaged in work that involves a lot of movement or standing, or have an active exercise habit in sports or leisure",
     "更新": "Update",
     "リストにない食材を検索:":"Search by ingredient name:",
-     "新しい食材候補を生成する":"Generate new candidates.",
-    "一食分に使った量は何グラムですか？":"How many grams did you use for one serving?",
+     "新しい食材候補を生成する":"Generate new candidates",
+    "一食分に使った量は何グラムですか？":"How many grams for one serving?",
     "メイン":"Main",
     "ユーザ情報":"User Profile",
-    "食事記録を保存しました":"Data saved successfully"
+    "食事記録を保存しました。":"Data saved successfully."
 }

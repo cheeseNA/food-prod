@@ -188,12 +188,23 @@ def page_1():
             max_value=value*2
             step = 1
         print(ingre_names[ii], min_value, max_value, value )
-        if st.session_state.lang == "ja":
-            slidelabel = ingre_names[ii]
-        else:
-            slidelabel = ingre_names[ii]
+        slidelabel = ingre_names[ii] if len(ingre_names[ii])<40 else ingre_names[ii][:40]
         median_weights[ii] = st.slider(slidelabel, min_value, max_value, value, step=step)
 
+    css = """
+<style>
+    .stSlider [data-testid="stTickBar"] {
+        display: none;
+    }
+    .stSlider label {
+        display: block;
+        text-align: left;
+        height: 0px;
+    }
+</style>
+"""
+
+    st.markdown(css, unsafe_allow_html=True)
         
     data = pd.DataFrame(
         {
@@ -206,56 +217,10 @@ def page_1():
     data["index"] = data.index + 1
     data.set_index("index", inplace=True)
 
-    data_df = st.data_editor(
-        data,
-        column_config={
-            "ingredients": st.column_config.Column(
-                l("食材名"),
-                width="medium"
-            ),
-            "standard_exp": st.column_config.Column(
-                l("食品名"),
-                #width="large"
-            ),
-            "amount": st.column_config.NumberColumn(
-                l("重さ"),
-                #width="small"
-            ),
-            "unit": st.column_config.SelectboxColumn(
-                l("単位"),
-                #width="small",
-                help="The category of the unit",
-                options=[
-                    "g",
-                    l("無単位"),
-                    l("枚"),
-                    l("本"),
-                    l("個片丁株玉房"),
-                    l("杯/カップ"),
-                    l("半分"),
-                    l("摘/少"),
-                    l("小/小匙"),
-                    l("中"),
-                    l("大/大匙"),
-                    l("一掴"),
-                    l("袋"),
-                    l("箱"),
-                    l("缶/カン"),
-                    "CC",
-                    "cm",
-                    l("束"),
-                    l("合"),
-                ],
-                required=True,
-            ),
-        },
-        hide_index=True,
-    )
-
-    if st.button(l("完了"), key="amount input done"):
-        st.session_state.stage = StreamlitStep.FINISH
-    if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
-        return
+    #if st.button(l("完了"), key="amount input done"):
+    #    st.session_state.stage = StreamlitStep.FINISH
+    #if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
+    #    return
 
     print([label_to_id_and_names[idv][
                 "ja_full" if st.session_state.lang == "ja" else "en_full"] for idv in selected_ingres])
@@ -275,13 +240,12 @@ def page_1():
         st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
     c2.success(l("食事記録を保存しました。"))
 
-
     food_label_amount_unit = []
-    for i, row in data_df.iterrows():
+    for i, row in data.iterrows():
         label = selected_ingres[i - 1]
         longname = label_to_id_and_names[int(label) + 1][
             "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
-        shortname = longname if len(longname)<20 else longname[:20]
+        shortname = longname if len(longname)<10 else longname[:10]
         food_label_amount_unit.append(
             {
                 "ingre_id": label_to_names_ids[int(label) + 1]["id"],
@@ -316,6 +280,7 @@ def page_1():
     ).update_layout(
         yaxis_title=l("1食の目安量に対する割合 (%)"),
         height=300,
+        width=380,
         legend=dict(itemwidth=30),
     )
     for trace in percent_fig.data:
@@ -329,6 +294,53 @@ def page_1():
         )
     percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
     st.plotly_chart(percent_fig)
+
+    with st.expander("See table"):
+        data_df = st.data_editor(
+            data,
+            column_config={
+                "ingredients": st.column_config.Column(
+                    l("食材名"),
+                    width="medium"
+                ),
+                "standard_exp": st.column_config.Column(
+                    l("食品名"),
+                    #width="large"
+                ),
+                "amount": st.column_config.NumberColumn(
+                    l("重さ"),
+                    #width="small"
+                ),
+                "unit": st.column_config.SelectboxColumn(
+                    l("単位"),
+                    #width="small",
+                    help="The category of the unit",
+                    options=[
+                        "g",
+                        l("無単位"),
+                        l("枚"),
+                        l("本"),
+                        l("個片丁株玉房"),
+                        l("杯/カップ"),
+                        l("半分"),
+                        l("摘/少"),
+                        l("小/小匙"),
+                        l("中"),
+                        l("大/大匙"),
+                        l("一掴"),
+                        l("袋"),
+                        l("箱"),
+                        l("缶/カン"),
+                        "CC",
+                        "cm",
+                        l("束"),
+                        l("合"),
+                    ],
+                    required=True,
+                ),
+            },
+            hide_index=True,
+        )
 
     necessary_nutrients = calculate_necessary_nutrients(
         users[st.session_state.username]["sex"],
