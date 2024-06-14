@@ -328,6 +328,21 @@ def page_1():
     percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
     st.plotly_chart(percent_fig)
 
+    necessary_nutrients = calculate_necessary_nutrients(
+        users[st.session_state.username]["sex"],
+        users[st.session_state.username]["age"],
+        users[st.session_state.username]["physical_activity_level"],
+    )
+    necessary_nutrients_per_meal = {
+        key: value / 3 for key, value in necessary_nutrients.items()
+    }
+    output = '<b>' + str(l("あなたの1食あたりの目標栄養摂取量は")) + '</b><br>\n'\
+        + str(l("カロリー {:.1f} kcal").format(necessary_nutrients_per_meal["kcal"])) + '<br>\n'\
+        +str(l("たんぱく質 {:.1f} g").format(necessary_nutrients_per_meal["protein"])) + '<br>\n'\
+        +str(l("脂質 {:.1f} g").format(necessary_nutrients_per_meal["fat"])) + '<br>\n'\
+        +str(l("炭水化物 {:.1f} g").format(necessary_nutrients_per_meal["carb"])) + '<br>\n'\
+        +str(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
+    st.html(output)
 
 
 users = json.load(open("userdata/users.json", "r"))
