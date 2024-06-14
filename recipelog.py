@@ -67,7 +67,7 @@ def get_json_from_file(file_path):
     return data
 
 def save_results(
-    username, image_file, method, ingredients, ingres_convert, click_dict, start_time
+        username, image_file, method, ingre_ids, ingre_names, weights, click_dict, start_time
 ):
     current_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     end_time = datetime.now()
@@ -85,10 +85,6 @@ def save_results(
 
     output_path = f"{directory}result_{next_serial_number}_{method}_{current_time}.json"
 
-    ingre_names = []
-    for item in ingredients:
-        ingre_names.append(ingres_convert[int(item) + 1])
-
     filename = f"image_{next_serial_number}.png"
     image_path = os.path.join(directory, filename)
     debug_print(image_path)
@@ -101,8 +97,9 @@ def save_results(
             "path": image_path,
         },
         "method": method,
-        "ingredients": ingredients,
+        "ingre_ids": ingre_ids,
         "ingre_names": ingre_names,
+        "weights": weights,
         "click_dict": click_dict,
         "used_time": time_difference.total_seconds(),
         "current_time": current_time,

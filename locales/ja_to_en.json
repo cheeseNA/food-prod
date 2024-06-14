@@ -2,8 +2,8 @@
     "アカウント:": "Account:",
     "パスワード:": "Password:",
     "アカウント／パスワードが正しくありません": "Account or password is incorrect",
-    "材料リストによる食事管理": "Meal management by ingredient list",
-    "食事の写真から食材リストを作成して栄養を計算しましょう。":"Let's create a list of ingredients from photos of your meals and calculate their nutritional content.",
+    "材料リストによる食事管理": "Food management by ingredient list",
+    "食事の写真から食材リストを作成して栄養を計算しましょう。":"Let's create a list of ingredients from photos of your foods and calculate their nutritional content.",
     "食事の写真をアップロードしてください": "Please upload a photo of your meal",
     "食材候補：料理に含まれている材料をチェックしてください": "Ingredient candidates: Check the ingredients included in the dish",
     "完了": "Done",
@@ -29,8 +29,8 @@
     "束": "bunch",
     "合": "a handful",
     "主要栄養素": "Main nutrients",
-    "1食の目安量に対する割合 (%)": "Ratio (%) to the standard amount of one meal",
-    "あなたの1食あたりの目標栄養摂取量は": "Your target nutrient intake per meal is",
+    "1食の目安量に対する割合 (%)": "Standard amount per serving (%)",
+    "あなたの1食あたりの目標栄養摂取量は": "Your target nutrient intake per serving is",
     "カロリー {:.1f} kcal": "Calories {:.1f} kcal",
     "たんぱく質 {:.1f} g": "Protein {:.1f} g",
     "脂質 {:.1f} g": "Fat {:.1f} g",
@@ -56,5 +56,6 @@
      "新しい食材候補を生成する":"Generate new candidates.",
     "一食分に使った量は何グラムですか？":"How many grams did you use for one serving?",
     "メイン":"Main",
-    "ユーザ情報":"User Profile"
+    "ユーザ情報":"User Profile",
+    "食事記録を保存しました":"Data saved successfully"
 }

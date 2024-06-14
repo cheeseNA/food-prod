@@ -31,7 +31,7 @@ class StreamlitStep(IntEnum):
 
 def page_1():
     l = generate_localer(st.session_state.lang)
-    st.title(l("材料リストによる食事管理"))
+    #st.title(l("材料リストによる食事管理"))
     debug_print(st.session_state)
 
     label_to_id_and_names = get_label_to_id_and_names()
@@ -149,24 +149,6 @@ def page_1():
         len(selected_ingres) - st.session_state.click_dict["input_text"]
     )
 
-    if st.session_state.stage == StreamlitStep.AFTER_INGREDIENT_SELECTION_INIT:
-        save_results(
-            st.session_state.username,
-            image,
-            "method_2",
-            selected_ingres,
-            {
-                label: id_and_names[
-                    "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
-                ]
-                for label, id_and_names in label_to_id_and_names.items()
-            },
-            st.session_state.click_dict,
-            st.session_state.start_time,
-        )
-        st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
-    c2.success(l("回答を記録しました！次のページに進んでください。"))
-
     ingre_id_to_weights = get_json_from_file("Labels/weight_median.json")
 
     jpn_eng_expression_df = pd.read_csv("Labels/foodexpList20240612.csv")
@@ -275,17 +257,37 @@ def page_1():
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
         return
 
+    print([label_to_id_and_names[idv][
+                "ja_full" if st.session_state.lang == "ja" else "en_full"] for idv in selected_ingres])
+
+    if st.session_state.stage == StreamlitStep.FINISH:
+        save_results(
+            st.session_state.username,
+            image,
+            "method_2",
+            [label_to_id_and_names[idv]['id'] for idv in selected_ingres],
+            [label_to_id_and_names[idv][
+                "ja_full" if st.session_state.lang == "ja" else "en_full"] for idv in selected_ingres],
+            median_weights,
+            st.session_state.click_dict,
+            st.session_state.start_time,
+        )
+        st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
+    c2.success(l("食事記録を保存しました。"))
+
+
     food_label_amount_unit = []
     for i, row in data_df.iterrows():
         label = selected_ingres[i - 1]
+        longname = label_to_id_and_names[int(label) + 1][
+            "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
+        shortname = longname if len(longname)<20 else longname[:20]
         food_label_amount_unit.append(
             {
                 "ingre_id": label_to_names_ids[int(label) + 1]["id"],
                 "amount": row["amount"],
                 "unit": row["unit"],
-                "canonical_name": label_to_id_and_names[int(label) + 1][
-                    "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
-                ],
+                "canonical_name": shortname,
             }
         )
     nutrients_df = get_nutri_df_from_food_dict(
@@ -313,16 +315,17 @@ def page_1():
         percent_df, x=l("主要栄養素"), y=percent_df.columns[1:].tolist()
     ).update_layout(
         yaxis_title=l("1食の目安量に対する割合 (%)"),
-        height=300
+        height=300,
+        legend=dict(itemwidth=30),
     )
     for trace in percent_fig.data:
         raw_series = nutrients_df[trace.name]
-        raw_series = raw_series.apply(lambda x: f"{x:.2f}").str.cat(
+        raw_series = raw_series.apply(lambda x: f"{x:.1f}").str.cat(
             ["kcal", "g", "g", "g", "g"], sep=" "
         )
         trace["customdata"] = raw_series
         trace["hovertemplate"] = (
-            f"{trace.name}<br>" + "%{customdata}<br>%{y:.2f}%<extra></extra>"
+            f"{trace.name}<br>" + "%{customdata}<br>%{y:.1f}%<extra></extra>"
         )
     percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
     st.plotly_chart(percent_fig)
@@ -414,6 +417,7 @@ def user_page():
         +str(l("炭水化物 {:.1f} g").format(necessary_nutrients_per_meal["carb"])) + '<br>\n'\
         +str(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
     st.html(output)
+
 
 
 def main():
