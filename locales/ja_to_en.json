@@ -54,5 +54,7 @@
     "更新": "Update",
     "リストにない食材を検索:":"Search by ingredient name:",
      "新しい食材候補を生成する":"Generate new candidates.",
-     "一食分に使った量は何グラムですか？":"How many grams did you use for one serving?"
+    "一食分に使った量は何グラムですか？":"How many grams did you use for one serving?",
+    "メイン":"Main",
+    "ユーザ情報":"User Profile"
 }

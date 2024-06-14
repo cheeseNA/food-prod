@@ -31,8 +31,7 @@ class StreamlitStep(IntEnum):
 
 def page_1():
     l = generate_localer(st.session_state.lang)
-    st.title("RecipeLog Web")
-    st.subheader(l("材料リストによる食事管理"))
+    st.title(l("材料リストによる食事管理"))
     debug_print(st.session_state)
 
     label_to_id_and_names = get_label_to_id_and_names()
@@ -362,7 +361,7 @@ def user_page():
     users = json.load(open("userdata/users.json"))
     current_sex = users[st.session_state.username]["sex"]
 
-    st.title("User Page")
+    #st.title("User Page")
     sex_option = st.selectbox(
         l("性別"),
         (l("男性"), l("女性")),
@@ -427,6 +426,7 @@ def main():
         initial_sidebar_state="collapsed",
     )
 
+    #st.title("RecipeLog Web")
     if "stage" not in st.session_state:
         st.title("Login")
         c1, _, _ = st.columns((1, 1, 1))
@@ -444,7 +444,7 @@ def main():
                 st.session_state.stage = StreamlitStep.SESSION_WHILE_INIT
                 st.rerun()
     else:
-        tab1, tab2 = st.tabs(["main", "user profile"])
+        tab1, tab2 = st.tabs([l("メイン"), l("ユーザ情報")])
         with tab1:
             page_1()
 
