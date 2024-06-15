@@ -309,12 +309,7 @@ def page_1():
         names=["Protain", "Fat", "Carb"],
         height=350,
     )
-
-    tab3, tab4 = st.tabs([l("グラフ"), l("PFCバランス")])
-    with tab3:
-        st.plotly_chart(percent_fig, use_container_width=True)
-    with tab4:
-        st.plotly_chart(percent_fig2, use_container_width=True)
+        
         
     data_df = nutrition_fact.copy()
     data_df = data_df.loc[ingre_ids]
@@ -328,7 +323,13 @@ def page_1():
                 data_df.iloc[ii,jj] = float(data_df.iloc[ii,jj]) * median_weights[ii] / 100
     append_sum_row_label(data_df)
     #print(data_df)
-    with st.expander("See table"):
+
+    tab3, tab4, tab5 = st.tabs([l("主要栄養素"), l("PFCバランス"), l("栄養成分表")])
+    with tab3:
+        st.plotly_chart(percent_fig, use_container_width=True)
+    with tab4:
+        st.plotly_chart(percent_fig2, use_container_width=True)
+    with tab5:
         st.dataframe(data_df, width=800)
 
     if st.button(l("保存"), key="amount input done"):
