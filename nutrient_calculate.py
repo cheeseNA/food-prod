@@ -10,6 +10,17 @@ CARB_CALORIE_PAR_GRAM = 4
 FAT_CALORIE_PAR_GRAM = 9
 NECESSARY_SALT = 6  ## TODO: rethink this value
     
+
+@st.cache_data
+def getNutrientFact():
+    df = pd.read_excel('Labels/FoodStandard.xlsx', index_col=0)
+    print(df)
+    return df
+
+def append_sum_row_label(df):
+    df.loc['Total'] = df.sum(numeric_only=True)
+    return df
+
 @st.cache_data
 def get_nutri_df_from_food_dict(food_label_amount_unit: dict):
     """
@@ -88,8 +99,8 @@ def calc_pfc(df):
     pfc_df.iloc[0] = pfc_df.iloc[0]*PROTAIN_CALORIE_PAR_GRAM
     pfc_df.iloc[1] = pfc_df.iloc[1]*FAT_CALORIE_PAR_GRAM
     pfc_df.iloc[2] = pfc_df.iloc[2]*CARB_CALORIE_PAR_GRAM
-    print('nutrients_df\n', df)
-    print('nutrients_df\n', pfc_df)#.sum(axis=1)
+    #print('nutrients_df\n', df)
+    #print('nutrients_df\n', pfc_df)#.sum(axis=1)
     return pfc_df
 
 def get_necessary_calories(sex: str, age: int, physical_activity_level: int) -> int:

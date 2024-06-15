@@ -16,6 +16,8 @@ from locales.locale import generate_localer, get_current_lang
 from recipelog import *
 from imageproc import *
 
+import math
+
 class StreamlitStep(IntEnum):
     SESSION_WHILE_INIT = 0
     WAIT_FOR_IMAGE = 1
@@ -36,7 +38,11 @@ def page_1():
 
     label_to_id_and_names = get_label_to_id_and_names()
     name_to_label = get_name_to_label(label_to_id_and_names)
+    nutrition_fact = getNutrientFact()
 
+    ########################
+    ##### Image upload  ####
+    ########################
     def change_stage_to_image_uploaded():
         st.session_state.stage = StreamlitStep.IMAGE_UPLOADED
 
@@ -86,11 +92,22 @@ def page_1():
         uploaded_image,
         st.session_state.mask,
     )
-    debug_print("predict_ingres", predict_ingres)
-    debug_print("selected_options", selected_ingres)
 
-    c2.write(l("食材候補：料理に含まれている材料をチェックしてください"))
+    ########################
+    ##### Ingredient Input ######
+    ########################
+    c2.write(l("材料にチェックを入れて下さい。"))
+
+    st.markdown("""
+<style>
+        div[data-testid="stVerticalBlock"] {
+            gap:0rem
+    }
+</style>
+    """, unsafe_allow_html=True)
+    
     for item in st.session_state.selected_options:
+        #print('food:', label_to_id_and_names[int(item) + 1]) 
         unique+=1
         c2.checkbox(
             label_to_id_and_names[int(item) + 1][
@@ -120,14 +137,14 @@ def page_1():
     unique+=1
     not_in_list_multiselect = c2.multiselect(
         l("リストにない食材を検索:"), [
-            it[1]["ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
-            for it in label_to_id_and_names.items()],[],
+            item[1]["ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
+            for item in label_to_id_and_names.items()],[],
         key=unique
     )
 
     if not_in_list_multiselect:  # TODO: use onchange to update selected_options
         for name in not_in_list_multiselect:
-             st.session_state.selected_options.append(int(name_to_label[name]) - 1)
+            st.session_state.selected_options.append(int(name_to_label[name]) - 1)
         st.session_state.click_dict["input_text"] = len(not_in_list_multiselect)
         st.rerun()
     
@@ -138,6 +155,9 @@ def page_1():
                 st.session_state.mask[item] = 0
         st.rerun()
 
+    debug_print("predict_ingres", predict_ingres)
+    debug_print("selected_ingres", selected_ingres)
+    debug_print("selected_options", st.session_state.selected_options)
         
     if c2.button(l("完了")):
         st.session_state.stage = StreamlitStep.AFTER_INGREDIENT_SELECTION_INIT
@@ -149,7 +169,11 @@ def page_1():
         len(selected_ingres) - st.session_state.click_dict["input_text"]
     )
 
-    ingre_id_to_weights = get_json_from_file("Labels/weight_median.json")
+
+    ########################
+    ##### Wight Input ######
+    ########################
+    ingre_id_to_weights = get_json_from_file("Labels/weight_median20240615.json")
 
     jpn_eng_expression_df = pd.read_csv("Labels/foodexpList20240612.csv")
     label_to_names_ids = {}
@@ -176,22 +200,28 @@ def page_1():
         else:
             ingre_names.append(label_to_names_ids[label_id]["en_abbr"])
             ingre_exps.append(label_to_names_ids[label_id]["en_full"])
-        median_weights.append(ingre_id_to_weights[str(ingre_id)][1])
+        median_weights.append(ingre_id_to_weights[str(ingre_id)][2])
 
     st.write(l("一食分に使った量は何グラムですか？"))
-    for ii in range(len(ingre_names)):
-        value = round(float(median_weights[ii]), 1)
-        min_value = 0.0
-        max_value = value*2
-        step = 0.1
-        if value > 10:
-            value = round(value)
-            min_value=0
-            max_value=value*2
-            step = 1
-        print(ingre_names[ii], min_value, max_value, value )
-        slidelabel = ingre_names[ii] if len(ingre_names[ii])<40 else ingre_names[ii][:40]
-        median_weights[ii] = st.slider(slidelabel, min_value, max_value, value, step=step)
+
+    with st.container(height=200):
+        for ii in range(len(ingre_names)):
+            value = round(float(median_weights[ii]), 1)
+            min_value = 0.0
+            max_value = value*2
+            step = 0.1
+            if value > 10:
+                value = round(value)
+                max_value = int(max_value)
+                min_value=  int(0)
+                step = 1
+            else:
+                value = float(value)
+                min_value = 0.0
+                step = 0.1
+            
+            slidelabel = ingre_names[ii] if len(ingre_names[ii])<40 else ingre_names[ii][:40]
+            median_weights[ii] = st.slider(slidelabel, min_value, max_value, value, step=step)
 
     css = """
 <style>
@@ -273,7 +303,7 @@ def page_1():
     percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
 
     pfc_df = calc_pfc(nutrients_df)
-    print('pfc\n', pfc_df.tolist())
+    #print('pfc\n', pfc_df.tolist())
     percent_fig2 = px.pie(
         values=pfc_df.tolist(),
         names=["Protain", "Fat", "Carb"],
@@ -286,61 +316,25 @@ def page_1():
     with tab4:
         st.plotly_chart(percent_fig2, use_container_width=True)
         
+    data_df = nutrition_fact.copy()
+    data_df = data_df.loc[ingre_ids]
+    data_df = data_df.drop(['index', 'JName'], axis=1)
+    data_df.insert(1, 'weight', 0)
 
+    for ii in range(len(data_df)):
+        data_df.iloc[ii, 1] = median_weights[ii]
+        for jj in range(2, len(data_df.columns)):
+            if not math.isnan(data_df.iloc[ii,jj]):
+                data_df.iloc[ii,jj] = float(data_df.iloc[ii,jj]) * median_weights[ii] / 100
+    append_sum_row_label(data_df)
+    #print(data_df)
     with st.expander("See table"):
-        data_df = st.data_editor(
-            data,
-            column_config={
-                "ingredients": st.column_config.Column(
-                    l("食材名"),
-                    width="medium"
-                ),
-                "standard_exp": st.column_config.Column(
-                    l("食品名"),
-                    #width="large"
-                ),
-                "amount": st.column_config.NumberColumn(
-                    l("重さ"),
-                    #width="small"
-                ),
-                "unit": st.column_config.SelectboxColumn(
-                    l("単位"),
-                    #width="small",
-                    help="The category of the unit",
-                    options=[
-                        "g",
-                        l("無単位"),
-                        l("枚"),
-                        l("本"),
-                        l("個片丁株玉房"),
-                        l("杯/カップ"),
-                        l("半分"),
-                        l("摘/少"),
-                        l("小/小匙"),
-                        l("中"),
-                        l("大/大匙"),
-                        l("一掴"),
-                        l("袋"),
-                        l("箱"),
-                        l("缶/カン"),
-                        "CC",
-                        "cm",
-                        l("束"),
-                        l("合"),
-                    ],
-                    required=True,
-                ),
-            },
-            hide_index=True,
-        )
+        st.dataframe(data_df, width=800)
 
     if st.button(l("保存"), key="amount input done"):
         st.session_state.stage = StreamlitStep.FINISH
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
         return
-
-    print('ingre_names', ingre_names)
-    print('ingre_labels', )
 
     if st.session_state.stage == StreamlitStep.FINISH:
         save_results(
