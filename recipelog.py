@@ -46,18 +46,27 @@ def get_normalized_co_occurrence_matrix():
     normalized_matrix = co_occurrence_matrix / row_sums
     return normalized_matrix
 
+def sigmoid(x, a):
+    return 1.0 / (1.0 + np.exp(-a * x))
 
 @st.cache_data
 def update_mask(selected_items, mask):
     normalized_matrix = get_normalized_co_occurrence_matrix()
-    threshold = 0.5
+    threshold = 0.0
     normalized_matrix = np.where(
         normalized_matrix < threshold / 100, 0, normalized_matrix
     )
+    #print('XXXX', normalized_matrix)
+    #print('selected_items', selected_items)
     for selected in selected_items:
-        distances = normalized_matrix[selected]
-        dist_mask = np.where(distances == 0, 0, 1)
-        mask = dist_mask & mask
+        if mask[selected] != 0.0:
+            #print(selected)
+            #print(sigmoid(normalized_matrix[selected]+1, 1))
+            mask[selected] = 0.0
+            mask = mask*sigmoid(normalized_matrix[selected]+1, 1)
+    mask = mask / np.sum(mask) * 588
+    #print('YYYY', mask)
+    #print(len(mask), np.sum(mask))
     return mask
 
 @st.cache_data

@@ -61,5 +61,7 @@
     "グラフ":"Bar graph",
     "PFCバランス":"PFC valance",
     "栄養成分表":"Nutrition table",
-    "保存":"Save"
+    "保存":"Save",
+    "栄養成分表":"Nutrition Facts Table",
+    "<b>PFCバランスとは？</b><br>三大栄養素であるタンパク質、脂質、炭水化物の摂取バランス。タンパク質は13～20%、脂質は20～30%、炭水化物は50～65%がよいとされています。<br>※20～39歳男女の目標<br>資料：厚生労働省「日本人の食事摂取基準（2020年版）」<br>":"<b>What is PFC balance? </b><br> The balance of intake of the three major nutrients: protein, fat, and carbohydrates. It is recommended that protein intake should be 13-20%, fat intake 20-30%, and carbohydrate intake 50-65%. <br>* Targets for men and women aged 20-39.<br>Source: Ministry of Health, Labor and Welfare \"Dietary Reference Intakes for Japanese (2020 version)\""
 }

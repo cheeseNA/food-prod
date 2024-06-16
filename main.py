@@ -34,7 +34,6 @@ class StreamlitStep(IntEnum):
 def page_1():
     l = generate_localer(st.session_state.lang)
     #st.title(l("材料リストによる食事管理"))
-    debug_print(st.session_state)
 
     label_to_id_and_names = get_label_to_id_and_names()
     name_to_label = get_name_to_label(label_to_id_and_names)
@@ -76,6 +75,8 @@ def page_1():
         
     if st.session_state.stage <= StreamlitStep.IMAGE_UPLOADED:
         return
+
+    debug_print('st.session_state:\n', st.session_state)
 
     unique = 0
     # collect all selected ingredients
@@ -151,7 +152,7 @@ def page_1():
     if c2.button(l("新しい食材候補を生成する")):
         st.session_state.click_dict["button"] += 1
         for item in predict_ingres:
-            if item not in st.session_state.selected_options:
+            if item not in selected_ingres:
                 st.session_state.mask[item] = 0
         st.rerun()
 
@@ -328,8 +329,10 @@ def page_1():
     with tab3:
         st.plotly_chart(percent_fig, use_container_width=True)
     with tab4:
-        st.plotly_chart(percent_fig2, use_container_width=True)
+        st.plotly_chart(percent_fig2, use_container_width=True, sort=False)
+        st.html(l("<b>PFCバランスとは？</b><br>三大栄養素であるタンパク質、脂質、炭水化物の摂取バランス。タンパク質は13～20%、脂質は20～30%、炭水化物は50～65%がよいとされています。<br>※20～39歳男女の目標<br>資料：厚生労働省「日本人の食事摂取基準（2020年版）」<br>"))
     with tab5:
+        #st.write(l("栄養成分表"))
         st.dataframe(data_df, width=800)
 
     if st.button(l("保存"), key="amount input done"):
@@ -395,12 +398,6 @@ def user_page():
         max_value=100,
         value=users[st.session_state.username]["age"],
     )
-    phsical_label = ["I", "II", "III"]
-    physical_activity_level = st.select_slider(
-        l("身体活動レベル"),
-        options=phsical_label,
-        value=phsical_label[users[st.session_state.username]["physical_activity_level"] - 1],
-    )
     st.html(l("<b>レベル I</b>:<br> 生活の大部分が座位で、静的な活動が中心の場合"))
     st.html(
         l(
@@ -411,6 +408,12 @@ def user_page():
         l(
             "<b>レベル III</b>:<br> 移動や立位の多い仕事への従事者、あるいは、スポーツ等余暇における活発な運動習慣を持っている場合"
         )
+    )
+    phsical_label = ["I", "II", "III"]
+    physical_activity_level = st.select_slider(
+        l("身体活動レベル"),
+        options=phsical_label,
+        value=phsical_label[users[st.session_state.username]["physical_activity_level"] - 1],
     )
     if st.button(l("更新")):
         users[st.session_state.username]["sex"] = (
