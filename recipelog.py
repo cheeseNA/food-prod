@@ -1,15 +1,19 @@
-import os
-import numpy as np
 import json
-import pandas as pd
+import os
 from datetime import datetime
+
+import numpy as np
+import pandas as pd
+import pandas as pd
 import streamlit as st
 
 DEBUG = True
 
+
 def debug_print(*args, **kwargs):
     if DEBUG:
         print(*args, **kwargs)
+
 
 @st.cache_data
 def get_label_to_id_and_names():
@@ -29,13 +33,16 @@ def get_label_to_id_and_names():
         }
     return label_to_id_and_names
 
+
 @st.cache_data
 def get_name_to_label(label_to_id_and_names):
     name_to_label = {}
     for k in label_to_id_and_names.keys():
-        name_to_label[label_to_id_and_names[k][
-            "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
-                      ] = k
+        name_to_label[
+            label_to_id_and_names[k][
+                "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
+            ]
+        ] = k
     return name_to_label
 
 
@@ -46,8 +53,10 @@ def get_normalized_co_occurrence_matrix():
     normalized_matrix = co_occurrence_matrix / row_sums
     return normalized_matrix
 
+
 def sigmoid(x, a):
     return 1.0 / (1.0 + np.exp(-a * x))
+
 
 @st.cache_data
 def update_mask(selected_items, mask):
@@ -56,18 +65,19 @@ def update_mask(selected_items, mask):
     normalized_matrix = np.where(
         normalized_matrix < threshold / 100, 0, normalized_matrix
     )
-    #print('XXXX', normalized_matrix)
-    #print('selected_items', selected_items)
+    # print('XXXX', normalized_matrix)
+    # print('selected_items', selected_items)
     for selected in selected_items:
         if mask[selected] != 0.0:
-            #print(selected)
-            #print(sigmoid(normalized_matrix[selected]+1, 1))
+            # print(selected)
+            # print(sigmoid(normalized_matrix[selected]+1, 1))
             mask[selected] = 0.0
-            mask = mask*sigmoid(normalized_matrix[selected]+1, 1)
+            mask = mask * sigmoid(normalized_matrix[selected] + 1, 1)
     mask = mask / np.sum(mask) * 588
-    #print('YYYY', mask)
-    #print(len(mask), np.sum(mask))
+    # print('YYYY', mask)
+    # print(len(mask), np.sum(mask))
     return mask
+
 
 @st.cache_data
 def get_json_from_file(file_path):
@@ -75,8 +85,16 @@ def get_json_from_file(file_path):
         data = json.load(file)
     return data
 
+
 def save_results(
-        username, image_file, method, ingre_ids, ingre_names, weights, click_dict, start_time
+    username,
+    image_file,
+    method,
+    ingre_ids,
+    ingre_names,
+    weights,
+    click_dict,
+    start_time,
 ):
     current_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     end_time = datetime.now()

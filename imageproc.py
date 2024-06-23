@@ -8,6 +8,7 @@ import torchvision.transforms as transforms
 from src.dataloader import VireoLoader
 from src.model_clip import Recognition
 
+
 @st.cache_data
 def get_ingre_probability(ingres, uploaded_image):
     # Load CLIP model
@@ -100,6 +101,7 @@ def get_ingre_prob_from_model(uploaded_image):
 
     return normalized_tensor
 
+
 @st.cache_data
 def get_current_candidate(candidate_nums, uploaded_image, mask):
     text_probs = get_ingre_prob_from_model(uploaded_image)
@@ -108,6 +110,7 @@ def get_current_candidate(candidate_nums, uploaded_image, mask):
     cur_prob = pos_probability * mask
     top_k_indices = np.argsort(cur_prob)[-candidate_nums:][::-1]
     return top_k_indices.tolist()
+
 
 @st.cache_data
 def get_pos_probability(text_probs):
@@ -120,9 +123,9 @@ def get_pos_probability(text_probs):
     # st.write("flipped_relative_pos",flipped_relative_pos)
     return final_probs.tolist()
 
+
 @st.cache_data
 def relative_pos():
     relative_pos = np.load("Labels/relative_pos.npy", allow_pickle=True)
     flipped_relative_pos = 1 - relative_pos
     return flipped_relative_pos
-

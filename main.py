@@ -1,4 +1,5 @@
 import json
+import math
 import os
 from datetime import datetime
 from enum import IntEnum
@@ -10,13 +11,11 @@ import streamlit as st
 from PIL import Image
 from plotly import express as px
 
-from nutrient_calculate import *
-from locales.locale import generate_localer, get_current_lang
-
-from recipelog import *
 from imageproc import *
+from locales.locale import generate_localer, get_current_lang
+from nutrient_calculate import *
+from recipelog import *
 
-import math
 
 class StreamlitStep(IntEnum):
     SESSION_WHILE_INIT = 0
@@ -33,7 +32,7 @@ class StreamlitStep(IntEnum):
 
 def page_1():
     l = generate_localer(st.session_state.lang)
-    #st.title(l("材料リストによる食事管理"))
+    # st.title(l("材料リストによる食事管理"))
 
     label_to_id_and_names = get_label_to_id_and_names()
     name_to_label = get_name_to_label(label_to_id_and_names)
@@ -72,11 +71,11 @@ def page_1():
         st.session_state.start_time = datetime.now()
         st.session_state.selected_options = []
         st.session_state.mask = np.array([1 if i != 2 else 0 for i in range(588)])
-        
+
     if st.session_state.stage <= StreamlitStep.IMAGE_UPLOADED:
         return
 
-    debug_print('st.session_state:\n', st.session_state)
+    debug_print("st.session_state:\n", st.session_state)
 
     unique = 0
     # collect all selected ingredients
@@ -99,17 +98,20 @@ def page_1():
     ########################
     c2.write(l("材料にチェックを入れて下さい。"))
 
-    st.markdown("""
+    st.markdown(
+        """
 <style>
         div[data-testid="stVerticalBlock"] {
             gap:0rem
     }
 </style>
-    """, unsafe_allow_html=True)
-    
+    """,
+        unsafe_allow_html=True,
+    )
+
     for item in st.session_state.selected_options:
-        #print('food:', label_to_id_and_names[int(item) + 1]) 
-        unique+=1
+        # print('food:', label_to_id_and_names[int(item) + 1])
+        unique += 1
         c2.checkbox(
             label_to_id_and_names[int(item) + 1][
                 "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
@@ -117,13 +119,13 @@ def page_1():
             value=True,
             on_change=lambda x: st.session_state.selected_options.remove(x),
             args=(item,),
-            key=unique
+            key=unique,
         )
 
     for item in predict_ingres:
         if item in st.session_state.selected_options:
             continue
-        unique+=1
+        unique += 1
         c2.checkbox(
             label_to_id_and_names[int(item) + 1][
                 "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
@@ -131,16 +133,19 @@ def page_1():
             value=False,
             on_change=lambda x: st.session_state.selected_options.append(x),
             args=(item,),
-            key=unique
+            key=unique,
         )
 
     # Search box
-    unique+=1
+    unique += 1
     not_in_list_multiselect = c2.multiselect(
-        l("リストにない食材を検索:"), [
+        l("リストにない食材を検索:"),
+        [
             item[1]["ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
-            for item in label_to_id_and_names.items()],[],
-        key=unique
+            for item in label_to_id_and_names.items()
+        ],
+        [],
+        key=unique,
     )
 
     if not_in_list_multiselect:  # TODO: use onchange to update selected_options
@@ -148,7 +153,7 @@ def page_1():
             st.session_state.selected_options.append(int(name_to_label[name]) - 1)
         st.session_state.click_dict["input_text"] = len(not_in_list_multiselect)
         st.rerun()
-    
+
     if c2.button(l("新しい食材候補を生成する")):
         st.session_state.click_dict["button"] += 1
         for item in predict_ingres:
@@ -159,7 +164,7 @@ def page_1():
     debug_print("predict_ingres", predict_ingres)
     debug_print("selected_ingres", selected_ingres)
     debug_print("selected_options", st.session_state.selected_options)
-        
+
     if c2.button(l("完了")):
         st.session_state.stage = StreamlitStep.AFTER_INGREDIENT_SELECTION_INIT
 
@@ -169,7 +174,6 @@ def page_1():
     st.session_state.click_dict["checkbox"] = (
         len(selected_ingres) - st.session_state.click_dict["input_text"]
     )
-
 
     ########################
     ##### Wight Input ######
@@ -209,20 +213,24 @@ def page_1():
         for ii in range(len(ingre_names)):
             value = round(float(median_weights[ii]), 1)
             min_value = 0.0
-            max_value = value*2
+            max_value = value * 2
             step = 0.1
             if value > 10:
                 value = round(value)
                 max_value = int(max_value)
-                min_value=  int(0)
+                min_value = int(0)
                 step = 1
             else:
                 value = float(value)
                 min_value = 0.0
                 step = 0.1
-            
-            slidelabel = ingre_names[ii] if len(ingre_names[ii])<40 else ingre_names[ii][:40]
-            median_weights[ii] = st.slider(slidelabel, min_value, max_value, value, step=step)
+
+            slidelabel = (
+                ingre_names[ii] if len(ingre_names[ii]) < 40 else ingre_names[ii][:40]
+            )
+            median_weights[ii] = st.slider(
+                slidelabel, min_value, max_value, value, step=step
+            )
 
     css = """
 <style>
@@ -238,7 +246,7 @@ def page_1():
 """
 
     st.markdown(css, unsafe_allow_html=True)
-        
+
     data = pd.DataFrame(
         {
             "ingredients": ingre_names,
@@ -254,8 +262,9 @@ def page_1():
     for i, row in data.iterrows():
         label = selected_ingres[i - 1]
         longname = label_to_id_and_names[int(label) + 1][
-            "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
-        shortname = longname if len(longname)<10 else longname[:10]
+            "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
+        ]
+        shortname = longname if len(longname) < 10 else longname[:10]
         food_label_amount_unit.append(
             {
                 "ingre_id": label_to_names_ids[int(label) + 1]["id"],
@@ -264,9 +273,7 @@ def page_1():
                 "canonical_name": shortname,
             }
         )
-    nutrients_df = get_nutri_df_from_food_dict(
-        food_label_amount_unit
-    )
+    nutrients_df = get_nutri_df_from_food_dict(food_label_amount_unit)
 
     necessary_nutrients = calculate_necessary_nutrients(
         users[st.session_state.username]["sex"],
@@ -304,35 +311,40 @@ def page_1():
     percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
 
     pfc_df = calc_pfc(nutrients_df)
-    #print('pfc\n', pfc_df.tolist())
+    # print('pfc\n', pfc_df.tolist())
     percent_fig2 = px.pie(
         values=pfc_df.tolist(),
         names=["Protain", "Fat", "Carb"],
         height=350,
     )
-        
-        
+
     data_df = nutrition_fact.copy()
     data_df = data_df.loc[ingre_ids]
-    data_df = data_df.drop(['index', 'JName'], axis=1)
-    data_df.insert(1, 'weight', 0)
+    data_df = data_df.drop(["index", "JName"], axis=1)
+    data_df.insert(1, "weight", 0)
 
     for ii in range(len(data_df)):
         data_df.iloc[ii, 1] = median_weights[ii]
         for jj in range(2, len(data_df.columns)):
-            if not math.isnan(data_df.iloc[ii,jj]):
-                data_df.iloc[ii,jj] = float(data_df.iloc[ii,jj]) * median_weights[ii] / 100
+            if not math.isnan(data_df.iloc[ii, jj]):
+                data_df.iloc[ii, jj] = (
+                    float(data_df.iloc[ii, jj]) * median_weights[ii] / 100
+                )
     append_sum_row_label(data_df)
-    #print(data_df)
+    # print(data_df)
 
     tab3, tab4, tab5 = st.tabs([l("主要栄養素"), l("PFCバランス"), l("栄養成分表")])
     with tab3:
         st.plotly_chart(percent_fig, use_container_width=True)
     with tab4:
         st.plotly_chart(percent_fig2, use_container_width=True, sort=False)
-        st.html(l("<b>PFCバランスとは？</b><br>三大栄養素であるタンパク質、脂質、炭水化物の摂取バランス。タンパク質は13～20%、脂質は20～30%、炭水化物は50～65%がよいとされています。<br>※20～39歳男女の目標<br>資料：厚生労働省「日本人の食事摂取基準（2020年版）」<br>"))
+        st.html(
+            l(
+                "<b>PFCバランスとは？</b><br>三大栄養素であるタンパク質、脂質、炭水化物の摂取バランス。タンパク質は13～20%、脂質は20～30%、炭水化物は50～65%がよいとされています。<br>※20～39歳男女の目標<br>資料：厚生労働省「日本人の食事摂取基準（2020年版）」<br>"
+            )
+        )
     with tab5:
-        #st.write(l("栄養成分表"))
+        # st.write(l("栄養成分表"))
         st.dataframe(data_df, width=800)
 
     if st.button(l("保存"), key="amount input done"):
@@ -362,12 +374,20 @@ def page_1():
     necessary_nutrients_per_meal = {
         key: value / 3 for key, value in necessary_nutrients.items()
     }
-    output = '<b>' + str(l("あなたの1食あたりの目標栄養摂取量は")) + '</b><br>\n'\
-        + str(l("カロリー {:.1f} kcal").format(necessary_nutrients_per_meal["kcal"])) + '<br>\n'\
-        +str(l("たんぱく質 {:.1f} g").format(necessary_nutrients_per_meal["protein"])) + '<br>\n'\
-        +str(l("脂質 {:.1f} g").format(necessary_nutrients_per_meal["fat"])) + '<br>\n'\
-        +str(l("炭水化物 {:.1f} g").format(necessary_nutrients_per_meal["carb"])) + '<br>\n'\
-        +str(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
+    output = (
+        "<b>"
+        + str(l("あなたの1食あたりの目標栄養摂取量は"))
+        + "</b><br>\n"
+        + str(l("カロリー {:.1f} kcal").format(necessary_nutrients_per_meal["kcal"]))
+        + "<br>\n"
+        + str(l("たんぱく質 {:.1f} g").format(necessary_nutrients_per_meal["protein"]))
+        + "<br>\n"
+        + str(l("脂質 {:.1f} g").format(necessary_nutrients_per_meal["fat"]))
+        + "<br>\n"
+        + str(l("炭水化物 {:.1f} g").format(necessary_nutrients_per_meal["carb"]))
+        + "<br>\n"
+        + str(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
+    )
     st.html(output)
 
 
@@ -388,13 +408,15 @@ def user_page():
     users = json.load(open("userdata/users.json"))
     current_sex = users[st.session_state.username]["sex"]
 
-    #st.title("User Page")
+    # st.title("User Page")
     sex_option = st.selectbox(
         l("性別"),
         (l("男性"), l("女性")),
         index=0 if current_sex == "male" else 1,
     )
-    age = st.slider(l("年齢"), min_value=1,
+    age = st.slider(
+        l("年齢"),
+        min_value=1,
         max_value=100,
         value=users[st.session_state.username]["age"],
     )
@@ -413,7 +435,9 @@ def user_page():
     physical_activity_level = st.select_slider(
         l("身体活動レベル"),
         options=phsical_label,
-        value=phsical_label[users[st.session_state.username]["physical_activity_level"] - 1],
+        value=phsical_label[
+            users[st.session_state.username]["physical_activity_level"] - 1
+        ],
     )
     if st.button(l("更新")):
         users[st.session_state.username]["sex"] = (
@@ -426,7 +450,7 @@ def user_page():
             else 2 if physical_activity_level == "II" else 3
         )
         json.dump(users, open("userdata/users.json", "w"), indent=4)
-    
+
     necessary_nutrients = calculate_necessary_nutrients(
         users[st.session_state.username]["sex"],
         users[st.session_state.username]["age"],
@@ -435,14 +459,21 @@ def user_page():
     necessary_nutrients_per_meal = {
         key: value / 3 for key, value in necessary_nutrients.items()
     }
-    output = '<b>' + str(l("あなたの1食あたりの目標栄養摂取量は")) + '</b><br>\n'\
-        + str(l("カロリー {:.1f} kcal").format(necessary_nutrients_per_meal["kcal"])) + '<br>\n'\
-        +str(l("たんぱく質 {:.1f} g").format(necessary_nutrients_per_meal["protein"])) + '<br>\n'\
-        +str(l("脂質 {:.1f} g").format(necessary_nutrients_per_meal["fat"])) + '<br>\n'\
-        +str(l("炭水化物 {:.1f} g").format(necessary_nutrients_per_meal["carb"])) + '<br>\n'\
-        +str(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
+    output = (
+        "<b>"
+        + str(l("あなたの1食あたりの目標栄養摂取量は"))
+        + "</b><br>\n"
+        + str(l("カロリー {:.1f} kcal").format(necessary_nutrients_per_meal["kcal"]))
+        + "<br>\n"
+        + str(l("たんぱく質 {:.1f} g").format(necessary_nutrients_per_meal["protein"]))
+        + "<br>\n"
+        + str(l("脂質 {:.1f} g").format(necessary_nutrients_per_meal["fat"]))
+        + "<br>\n"
+        + str(l("炭水化物 {:.1f} g").format(necessary_nutrients_per_meal["carb"]))
+        + "<br>\n"
+        + str(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
+    )
     st.html(output)
-
 
 
 def main():
@@ -455,7 +486,7 @@ def main():
         initial_sidebar_state="collapsed",
     )
 
-    #st.title("RecipeLog Web")
+    # st.title("RecipeLog Web")
     if "stage" not in st.session_state:
         st.title("Login")
         c1, _, _ = st.columns((1, 1, 1))
@@ -463,7 +494,7 @@ def main():
             l("アカウント:"),
         )
         password = c1.text_input(l("パスワード:"), type="password")
-        
+
         if c1.button("Login"):
             if not authenticate(username, password):
                 c1.error(l("アカウント／パスワードが正しくありません"))
@@ -479,6 +510,7 @@ def main():
 
         with tab2:
             user_page()
+
 
 if __name__ == "__main__":
     main()
