@@ -27,18 +27,6 @@ def get_label_to_id_and_names():
 
 
 @st.cache_data
-def get_name_to_label(label_to_id_and_names):
-    name_to_label = {}
-    for k in label_to_id_and_names.keys():
-        name_to_label[
-            label_to_id_and_names[k][
-                "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
-            ]
-        ] = k
-    return name_to_label
-
-
-@st.cache_data
 def get_normalized_co_occurrence_matrix():
     co_occurrence_matrix = np.load("Labels/co_occurrence_matrix.npy", allow_pickle=True)
     row_sums = co_occurrence_matrix.sum(axis=1, keepdims=True)
