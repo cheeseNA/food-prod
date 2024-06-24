@@ -15,4 +15,3 @@ def generate_localer(lang: str):
         return ja_to_en[key]
 
     return localer
-    return localer
