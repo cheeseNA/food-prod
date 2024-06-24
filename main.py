@@ -297,9 +297,9 @@ def page_1():
     nutrients_df = get_nutri_df_from_food_dict(food_label_amount_unit)
 
     necessary_nutrients = calculate_necessary_nutrients(
-        users[st.session_state.username]["sex"],
-        users[st.session_state.username]["age"],
-        users[st.session_state.username]["physical_activity_level"],
+        st.session_state.users[st.session_state.username]["sex"],
+        st.session_state.users[st.session_state.username]["age"],
+        st.session_state.users[st.session_state.username]["physical_activity_level"],
     )
     necessary_nutrients_per_meal = {
         key: value / 3 for key, value in necessary_nutrients.items()
@@ -387,14 +387,6 @@ def page_1():
         st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
     c2.success(l("食事記録を保存しました。"))
 
-    necessary_nutrients = calculate_necessary_nutrients(
-        users[st.session_state.username]["sex"],
-        users[st.session_state.username]["age"],
-        users[st.session_state.username]["physical_activity_level"],
-    )
-    necessary_nutrients_per_meal = {
-        key: value / 3 for key, value in necessary_nutrients.items()
-    }
     output = (
         "<b>"
         + str(l("あなたの1食あたりの目標栄養摂取量は"))
@@ -412,19 +404,8 @@ def page_1():
     st.html(output)
 
 
-users = json.load(open("userdata/users.json", "r"))
-
-
-def authenticate(username, password):
-    if username not in users:
-        return False
-    if users[username]["password"] == password:
-        return True
-    else:
-        return False
-
-
 def main():
+    st.session_state.users = json.load(open("userdata/users.json", "r")) # call at every run to get latest data
     st.session_state.lang = get_current_lang()
     l = generate_localer(st.session_state.lang)
     st.set_page_config(
@@ -443,7 +424,10 @@ def main():
         password = c1.text_input(l("パスワード:"), type="password")
 
         if c1.button("Login"):
-            if not authenticate(username, password):
+            if (
+                username not in st.session_state.users
+                or st.session_state.users[username]["password"] != password
+            ):
                 c1.error(l("アカウント／パスワードが正しくありません"))
             else:
                 st.session_state.username = username
