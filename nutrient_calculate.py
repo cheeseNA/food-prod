@@ -20,7 +20,6 @@ def get_nutrient_fact_from_excel():
 
 def append_sum_row_label(df):
     df.loc["Total"] = df.sum(numeric_only=True)
-    return df
 
 
 @st.cache_data

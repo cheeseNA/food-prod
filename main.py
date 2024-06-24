@@ -354,6 +354,21 @@ def page_1():
         # st.write(l("栄養成分表"))
         st.dataframe(data_df, width=800)
 
+    st.html(  # rethink where to put
+        "<b>"
+        + str(l("あなたの1食あたりの目標栄養摂取量は"))
+        + "</b><br>\n"
+        + str(l("カロリー {:.1f} kcal").format(necessary_nutrients_per_meal["kcal"]))
+        + "<br>\n"
+        + str(l("たんぱく質 {:.1f} g").format(necessary_nutrients_per_meal["protein"]))
+        + "<br>\n"
+        + str(l("脂質 {:.1f} g").format(necessary_nutrients_per_meal["fat"]))
+        + "<br>\n"
+        + str(l("炭水化物 {:.1f} g").format(necessary_nutrients_per_meal["carb"]))
+        + "<br>\n"
+        + str(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
+    )
+
     if st.button(l("保存"), key="amount input done"):
         st.session_state.stage = StreamlitStep.FINISH
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
@@ -370,24 +385,8 @@ def page_1():
             st.session_state.click_dict,
             st.session_state.start_time,
         )
+        st.success(l("食事記録を保存しました。"))
         st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
-    c2.success(l("食事記録を保存しました。"))
-
-    output = (
-        "<b>"
-        + str(l("あなたの1食あたりの目標栄養摂取量は"))
-        + "</b><br>\n"
-        + str(l("カロリー {:.1f} kcal").format(necessary_nutrients_per_meal["kcal"]))
-        + "<br>\n"
-        + str(l("たんぱく質 {:.1f} g").format(necessary_nutrients_per_meal["protein"]))
-        + "<br>\n"
-        + str(l("脂質 {:.1f} g").format(necessary_nutrients_per_meal["fat"]))
-        + "<br>\n"
-        + str(l("炭水化物 {:.1f} g").format(necessary_nutrients_per_meal["carb"]))
-        + "<br>\n"
-        + str(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
-    )
-    st.html(output)
 
 
 def main():
