@@ -224,6 +224,7 @@ def page_1():
     ingre_names = []
     ingre_exps = []
     median_weights = []
+    weights = []
     ingre_ids = []
     for item in selected_ingres:
         label_id = int(item) + 1
@@ -236,12 +237,13 @@ def page_1():
             ingre_names.append(label_to_names_ids[label_id]["en_abbr"])
             ingre_exps.append(label_to_names_ids[label_id]["en_full"])
         median_weights.append(ingre_id_to_weights[str(ingre_id)][2])
+        weights.append(0)
 
     st.write(l("一食分に使った量は何グラムですか？"))
 
     with st.container(height=200):
-        for ii in range(len(ingre_names)):
-            value = round(float(median_weights[ii]), 1)
+        for i, name in enumerate(ingre_names):
+            value = round(float(median_weights[i]), 1)
             min_value = 0.0
             max_value = value * 2
             step = 0.1
@@ -254,18 +256,12 @@ def page_1():
                 value = float(value)
                 min_value = 0.0
                 step = 0.1
-
-            slidelabel = (
-                ingre_names[ii] if len(ingre_names[ii]) < 40 else ingre_names[ii][:40]
-            )
-            median_weights[ii] = st.slider(
-                slidelabel, min_value, max_value, value, step=step
-            )
+            weights[i] = st.slider(name[:40], min_value, max_value, value, step=step)
 
     data = pd.DataFrame(
         {
             "ingredients": ingre_names,
-            "amount": median_weights,
+            "amount": weights,
             "unit": ["g"] * len(selected_ingres),
             "standard_exp": ingre_exps,
         }
@@ -276,16 +272,14 @@ def page_1():
     food_label_amount_unit = []
     for i, row in data.iterrows():
         label = selected_ingres[i - 1]
-        longname = label_to_id_and_names[int(label) + 1][
-            "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
-        ]
-        shortname = longname if len(longname) < 10 else longname[:10]
         food_label_amount_unit.append(
             {
                 "ingre_id": label_to_names_ids[int(label) + 1]["id"],
                 "amount": row["amount"],
                 "unit": row["unit"],
-                "canonical_name": shortname,
+                "canonical_name": label_to_id_and_names[int(label) + 1][
+                    "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
+                ][:10],
             }
         )
     nutrients_df = get_nutri_df_from_food_dict(food_label_amount_unit)
@@ -339,12 +333,10 @@ def page_1():
     data_df.insert(1, "weight", 0)
 
     for ii in range(len(data_df)):
-        data_df.iloc[ii, 1] = median_weights[ii]
+        data_df.iloc[ii, 1] = weights[ii]
         for jj in range(2, len(data_df.columns)):
             if not math.isnan(data_df.iloc[ii, jj]):
-                data_df.iloc[ii, jj] = (
-                    float(data_df.iloc[ii, jj]) * median_weights[ii] / 100
-                )
+                data_df.iloc[ii, jj] = float(data_df.iloc[ii, jj]) * weights[ii] / 100
     append_sum_row_label(data_df)
     # print(data_df)
 
@@ -374,7 +366,7 @@ def page_1():
             "method_2",
             ingre_ids,
             ingre_names,
-            median_weights,
+            weights,
             st.session_state.click_dict,
             st.session_state.start_time,
         )
