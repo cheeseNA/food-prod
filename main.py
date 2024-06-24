@@ -293,57 +293,41 @@ def page_1():
         key: value / 3 for key, value in necessary_nutrients.items()
     }
 
-    percent_df = get_percent_df(nutrients_df, **necessary_nutrients_per_meal)
-    percent_df[l("主要栄養素")] = [
-        l("カロリー"),
-        l("たんぱく質"),
-        l("脂質"),
-        l("炭水化物"),
-        l("塩分"),
-    ]
-    percent_fig = px.bar(
-        percent_df, x=l("主要栄養素"), y=percent_df.columns[1:].tolist()
-    ).update_layout(
-        yaxis_title=l("1食の目安量に対する割合 (%)"),
-        height=300,
-        legend=dict(itemwidth=30),
-    )
-    for trace in percent_fig.data:
-        raw_series = nutrients_df[trace.name]
-        raw_series = raw_series.apply(lambda x: f"{x:.1f}").str.cat(
-            ["kcal", "g", "g", "g", "g"], sep=" "
-        )
-        trace["customdata"] = raw_series
-        trace["hovertemplate"] = (
-            f"{trace.name}<br>" + "%{customdata}<br>%{y:.1f}%<extra></extra>"
-        )
-    percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
-
-    pfc_df = calc_pfc(nutrients_df)
-    # print('pfc\n', pfc_df.tolist())
-    percent_fig2 = px.pie(
-        values=pfc_df.tolist(),
-        names=["Protain", "Fat", "Carb"],
-        height=350,
-    )
-
-    data_df = nutrition_fact.copy()
-    data_df = data_df.loc[ingre_ids]
-    data_df = data_df.drop(["index", "JName"], axis=1)
-    data_df.insert(1, "weight", 0)
-
-    for ii in range(len(data_df)):
-        data_df.iloc[ii, 1] = weights[ii]
-        for jj in range(2, len(data_df.columns)):
-            if not math.isnan(data_df.iloc[ii, jj]):
-                data_df.iloc[ii, jj] = float(data_df.iloc[ii, jj]) * weights[ii] / 100
-    append_sum_row_label(data_df)
-    # print(data_df)
-
     tab3, tab4, tab5 = st.tabs([l("主要栄養素"), l("PFCバランス"), l("栄養成分表")])
     with tab3:
+        percent_df = get_percent_df(nutrients_df, **necessary_nutrients_per_meal)
+        percent_df[l("主要栄養素")] = [
+            l("カロリー"),
+            l("たんぱく質"),
+            l("脂質"),
+            l("炭水化物"),
+            l("塩分"),
+        ]
+        percent_fig = px.bar(
+            percent_df, x=l("主要栄養素"), y=percent_df.columns[1:].tolist()
+        ).update_layout(
+            yaxis_title=l("1食の目安量に対する割合 (%)"),
+            height=300,
+            legend=dict(itemwidth=30),
+        )
+        for trace in percent_fig.data:
+            raw_series = nutrients_df[trace.name]
+            raw_series = raw_series.apply(lambda x: f"{x:.1f}").str.cat(
+                ["kcal", "g", "g", "g", "g"], sep=" "
+            )
+            trace["customdata"] = raw_series
+            trace["hovertemplate"] = (
+                f"{trace.name}<br>" + "%{customdata}<br>%{y:.1f}%<extra></extra>"
+            )
+        percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
         st.plotly_chart(percent_fig, use_container_width=True)
     with tab4:
+        pfc_df = calc_pfc(nutrients_df)
+        percent_fig2 = px.pie(
+            values=pfc_df.tolist(),
+            names=["Protain", "Fat", "Carb"],
+            height=350,
+        )
         st.plotly_chart(percent_fig2, use_container_width=True, sort=False)
         st.html(
             l(
@@ -351,7 +335,17 @@ def page_1():
             )
         )
     with tab5:
-        # st.write(l("栄養成分表"))
+        data_df = nutrition_fact.copy()
+        data_df = data_df.loc[ingre_ids]
+        data_df = data_df.drop(["index", "JName"], axis=1)
+        data_df.insert(1, "weight", 0)
+
+        for ii in range(len(data_df)):
+            data_df.iloc[ii, 1] = weights[ii]
+            for jj in range(2, len(data_df.columns)):
+                if not math.isnan(data_df.iloc[ii, jj]):
+                    data_df.iloc[ii, jj] = float(data_df.iloc[ii, jj]) * weights[ii] / 100
+        append_sum_row_label(data_df)
         st.dataframe(data_df, width=800)
 
     st.html(  # rethink where to put
