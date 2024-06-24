@@ -50,6 +50,24 @@ class StreamlitStep(IntEnum):
 
 
 def page_1():
+    st.markdown(
+        """
+<style>
+    div[data-testid="stVerticalBlock"] {
+            gap:0.2rem
+    }
+    .stSlider [data-testid="stTickBar"] {
+        display: none;
+    }
+    .stSlider label {
+        display: block;
+        text-align: left;
+        height: 0px;
+    }
+</style>
+    """,
+        unsafe_allow_html=True,
+    )
     debug_print("-" * 50)
     l = generate_localer(st.session_state.lang)
 
@@ -113,17 +131,6 @@ def page_1():
     ##### Ingredient Input ######
     ########################
     c2.write(l("材料にチェックを入れて下さい。"))
-
-    st.markdown(
-        """
-<style>
-        div[data-testid="stVerticalBlock"] {
-            gap:0.2rem
-    }
-</style>
-    """,
-        unsafe_allow_html=True,
-    )
 
     for item in st.session_state.selected_options:
         c2.checkbox(
@@ -194,6 +201,10 @@ def page_1():
         len(selected_ingres) - st.session_state.click_dict["input_text"]
     )
 
+    if st.session_state.stage == StreamlitStep.AFTER_INGREDIENT_SELECTION_INIT:
+        # currently not used
+        st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
+
     ########################
     ##### Wight Input ######
     ########################
@@ -250,21 +261,6 @@ def page_1():
             median_weights[ii] = st.slider(
                 slidelabel, min_value, max_value, value, step=step
             )
-
-    css = """
-<style>
-    .stSlider [data-testid="stTickBar"] {
-        display: none;
-    }
-    .stSlider label {
-        display: block;
-        text-align: left;
-        height: 0px;
-    }
-</style>
-"""
-
-    st.markdown(css, unsafe_allow_html=True)
 
     data = pd.DataFrame(
         {
