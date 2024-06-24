@@ -17,13 +17,12 @@ from nutrient_calculate import (
     calc_pfc,
     calculate_necessary_nutrients,
     get_nutri_df_from_food_dict,
-    get_percent_df,
     get_nutrient_fact_from_excel,
+    get_percent_df,
 )
 from recipelog import (
     get_json_from_file,
     get_label_to_id_and_names,
-    get_name_to_label,
     save_results,
     update_mask,
 )
@@ -57,7 +56,6 @@ def page_1():
         st.session_state.click_dict = {"button": 0, "checkbox": 0, "input_text": 0}
 
     label_to_id_and_names = get_label_to_id_and_names()
-    name_to_label = get_name_to_label(label_to_id_and_names)
     nutrition_fact = get_nutrient_fact_from_excel()
 
     ########################
@@ -166,7 +164,11 @@ def page_1():
         key=unique,
     )
 
-    if not_in_list_multiselect:  # TODO: use onchange to update selected_options
+    if not_in_list_multiselect:
+        name_to_label = {
+            item["ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]: key
+            for key, item in label_to_id_and_names.items()
+        }
         for name in not_in_list_multiselect:
             st.session_state.selected_options.append(int(name_to_label[name]) - 1)
         st.session_state.click_dict["input_text"] = len(not_in_list_multiselect)
