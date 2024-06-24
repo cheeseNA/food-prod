@@ -50,6 +50,7 @@ class StreamlitStep(IntEnum):
 
 
 def page_1():
+    debug_print("-" * 50)
     l = generate_localer(st.session_state.lang)
 
     if st.session_state.stage == StreamlitStep.SESSION_WHILE_INIT:
@@ -92,9 +93,7 @@ def page_1():
     if st.session_state.stage <= StreamlitStep.IMAGE_UPLOADED:
         return
 
-    debug_print("st.session_state:\n", st.session_state)
-
-    unique = 0
+    # debug_print("st.session_state:\n", st.session_state)
     # collect all selected ingredients
     selected_ingres = [  # 0-indexed int label
         item for item in st.session_state.selected_options
@@ -127,8 +126,6 @@ def page_1():
     )
 
     for item in st.session_state.selected_options:
-        # print('food:', label_to_id_and_names[int(item) + 1])
-        unique += 1
         c2.checkbox(
             label_to_id_and_names[int(item) + 1][
                 "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
@@ -136,13 +133,11 @@ def page_1():
             value=True,
             on_change=lambda x: st.session_state.selected_options.remove(x),
             args=(item,),
-            key=unique,
         )
 
     for item in predict_ingres:
         if item in st.session_state.selected_options:
             continue
-        unique += 1
         c2.checkbox(
             label_to_id_and_names[int(item) + 1][
                 "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
@@ -150,30 +145,33 @@ def page_1():
             value=False,
             on_change=lambda x: st.session_state.selected_options.append(x),
             args=(item,),
-            key=unique,
         )
 
+    def multiselect_on_change():
+        name_to_label = {
+            item["ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]: key
+            for key, item in label_to_id_and_names.items()
+        }
+        for item in st.session_state["not_in_list_multiselect"]:
+            label = int(name_to_label[item]) - 1
+            if label in st.session_state.selected_options:
+                continue
+            st.session_state.selected_options.append(label)
+        st.session_state["not_in_list_multiselect"] = []
+        st.session_state.click_dict["input_text"] = len(
+            st.session_state["not_in_list_multiselect"]
+        )  # meaningless any more
+
     # Search box
-    unique += 1
-    not_in_list_multiselect = c2.multiselect(
+    c2.multiselect(
         l("リストにない食材を検索:"),
         [
             item[1]["ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
             for item in label_to_id_and_names.items()
         ],
-        [],
-        key=unique,
+        key="not_in_list_multiselect",
+        on_change=multiselect_on_change,
     )
-
-    if not_in_list_multiselect:
-        name_to_label = {
-            item["ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]: key
-            for key, item in label_to_id_and_names.items()
-        }
-        for name in not_in_list_multiselect:
-            st.session_state.selected_options.append(int(name_to_label[name]) - 1)
-        st.session_state.click_dict["input_text"] = len(not_in_list_multiselect)
-        st.rerun()
 
     if c2.button(l("新しい食材候補を生成する")):
         st.session_state.click_dict["button"] += 1
@@ -405,7 +403,9 @@ def page_1():
 
 
 def main():
-    st.session_state.users = json.load(open("userdata/users.json", "r")) # call at every run to get latest data
+    st.session_state.users = json.load(
+        open("userdata/users.json", "r")
+    )  # call at every run to get latest data
     st.session_state.lang = get_current_lang()
     l = generate_localer(st.session_state.lang)
     st.set_page_config(
