@@ -8,11 +8,11 @@ FAT_CALORIE_RATIO = 0.25
 PROTAIN_CALORIE_PAR_GRAM = 4
 CARB_CALORIE_PAR_GRAM = 4
 FAT_CALORIE_PAR_GRAM = 9
-NECESSARY_SALT = 6  ## TODO: rethink this value
+NECESSARY_SALT = 6  # TODO: rethink this value
 
 
 @st.cache_data
-def getNutrientFact():
+def get_nutrient_fact_from_excel():
     df = pd.read_excel("Labels/FoodStandard.xlsx", index_col=0)
     print(df)
     return df

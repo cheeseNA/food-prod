@@ -4,15 +4,7 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
-import pandas as pd
 import streamlit as st
-
-DEBUG = True
-
-
-def debug_print(*args, **kwargs):
-    if DEBUG:
-        print(*args, **kwargs)
 
 
 @st.cache_data
@@ -114,7 +106,6 @@ def save_results(
 
     filename = f"image_{next_serial_number}.png"
     image_path = os.path.join(directory, filename)
-    debug_print(image_path)
     image_file.save(image_path)
 
     result_data = {

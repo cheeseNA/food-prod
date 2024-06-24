@@ -1,6 +1,5 @@
 import json
 import math
-import os
 from datetime import datetime
 from enum import IntEnum
 
@@ -11,10 +10,30 @@ import streamlit as st
 from PIL import Image
 from plotly import express as px
 
-from imageproc import *
+from imageproc import get_current_candidate
 from locales.locale import generate_localer, get_current_lang
-from nutrient_calculate import *
-from recipelog import *
+from nutrient_calculate import (
+    append_sum_row_label,
+    calc_pfc,
+    calculate_necessary_nutrients,
+    get_nutri_df_from_food_dict,
+    get_percent_df,
+    get_nutrient_fact_from_excel,
+)
+from recipelog import (
+    get_json_from_file,
+    get_label_to_id_and_names,
+    get_name_to_label,
+    save_results,
+    update_mask,
+)
+
+DEBUG = True
+
+
+def debug_print(*args, **kwargs):
+    if DEBUG:
+        print(*args, **kwargs)
 
 
 class StreamlitStep(IntEnum):
@@ -32,11 +51,14 @@ class StreamlitStep(IntEnum):
 
 def page_1():
     l = generate_localer(st.session_state.lang)
-    # st.title(l("材料リストによる食事管理"))
+
+    if st.session_state.stage == StreamlitStep.SESSION_WHILE_INIT:
+        st.session_state.stage = StreamlitStep.WAIT_FOR_IMAGE
+        st.session_state.click_dict = {"button": 0, "checkbox": 0, "input_text": 0}
 
     label_to_id_and_names = get_label_to_id_and_names()
     name_to_label = get_name_to_label(label_to_id_and_names)
-    nutrition_fact = getNutrientFact()
+    nutrition_fact = get_nutrient_fact_from_excel()
 
     ########################
     ##### Image upload  ####
@@ -49,10 +71,6 @@ def page_1():
         type=["jpg", "jpeg", "png"],
         on_change=change_stage_to_image_uploaded,
     )
-
-    if st.session_state.stage == StreamlitStep.SESSION_WHILE_INIT:
-        st.session_state.stage = StreamlitStep.WAIT_FOR_IMAGE
-        st.session_state.click_dict = {"button": 0, "checkbox": 0, "input_text": 0}
 
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_IMAGE:
         return
@@ -102,7 +120,7 @@ def page_1():
         """
 <style>
         div[data-testid="stVerticalBlock"] {
-            gap:0rem
+            gap:0.2rem
     }
 </style>
     """,
@@ -486,7 +504,6 @@ def main():
         initial_sidebar_state="collapsed",
     )
 
-    # st.title("RecipeLog Web")
     if "stage" not in st.session_state:
         st.title("Login")
         c1, _, _ = st.columns((1, 1, 1))
