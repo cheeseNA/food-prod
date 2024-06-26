@@ -3,6 +3,24 @@ import json
 import pandas as pd
 import streamlit as st
 
+CARB_CALORIE_RATIO = 0.575
+FAT_CALORIE_RATIO = 0.25
+PROTAIN_CALORIE_PAR_GRAM = 4
+CARB_CALORIE_PAR_GRAM = 4
+FAT_CALORIE_PAR_GRAM = 9
+NECESSARY_SALT = 6  # TODO: rethink this value
+
+
+@st.cache_data
+def get_nutrient_fact_from_excel():
+    df = pd.read_excel("Labels/FoodStandard.xlsx", index_col=0)
+    print(df)
+    return df
+
+
+def append_sum_row_label(df):
+    df.loc["Total"] = df.sum(numeric_only=True)
+
 
 @st.cache_data
 def get_nutri_df_from_food_dict(food_label_amount_unit: dict):
@@ -30,9 +48,7 @@ def get_nutri_df_from_food_dict(food_label_amount_unit: dict):
         ingre_id = food_item["ingre_id"]
 
         to_gram = (
-            unit_trans_csv.loc[unit_trans_csv["食品番号"] == ingre_id, unit].iloc[
-                0
-            ]
+            unit_trans_csv.loc[unit_trans_csv["食品番号"] == ingre_id, unit].iloc[0]
             if unit != "g"
             else 1
         )
@@ -42,7 +58,9 @@ def get_nutri_df_from_food_dict(food_label_amount_unit: dict):
         nutri_list = []
         for code in nutrient_codes:
             try:
-                nutri_list.append(float(nutrients_infos[str(ingre_id)][code]) * weight / 100)
+                nutri_list.append(
+                    float(nutrients_infos[str(ingre_id)][code]) * weight / 100
+                )
             except ValueError:
                 nutri_list.append(float(0))
         nutrient[canonical_name] = nutri_list
@@ -62,6 +80,31 @@ def get_nutri_df_from_food_dict(food_label_amount_unit: dict):
         )
     )
     return nutrients_df
+
+
+@st.cache_data
+def get_percent_df(df, kcal, protein, fat, carb, salt):
+    percent_df = df.copy()
+    percent_df["target"] = [kcal, protein, fat, carb, salt]
+    percent_df.iloc[:, 1:] = (
+        percent_df.iloc[:, 1:].div(percent_df["target"], axis=0) * 100
+    )
+    percent_df.drop("target", axis=1, inplace=True)
+    print(percent_df)
+    percent_df["主要栄養素"] = ["カロリー", "たんぱく質", "脂質", "炭水化物", "塩分"]
+    percent_df = percent_df.round(2)
+    return percent_df
+
+
+@st.cache_data
+def calc_pfc(df):
+    pfc_df = df.copy().iloc[1:4, 1:].sum(axis=1)
+    pfc_df.iloc[0] = pfc_df.iloc[0] * PROTAIN_CALORIE_PAR_GRAM
+    pfc_df.iloc[1] = pfc_df.iloc[1] * FAT_CALORIE_PAR_GRAM
+    pfc_df.iloc[2] = pfc_df.iloc[2] * CARB_CALORIE_PAR_GRAM
+    # print('nutrients_df\n', df)
+    # print('nutrients_df\n', pfc_df)#.sum(axis=1)
+    return pfc_df
 
 
 def get_necessary_calories(sex: str, age: int, physical_activity_level: int) -> int:
@@ -93,11 +136,6 @@ def calculate_necessary_nutrients(sex: str, age: int, physical_activity_level: i
     Return dictionary with keys 'kcal', 'protein', 'fat', 'carb', 'salt'.
     If some data is missing, return None.
     """
-    CARB_CALORIE_RATIO = 0.575
-    FAT_CALORIE_RATIO = 0.25
-    CARB_CALORIE_PAR_GRAM = 4
-    FAT_CALORIE_PAR_GRAM = 9
-    NECESSARY_SALT = 6  ## TODO: rethink this value
     necessary_calories = get_necessary_calories(sex, age, physical_activity_level)
     necessary_protein = get_necessary_protein(sex, age)
     if necessary_calories is None or necessary_protein is None:
