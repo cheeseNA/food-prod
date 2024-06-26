@@ -40,22 +40,28 @@ def sigmoid(x, a):
 
 @st.cache_data
 def update_mask(selected_items, mask):
+    """
+    処理1:
+    selected_itemsとの共起の確率が低いものはマスクする.
+    thresholdでどれくらいの確率からマスクするかをコントロールできる.
+    処理2:
+    選択した食材につき, シグモイド関数に1+normalized_matrixを入力しマスクを更新することを繰り返す.
+    最後はマスクの合計が588になるよう正規化する.
+
+    複数回同じselected_itemsを入力すると, 初回のみmaksの更新が行われるような実装になっている.
+    """
     normalized_matrix = get_normalized_co_occurrence_matrix()
     threshold = 0.0
     normalized_matrix = np.where(
         normalized_matrix < threshold / 100, 0, normalized_matrix
     )
-    # print('XXXX', normalized_matrix)
-    # print('selected_items', selected_items)
     for selected in selected_items:
         if mask[selected] != 0.0:
             # print(selected)
-            # print(sigmoid(normalized_matrix[selected]+1, 1))
+            # print(sigmoid(normalized_matrix[selected] + 1, 1)) # [0.73483725 0.73735383 0.74200039...]
             mask[selected] = 0.0
             mask = mask * sigmoid(normalized_matrix[selected] + 1, 1)
     mask = mask / np.sum(mask) * 588
-    # print('YYYY', mask)
-    # print(len(mask), np.sum(mask))
     return mask
 
 
