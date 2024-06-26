@@ -76,7 +76,6 @@ def page_1():
         st.session_state.click_dict = {"button": 0, "checkbox": 0, "input_text": 0}
 
     label_to_id_and_names = get_label_to_id_and_names()
-    nutrition_fact = get_nutrient_fact_from_excel()
 
     ########################
     ##### Image upload  ####
@@ -332,6 +331,7 @@ def page_1():
             )
         )
     with tab5:
+        nutrition_fact = get_nutrient_fact_from_excel()
         data_df = nutrition_fact.copy()
         data_df = data_df.loc[ingre_ids]
         data_df = data_df.drop(["index", "JName"], axis=1)
