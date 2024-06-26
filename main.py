@@ -10,6 +10,7 @@ import streamlit as st
 from PIL import Image
 from plotly import express as px
 
+from environment_calculate import get_environment_df
 from imageproc import get_current_candidate
 from locales.locale import generate_localer, get_current_lang
 from nutrient_calculate import (
@@ -254,7 +255,7 @@ def page_1():
                 step = 0.1
             weights[i] = st.slider(name[:40], min_value, max_value, value, step=step)
 
-    data = pd.DataFrame(
+    data = pd.DataFrame(  # TODO: もう使われていないので削除, 直接food_label_amount_unitを作るようにする
         {
             "ingredients": ingre_names,
             "amount": weights,
@@ -289,7 +290,9 @@ def page_1():
         key: value / 3 for key, value in necessary_nutrients.items()
     }
 
-    tab3, tab4, tab5 = st.tabs([l("主要栄養素"), l("PFCバランス"), l("栄養成分表")])
+    tab3, tab4, tab5, tab6 = st.tabs(
+        [l("主要栄養素"), l("PFCバランス"), l("栄養成分表"), l("環境への影響")]
+    )
     with tab3:
         percent_df = get_percent_df(nutrients_df, **necessary_nutrients_per_meal)
         percent_df[l("主要栄養素")] = [
@@ -316,7 +319,7 @@ def page_1():
                 f"{trace.name}<br>" + "%{customdata}<br>%{y:.1f}%<extra></extra>"
             )
         percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
-        st.plotly_chart(percent_fig, use_container_width=True)
+        tab3.plotly_chart(percent_fig, use_container_width=True)
     with tab4:
         pfc_df = calc_pfc(nutrients_df)
         percent_fig2 = px.pie(
@@ -346,6 +349,28 @@ def page_1():
                     )
         append_sum_row_label(data_df)
         st.dataframe(data_df, width=800)
+    with tab6:
+        env_dataset_df = get_environment_df()
+        food_env_df = pd.DataFrame(
+            {l("環境への影響"): [l("TMR係数"), "GWP", l("反応性窒素")]}
+        )
+        for food in food_label_amount_unit:
+            food_id = food["ingre_id"]
+            food_env_df[food["canonical_name"]] = (
+                env_dataset_df.loc[food_id].values * float(food["amount"]) / 1000
+            )  # TODO: 現在はamountがgだが, 今後g意外も選択できるようになったら修正
+        debug_print("food_env_df", food_env_df)
+        environment_fig = px.bar(
+            food_env_df, x=l("環境への影響"), y=food_env_df.columns[1:].tolist()
+        )
+        tab6.plotly_chart(environment_fig, use_container_width=True)
+        st.html(
+            l(
+                "TMR係数 (Total Material Requirement)とは, その食品を提供するために必要な採掘活動量です"
+            )
+        )
+        st.html(l("GWP (Global Warming Potential)とは, 温室効果ガスの排出量です"))
+        st.html(l("反応性窒素とは, 窒素酸化物の排出量です"))
 
     st.html(  # rethink where to put
         "<b>"

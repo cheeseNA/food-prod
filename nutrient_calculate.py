@@ -14,7 +14,6 @@ NECESSARY_SALT = 6  # TODO: rethink this value
 @st.cache_data
 def get_nutrient_fact_from_excel():
     df = pd.read_excel("Labels/FoodStandard.xlsx", index_col=0)
-    print(df)
     return df
 
 
@@ -90,7 +89,6 @@ def get_percent_df(df, kcal, protein, fat, carb, salt):
         percent_df.iloc[:, 1:].div(percent_df["target"], axis=0) * 100
     )
     percent_df.drop("target", axis=1, inplace=True)
-    print(percent_df)
     percent_df["主要栄養素"] = ["カロリー", "たんぱく質", "脂質", "炭水化物", "塩分"]
     percent_df = percent_df.round(2)
     return percent_df
