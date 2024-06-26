@@ -112,12 +112,9 @@ def page_1():
         return
 
     # debug_print("st.session_state:\n", st.session_state)
-    # collect all selected ingredients
-    selected_ingres = [  # 0-indexed int label
-        item for item in st.session_state.selected_options
-    ]
+
     st.session_state.mask = update_mask(
-        selected_ingres,
+        st.session_state.selected_options,
         st.session_state.mask,
     )
 
@@ -183,12 +180,11 @@ def page_1():
     if c2.button(l("新しい食材候補を生成する")):
         st.session_state.click_dict["button"] += 1
         for item in predict_ingres:
-            if item not in selected_ingres:
+            if item not in st.session_state.selected_options:
                 st.session_state.mask[item] = 0
         st.rerun()
 
     debug_print("predict_ingres", predict_ingres)
-    debug_print("selected_ingres", selected_ingres)
     debug_print("selected_options", st.session_state.selected_options)
 
     if c2.button(l("完了")):
@@ -198,7 +194,8 @@ def page_1():
         return
 
     st.session_state.click_dict["checkbox"] = (
-        len(selected_ingres) - st.session_state.click_dict["input_text"]
+        len(st.session_state.selected_options)
+        - st.session_state.click_dict["input_text"]
     )
 
     if st.session_state.stage == StreamlitStep.AFTER_INGREDIENT_SELECTION_INIT:
@@ -226,7 +223,7 @@ def page_1():
     median_weights = []
     weights = []
     ingre_ids = []
-    for item in selected_ingres:
+    for item in st.session_state.selected_options:
         label_id = int(item) + 1
         ingre_id = label_to_names_ids[label_id]["id"]
         ingre_ids.append(ingre_id)
@@ -262,7 +259,7 @@ def page_1():
         {
             "ingredients": ingre_names,
             "amount": weights,
-            "unit": ["g"] * len(selected_ingres),
+            "unit": ["g"] * len(st.session_state.selected_options),
             "standard_exp": ingre_exps,
         }
     )
@@ -271,7 +268,7 @@ def page_1():
 
     food_label_amount_unit = []
     for i, row in data.iterrows():
-        label = selected_ingres[i - 1]
+        label = st.session_state.selected_options[i - 1]
         food_label_amount_unit.append(
             {
                 "ingre_id": label_to_names_ids[int(label) + 1]["id"],
@@ -344,7 +341,9 @@ def page_1():
             data_df.iloc[ii, 1] = weights[ii]
             for jj in range(2, len(data_df.columns)):
                 if not math.isnan(data_df.iloc[ii, jj]):
-                    data_df.iloc[ii, jj] = float(data_df.iloc[ii, jj]) * weights[ii] / 100
+                    data_df.iloc[ii, jj] = (
+                        float(data_df.iloc[ii, jj]) * weights[ii] / 100
+                    )
         append_sum_row_label(data_df)
         st.dataframe(data_df, width=800)
 
