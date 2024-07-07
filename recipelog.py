@@ -1,5 +1,6 @@
 import json
 import os
+import uuid
 from datetime import datetime
 
 import numpy as np
@@ -81,7 +82,12 @@ def save_results(
     weights,
     click_dict,
     start_time,
-):
+) -> str:
+    """
+    parameterの情報をjsonファイルに保存する.
+    データ参照用のuuidを返す.
+    """
+    result_uuid = str(uuid.uuid4())
     current_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
     end_time = datetime.now()
     time_difference = end_time - start_time
@@ -115,7 +121,9 @@ def save_results(
         "click_dict": click_dict,
         "used_time": time_difference.total_seconds(),
         "current_time": current_time,
+        "uuid": result_uuid,
     }
 
     with open(output_path, "w", encoding="utf-8") as file:
         json.dump(result_data, file, ensure_ascii=False, indent=4)
+    return result_uuid
