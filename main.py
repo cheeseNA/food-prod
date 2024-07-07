@@ -393,7 +393,7 @@ def page_1():
         return
 
     if st.session_state.stage == StreamlitStep.FINISH:
-        save_results(
+        result_uuid = save_results(
             st.session_state.username,
             image,
             "method_2",
@@ -404,6 +404,9 @@ def page_1():
             st.session_state.start_time,
         )
         st.success(l("食事記録を保存しました。"))
+        st.markdown(
+            l("[記録]") + f"(result?user={st.session_state.username}&id={result_uuid})"
+        )
         st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
 
 
