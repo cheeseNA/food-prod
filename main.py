@@ -28,6 +28,7 @@ from recipelog import (
     update_mask,
 )
 from user_page import user_page
+from record import record
 
 DEBUG = True
 
@@ -136,6 +137,7 @@ def page_1():
             ],
             value=True,
             on_change=lambda x: st.session_state.selected_options.remove(x),
+            key=item,
             args=(item,),
         )
 
@@ -148,6 +150,7 @@ def page_1():
             ],
             value=False,
             on_change=lambda x: st.session_state.selected_options.append(x),
+            key=item,
             args=(item,),
         )
 
@@ -387,24 +390,35 @@ def page_1():
         + str(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
     )
 
+    # ユーザに日付を入力させる
+    date_input = st.date_input('日付を選択してください')
+
+    # ユーザに時刻を入力させる
+    time_input = st.time_input('時刻を選択してください')
+
     if st.button(l("保存"), key="amount input done"):
         st.session_state.stage = StreamlitStep.FINISH
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
         return
 
     if st.session_state.stage == StreamlitStep.FINISH:
-        save_results(
-            st.session_state.username,
-            image,
-            "method_2",
-            ingre_ids,
-            ingre_names,
-            weights,
-            st.session_state.click_dict,
-            st.session_state.start_time,
-        )
-        st.success(l("食事記録を保存しました。"))
-        st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
+
+
+        if (date_input and time_input):
+            save_results(
+                st.session_state.username,
+                image,
+                "default",
+                ingre_ids,
+                ingre_names,
+                weights,
+                date_input,
+                time_input,
+                st.session_state.click_dict,
+                st.session_state.start_time,
+            )
+            st.success(l("食事記録を保存しました。"))
+            st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
 
 
 def main():
@@ -440,11 +454,13 @@ def main():
                 st.session_state.stage = StreamlitStep.SESSION_WHILE_INIT
                 st.rerun()
     else:
-        tab1, tab2 = st.tabs([l("メイン"), l("ユーザ情報")])
+        tab1, tab2, tab3 = st.tabs([l("メイン"), l("ユーザ情報"), l("食事記録")])
         with tab1:
             page_1()
         with tab2:
             user_page()
+        with tab3:
+            record()
 
 
 if __name__ == "__main__":

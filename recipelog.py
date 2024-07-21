@@ -5,7 +5,8 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 import streamlit as st
-
+from pathlib import Path
+import hashlib
 
 @st.cache_data
 def get_label_to_id_and_names():
@@ -71,7 +72,6 @@ def get_json_from_file(file_path):
         data = json.load(file)
     return data
 
-
 def save_results(
     username,
     image_file,
@@ -79,30 +79,34 @@ def save_results(
     ingre_ids,
     ingre_names,
     weights,
+    date_input,
+    time_input,
     click_dict,
     start_time,
 ):
-    current_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+    # 「保存」を実行した時刻
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+    # この食事記録のためのハッシュ値を生成
+    combined_input = f"{username}_{current_time}"
+    hash_object = hashlib.sha1(combined_input.encode())
+    hash_hex = hash_object.hexdigest()
+
+    record_time = datetime.combine(date_input, time_input).strftime("%Y-%m-%d_%H-%M-%S")
+
     end_time = datetime.now()
     time_difference = end_time - start_time
-    directory = f"Results/{username}/"
+    directory = f"Records/{username}/"
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    existing_files = [
-        file
-        for file in os.listdir(directory)
-        if file.startswith("result") and file.endswith(".json")
-    ]
-    next_serial_number = len(existing_files) + 1
-
-    output_path = f"{directory}result_{next_serial_number}_{method}_{current_time}.json"
-
-    filename = f"image_{next_serial_number}.png"
+    output_path = f"{directory}Record_{hash_hex}.json"
+    filename = f"image_{hash_hex}.png"
     image_path = os.path.join(directory, filename)
     image_file.save(image_path)
 
     result_data = {
+        "record_time":record_time,
         "username": username,
         "image": {
             "filename": filename,
@@ -116,6 +120,24 @@ def save_results(
         "used_time": time_difference.total_seconds(),
         "current_time": current_time,
     }
-
     with open(output_path, "w", encoding="utf-8") as file:
         json.dump(result_data, file, ensure_ascii=False, indent=4)
+
+    # このユーザの食事履歴のリストを更新
+    food_record = os.path.join(directory, "Record.json")
+    if os.path.exists(food_record):
+        with open(food_record, 'r') as file:
+            records = json.load(file)
+    else:
+        records = {}
+
+    records[hash_hex] = {
+        "record_time":record_time, # いつの食事記録か？
+        "create_time": current_time, # 食事記録が生成された時間
+        "edit_time": current_time, # 食事記録が編集された時間
+        "active":True, # 現在も使われているかどうか
+        "duplicate_from": None # 元の食事記録はいつのものか？
+    }
+    with open(food_record, "w", encoding="utf-8") as file:
+        json.dump(records, file, ensure_ascii=False, indent=4)
+    
