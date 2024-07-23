@@ -421,16 +421,16 @@ def main():
         st.title("Login")
         c1, _, _ = st.columns((1, 1, 1))
         username = c1.text_input(
-            "Account/アカウント",
+            "Account / アカウント",
         )
-        password = c1.text_input("Password/パスワード", type="password")
+        password = c1.text_input("Password / パスワード", type="password")
 
         if c1.button("Login"):
             if (
                 username not in st.session_state.users
                 or st.session_state.users[username]["password"] != password
             ):
-                c1.error("Account/password is incorrect. アカウント／パスワードが正しくありません。")
+                c1.error("Password is incorrect. パスワードが正しくありません。")
             else:
                 st.session_state.username = username
                 st.session_state.lang = st.session_state.users[username]["lang"]
