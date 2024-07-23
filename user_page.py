@@ -13,7 +13,7 @@ def user_page():
     To avoid impacting other pages, we should not set session_state variables in this function.
     """
     l = generate_localer(st.session_state.lang)
-    users = json.load(open("userdata/users.json"))
+    users = json.load(open("userdata/users.json", "r", encoding="utf-8"))
 
     current_lang = users[st.session_state.username]["lang"]
     lang_option = st.selectbox(
@@ -68,7 +68,7 @@ def user_page():
             if physical_activity_level == "I"
             else 2 if physical_activity_level == "II" else 3
         )
-        json.dump(users, open("userdata/users.json", "w"), indent=4)
+        json.dump(users, open("userdata/users.json", "w", encoding="utf-8"), indent=4)
         st.rerun()
 
     necessary_nutrients = calculate_necessary_nutrients(
