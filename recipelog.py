@@ -98,11 +98,11 @@ def save_results(
 
     end_time = datetime.now()
     time_difference = end_time - start_time
-    directory = f"Records/{username}/"
+    directory = f"records/{username}/"
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    output_path = f"{directory}Record_{hash_hex}.json"
+    output_path = f"{directory}record_{hash_hex}.json"
     filename = f"image_{hash_hex}.png"
     image_path = os.path.join(directory, filename)
     image_file.save(image_path)
@@ -126,7 +126,7 @@ def save_results(
         json.dump(result_data, file, ensure_ascii=False, indent=4)
 
     # このユーザの食事履歴のリストを更新
-    food_record = os.path.join(directory, "Record.json")
+    food_record = os.path.join(directory, "record.json")
     if os.path.exists(food_record):
         with open(food_record, "r") as file:
             records = json.load(file)

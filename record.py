@@ -27,12 +27,12 @@ def record():
     l = generate_localer(st.session_state.lang)
     username = st.session_state.username
 
-    directory_path = f"Records/{username}/"
+    directory_path = f"records/{username}/"
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
 
-    # Record.jsonを読み込む
-    record_data = read_json(os.path.join(directory_path, "Record.json"))
+    # record.jsonを読み込む
+    record_data = read_json(os.path.join(directory_path, "record.json"))
 
     # activeがtrueの要素をrecord_timeの順に並べる
     active_records = {k: v for k, v in record_data.items() if v["active"]}
@@ -46,7 +46,7 @@ def record():
 
     # 各JSONファイルから画像を表示
     for json_file in sorted_records:
-        json_path = os.path.join(directory_path, f"Record_{json_file[0]}.json")
+        json_path = os.path.join(directory_path, f"record_{json_file[0]}.json")
         data = read_json(json_path)
 
         timestamp = convert_timestamp(json_file[1]["record_time"])
