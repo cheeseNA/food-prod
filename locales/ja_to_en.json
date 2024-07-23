@@ -75,5 +75,7 @@
     "編集": "edit",
     "言語": "Language",
     "日本語": "Japanese",
-    "英語": "English"
+    "英語": "English",
+    "日付を選択してください": "Please select a date",
+    "時刻を選択してください": "Please select a time"
 }

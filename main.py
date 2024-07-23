@@ -390,32 +390,30 @@ def page_1():
     )
 
     # ユーザに日付を入力させる
-    date_input = st.date_input("日付を選択してください")
+    date_input = st.date_input(l("日付を選択してください"))
     # ユーザに時刻を入力させる
-    time_input = st.time_input("時刻を選択してください")
+    time_input = st.time_input(l("時刻を選択してください"))
 
-    if st.button(l("保存"), key="amount input done"):
+    if st.button(l("保存"), key="amount input done") and date_input and time_input:
         st.session_state.stage = StreamlitStep.FINISH
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
         return
 
     if st.session_state.stage == StreamlitStep.FINISH:
-
-        if date_input and time_input:
-            save_results(
-                st.session_state.username,
-                image,
-                "default",
-                ingre_ids,
-                ingre_names,
-                weights,
-                date_input,
-                time_input,
-                st.session_state.click_dict,
-                st.session_state.start_time,
-            )
-            st.success(l("食事記録を保存しました。"))
-            st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
+        save_results(
+            st.session_state.username,
+            image,
+            "default",
+            ingre_ids,
+            ingre_names,
+            weights,
+            date_input,
+            time_input,
+            st.session_state.click_dict,
+            st.session_state.start_time,
+        )
+        st.success(l("食事記録を保存しました。"))
+        st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
 
 
 def main():
