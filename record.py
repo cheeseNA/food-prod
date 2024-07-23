@@ -23,7 +23,7 @@ def convert_timestamp(encoded_timestamp):
     return formatted_timestamp
 
 
-def record():
+def render_record():
     l = generate_localer(st.session_state.lang)
     username = st.session_state.username
 
@@ -32,24 +32,23 @@ def record():
         os.makedirs(directory_path)
 
     # record.jsonを読み込む
-    record_data = read_json(os.path.join(directory_path, "record.json"))
+    all_records = read_json(os.path.join(directory_path, "record.json"))
 
     # activeがtrueの要素をrecord_timeの順に並べる
-    active_records = {k: v for k, v in record_data.items() if v["active"]}
+    active_records = {k: v for k, v in all_records.items() if v["active"]}
     sorted_records = sorted(
         active_records.items(), key=lambda x: x[1]["record_time"], reverse=True
     )
-    print(sorted_records)
 
     # Streamlitアプリケーションのタイトル
     st.html(l("あなたの食事記録: ") + username)
 
     # 各JSONファイルから画像を表示
-    for json_file in sorted_records:
-        json_path = os.path.join(directory_path, f"record_{json_file[0]}.json")
-        data = read_json(json_path)
+    for hash_key, record in sorted_records:
+        record_path = os.path.join(directory_path, f"record_{hash_key}.json")
+        data = read_json(record_path)
 
-        timestamp = convert_timestamp(json_file[1]["record_time"])
+        timestamp = convert_timestamp(record["record_time"])
         st.html(timestamp)
         if "image" in data and "filename" in data["image"] and "path" in data["image"]:
             image_path = data["image"]["path"]
@@ -57,5 +56,5 @@ def record():
             st.image(image, width=120)
 
         # 編集ボタンをクリックしたときにJSON内容を表示する
-        if st.button(l("編集"), key=json_file):
+        if st.button(l("編集"), key=hash_key):
             st.json(data)

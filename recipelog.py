@@ -87,17 +87,16 @@ def save_results(
     start_time,
 ):
     # 「保存」を実行した時刻
-    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    current_time = datetime.now()
+    current_time_str = current_time.strftime("%Y-%m-%d_%H-%M-%S")
 
     # この食事記録のためのハッシュ値を生成
-    combined_input = f"{username}_{current_time}"
+    combined_input = f"{username}_{current_time_str}"
     hash_object = hashlib.sha1(combined_input.encode())
     hash_hex = hash_object.hexdigest()
 
     record_time = datetime.combine(date_input, time_input).strftime("%Y-%m-%d_%H-%M-%S")
 
-    end_time = datetime.now()
-    time_difference = end_time - start_time
     directory = f"records/{username}/"
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -119,8 +118,8 @@ def save_results(
         "ingre_names": ingre_names,
         "weights": weights,
         "click_dict": click_dict,
-        "used_time": time_difference.total_seconds(),
-        "current_time": current_time,
+        "used_time": (current_time - start_time).total_seconds(),
+        "current_time": current_time_str,
     }
     with open(output_path, "w", encoding="utf-8") as file:
         json.dump(result_data, file, ensure_ascii=False, indent=4)
@@ -128,14 +127,14 @@ def save_results(
     # このユーザの食事履歴のリストを更新
     food_record = os.path.join(directory, "record.json")
     if os.path.exists(food_record):
-        with open(food_record, "r") as file:
+        with open(food_record, "r", encoding="utf-8") as file:
             records = json.load(file)
     else:
         records = {}
 
     records[hash_hex] = {
         "record_time": record_time,  # いつの食事記録か？
-        "create_time": current_time,  # 食事記録が生成された時間
+        "create_time": current_time_str,  # 食事記録が生成された時間
         "edit_time": current_time,  # 食事記録が編集された時間
         "active": True,  # 現在も使われているかどうか
         "duplicate_from": None,  # 元の食事記録はいつのものか？

@@ -27,7 +27,7 @@ from recipelog import (
     save_results,
     update_mask,
 )
-from record import record
+from record import render_record
 from user_page import user_page
 
 DEBUG = True
@@ -455,7 +455,7 @@ def main():
         with tab2:
             user_page()
         with tab3:
-            record()
+            render_record()
 
 
 if __name__ == "__main__":
