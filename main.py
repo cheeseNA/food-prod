@@ -12,7 +12,7 @@ from plotly import express as px
 
 from environment_calculate import get_environment_df
 from imageproc import get_current_candidate
-from locales.locale import generate_localer, get_current_lang
+from locales.locale import generate_localer
 from nutrient_calculate import (
     append_sum_row_label,
     calc_pfc,
@@ -70,7 +70,6 @@ def page_1():
     """,
         unsafe_allow_html=True,
     )
-    debug_print("-" * 50)
     l = generate_localer(st.session_state.lang)
 
     if st.session_state.stage == StreamlitStep.SESSION_WHILE_INIT:
@@ -425,8 +424,6 @@ def main():
     st.session_state.users = json.load(
         open("userdata/users.json", "r")
     )  # call at every run to get latest data
-    st.session_state.lang = get_current_lang()
-    l = generate_localer(st.session_state.lang)
     st.set_page_config(
         page_title="RecipeLog2024",
         page_icon=":curry:",
@@ -438,22 +435,24 @@ def main():
         st.title("Login")
         c1, _, _ = st.columns((1, 1, 1))
         username = c1.text_input(
-            l("アカウント:"),
+            "Account / アカウント",
         )
-        password = c1.text_input(l("パスワード:"), type="password")
+        password = c1.text_input("Password / パスワード", type="password")
 
         if c1.button("Login"):
             if (
                 username not in st.session_state.users
                 or st.session_state.users[username]["password"] != password
             ):
-                c1.error(l("アカウント／パスワードが正しくありません"))
+                c1.error("Password is incorrect. パスワードが正しくありません。")
             else:
                 st.session_state.username = username
+                st.session_state.lang = st.session_state.users[username]["lang"]
                 st.session_state.register = True
                 st.session_state.stage = StreamlitStep.SESSION_WHILE_INIT
                 st.rerun()
     else:
+        l = generate_localer(st.session_state.lang)
         tab1, tab2, tab3 = st.tabs([l("メイン"), l("ユーザ情報"), l("食事記録")])
         with tab1:
             page_1()
