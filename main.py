@@ -27,8 +27,8 @@ from recipelog import (
     save_results,
     update_mask,
 )
-from user_page import user_page
 from record import record
+from user_page import user_page
 
 DEBUG = True
 
@@ -390,10 +390,9 @@ def page_1():
     )
 
     # ユーザに日付を入力させる
-    date_input = st.date_input('日付を選択してください')
-
+    date_input = st.date_input("日付を選択してください")
     # ユーザに時刻を入力させる
-    time_input = st.time_input('時刻を選択してください')
+    time_input = st.time_input("時刻を選択してください")
 
     if st.button(l("保存"), key="amount input done"):
         st.session_state.stage = StreamlitStep.FINISH
@@ -402,8 +401,7 @@ def page_1():
 
     if st.session_state.stage == StreamlitStep.FINISH:
 
-
-        if (date_input and time_input):
+        if date_input and time_input:
             save_results(
                 st.session_state.username,
                 image,

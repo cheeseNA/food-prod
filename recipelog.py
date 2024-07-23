@@ -1,12 +1,13 @@
+import hashlib
 import json
 import os
 from datetime import datetime
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import streamlit as st
-from pathlib import Path
-import hashlib
+
 
 @st.cache_data
 def get_label_to_id_and_names():
@@ -72,6 +73,7 @@ def get_json_from_file(file_path):
         data = json.load(file)
     return data
 
+
 def save_results(
     username,
     image_file,
@@ -106,7 +108,7 @@ def save_results(
     image_file.save(image_path)
 
     result_data = {
-        "record_time":record_time,
+        "record_time": record_time,
         "username": username,
         "image": {
             "filename": filename,
@@ -126,18 +128,17 @@ def save_results(
     # このユーザの食事履歴のリストを更新
     food_record = os.path.join(directory, "Record.json")
     if os.path.exists(food_record):
-        with open(food_record, 'r') as file:
+        with open(food_record, "r") as file:
             records = json.load(file)
     else:
         records = {}
 
     records[hash_hex] = {
-        "record_time":record_time, # いつの食事記録か？
-        "create_time": current_time, # 食事記録が生成された時間
-        "edit_time": current_time, # 食事記録が編集された時間
-        "active":True, # 現在も使われているかどうか
-        "duplicate_from": None # 元の食事記録はいつのものか？
+        "record_time": record_time,  # いつの食事記録か？
+        "create_time": current_time,  # 食事記録が生成された時間
+        "edit_time": current_time,  # 食事記録が編集された時間
+        "active": True,  # 現在も使われているかどうか
+        "duplicate_from": None,  # 元の食事記録はいつのものか？
     }
     with open(food_record, "w", encoding="utf-8") as file:
         json.dump(records, file, ensure_ascii=False, indent=4)
-    
