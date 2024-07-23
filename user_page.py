@@ -13,7 +13,15 @@ def user_page():
     To avoid impacting other pages, we should not set session_state variables in this function.
     """
     l = generate_localer(st.session_state.lang)
-    users = json.load(open("userdata/users.json"))
+    users = json.load(open("userdata/users.json", "r", encoding="utf-8"))
+
+    current_lang = users[st.session_state.username]["lang"]
+    lang_option = st.selectbox(
+        l("言語"),
+        (l("英語"), l("日本語")),
+        index=0 if current_lang == "en" else 1,
+    )
+
     current_sex = users[st.session_state.username]["sex"]
     sex_option = st.selectbox(
         l("性別"),
@@ -47,6 +55,10 @@ def user_page():
         ],
     )
     if st.button(l("更新")):
+        users[st.session_state.username]["lang"] = (
+            "en" if lang_option == l("英語") else "ja"
+        )
+        st.session_state.lang = "en" if lang_option == l("英語") else "ja"
         users[st.session_state.username]["sex"] = (
             "male" if sex_option == l("男性") else "female"
         )
@@ -56,7 +68,8 @@ def user_page():
             if physical_activity_level == "I"
             else 2 if physical_activity_level == "II" else 3
         )
-        json.dump(users, open("userdata/users.json", "w"), indent=4)
+        json.dump(users, open("userdata/users.json", "w", encoding="utf-8"), indent=4)
+        st.rerun()
 
     necessary_nutrients = calculate_necessary_nutrients(
         users[st.session_state.username]["sex"],
