@@ -93,16 +93,14 @@ def page_1():
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_IMAGE:
         return
 
-    c1, c2 = st.columns((1, 1))  # visual statements
+    c1, c2 = st.columns((1, 1))
     if uploaded_image:
         c1.image(uploaded_image, width=250, use_column_width=False)
         image = Image.open(uploaded_image)
 
-    candidate_nums = 10  # stateless variables
-
     if (
         st.session_state.stage == StreamlitStep.IMAGE_UPLOADED
-    ):  # initializations should be done before next stage
+    ):  # initializations that should be done before next stage
         st.session_state.stage = StreamlitStep.WAIT_FOR_INGREDIENT_SELECTION
         st.session_state.start_time = datetime.now()
         st.session_state.selected_options = []
@@ -111,14 +109,13 @@ def page_1():
     if st.session_state.stage <= StreamlitStep.IMAGE_UPLOADED:
         return
 
-    # debug_print("st.session_state:\n", st.session_state)
-
     st.session_state.mask = update_mask(
         st.session_state.selected_options,
         st.session_state.mask,
     )
 
-    predict_ingres = get_current_candidate(  # TODO: remove current selections
+    candidate_nums = 10
+    predict_ingres = get_current_candidate(
         candidate_nums,
         uploaded_image,
         st.session_state.mask,
@@ -135,8 +132,8 @@ def page_1():
                 "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
             ],
             value=True,
-            on_change=lambda x: st.session_state.selected_options.remove(x),
             key=item,
+            on_change=lambda x: st.session_state.selected_options.remove(x),
             args=(item,),
         )
 
@@ -148,8 +145,8 @@ def page_1():
                 "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
             ],
             value=False,
-            on_change=lambda x: st.session_state.selected_options.append(x),
             key=item,
+            on_change=lambda x: st.session_state.selected_options.append(x),
             args=(item,),
         )
 
@@ -209,32 +206,18 @@ def page_1():
     ########################
     ingre_id_to_weights = get_json_from_file("Labels/weight_median20240615.json")
 
-    jpn_eng_expression_df = pd.read_csv("Labels/foodexpList20240612.csv")
-    label_to_names_ids = {}
-    for record in jpn_eng_expression_df.to_dict("records"):
-        label_to_names_ids[record["ingredient_label"]] = {
-            "id": record["foodid"],
-            "ja_abbr": record["JPN Abbr"],
-            "ja_full": record["JPN full"],
-            "en_abbr": record["ENG Abbr"],
-            "en_full": record["ENG full"],
-        }
-
     ingre_names = []
-    ingre_exps = []
     median_weights = []
     weights = []
     ingre_ids = []
     for item in st.session_state.selected_options:
         label_id = int(item) + 1
-        ingre_id = label_to_names_ids[label_id]["id"]
+        ingre_id = label_to_id_and_names[label_id]["id"]
         ingre_ids.append(ingre_id)
         if st.session_state.lang == "ja":
-            ingre_names.append(label_to_names_ids[label_id]["ja_abbr"])
-            ingre_exps.append(label_to_names_ids[label_id]["ja_full"])
+            ingre_names.append(label_to_id_and_names[label_id]["ja_abbr"])
         else:
-            ingre_names.append(label_to_names_ids[label_id]["en_abbr"])
-            ingre_exps.append(label_to_names_ids[label_id]["en_full"])
+            ingre_names.append(label_to_id_and_names[label_id]["en_abbr"])
         median_weights.append(ingre_id_to_weights[str(ingre_id)][2])
         weights.append(0)
 
@@ -257,25 +240,13 @@ def page_1():
                 step = 0.1
             weights[i] = st.slider(name[:40], min_value, max_value, value, step=step)
 
-    data = pd.DataFrame(  # TODO: もう使われていないので削除, 直接food_label_amount_unitを作るようにする
-        {
-            "ingredients": ingre_names,
-            "amount": weights,
-            "unit": ["g"] * len(st.session_state.selected_options),
-            "standard_exp": ingre_exps,
-        }
-    )
-    data["index"] = data.index + 1
-    data.set_index("index", inplace=True)
-
     food_label_amount_unit = []
-    for i, row in data.iterrows():
-        label = st.session_state.selected_options[i - 1]
+    for i, label in enumerate(st.session_state.selected_options):
         food_label_amount_unit.append(
             {
-                "ingre_id": label_to_names_ids[int(label) + 1]["id"],
-                "amount": row["amount"],
-                "unit": row["unit"],
+                "ingre_id": label_to_id_and_names[int(label) + 1]["id"],
+                "amount": weights[i],
+                "unit": "g",
                 "canonical_name": label_to_id_and_names[int(label) + 1][
                     "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
                 ][:10],
