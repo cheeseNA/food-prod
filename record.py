@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime
+from pathlib import Path
 
 import streamlit as st
 from PIL import Image
@@ -15,46 +16,33 @@ def read_json(file_path):
     return data
 
 
-def convert_timestamp(encoded_timestamp):
-    # エンコードされたタイムスタンプをdatetimeオブジェクトに変換
-    dt = datetime.strptime(encoded_timestamp, "%Y-%m-%d_%H-%M-%S")
-    # 新しいフォーマットの文字列に変換
-    formatted_timestamp = dt.strftime("%Y/%m/%d %H:%M")
-    return formatted_timestamp
-
-
 def render_record():
     l = generate_localer(st.session_state.lang)
     username = st.session_state.username
 
-    directory_path = f"records/{username}/"
-    if not os.path.exists(directory_path):
-        os.makedirs(directory_path)
+    user_dir_path = Path(f"records/{username}")
+    if not user_dir_path.exists():
+        user_dir_path.mkdir()
+    meal_dirs = [d for d in user_dir_path.iterdir() if d.is_dir()]
 
-    # record.jsonを読み込む
-    all_records = read_json(os.path.join(directory_path, "record.json"))
-
-    # activeがtrueの要素をrecord_timeの順に並べる
-    active_records = {k: v for k, v in all_records.items() if v["active"]}
-    sorted_records = sorted(
-        active_records.items(), key=lambda x: x[1]["record_time"], reverse=True
-    )
-
-    # Streamlitアプリケーションのタイトル
     st.html(l("あなたの食事記録: ") + username)
 
-    # 各JSONファイルから画像を表示
-    for hash_key, record in sorted_records:
-        record_path = os.path.join(directory_path, f"record_{hash_key}.json")
-        data = read_json(record_path)
+    for meal_dir in meal_dirs:
+        meal_datetime = meal_dir.name
+        st.html(l("食事時刻: ") + meal_datetime)
+        dish_dirs = [d for d in meal_dir.iterdir() if d.is_dir()]
+        if not dish_dirs:
+            st.write(l("料理が登録されていません"))
+            continue
+        cols = st.columns(len(dish_dirs))
+        for i, dish_dir in enumerate(dish_dirs):
+            dish_number = dish_dir.name
+            cols[i].html(l("料理番号: ") + dish_number)
+            record_images = [f for f in dish_dir.iterdir() if f.suffix == ".jpg"]
 
-        timestamp = convert_timestamp(record["record_time"])
-        st.html(timestamp)
-        if "image" in data and "filename" in data["image"] and "path" in data["image"]:
-            image_path = data["image"]["path"]
-            image = Image.open(image_path)
-            st.image(image, width=120)
-
-        # 編集ボタンをクリックしたときにJSON内容を表示する
-        if st.button(l("編集"), key=hash_key):
-            st.json(data)
+            # 最新のSONファイルのパスを取得
+            record_images.sort(key=lambda x: datetime.fromisoformat(x.stem))
+            latest_image = record_images[-1]
+            cols[i].image(str(latest_image), width=120)
+            if cols[i].button(l("編集"), key=dish_dir.resolve()):
+                cols[i].json(read_json(dish_dir / (latest_image.stem + ".json")))
