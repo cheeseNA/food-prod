@@ -90,15 +90,17 @@ def render_ingredient_selectors(
     session_state_prefix: str,
     label_to_id_and_names: dict,
     predict_ingres: list[int],
+    initial_selected_options: list[int] = [],
 ):
     """
     session_state_prefix: この関数の副作用を抑えるために, session_stateのprefixを指定する.
     column: st.columnsで作成したオブジェクトやst
+    initial_selected_options: 記録を編集するときなどに, 記録にある食材を初期選択状態にするためのリスト
     """
     l = generate_localer(st.session_state.lang)
     selected_options_key = session_state_prefix + "_selected_options"
     if selected_options_key not in st.session_state:
-        st.session_state[selected_options_key] = []
+        st.session_state[selected_options_key] = initial_selected_options.copy()
     for item in st.session_state[selected_options_key]:
         column.checkbox(
             label_to_id_and_names[int(item) + 1][
@@ -155,9 +157,11 @@ def render_weight_input(
     column,
     label_to_id_and_names: dict,
     selected_options: list[int],
+    initial_weights: list[float] | None = None,
 ):
     """
     column: st.columnsで作成したオブジェクトやst
+    initial_weights: 記録を編集するときなどに, 記録にある食材の重量を初期選択状態にするためのリスト
     """
     l = generate_localer(st.session_state.lang)
     ingre_id_to_weights = get_json_from_file("Labels/weight_median20240615.json")
@@ -165,7 +169,7 @@ def render_weight_input(
 
     column.write(l("一食分に使った量は何グラムですか？"))
     with column.container(height=200):
-        for label in selected_options:
+        for i, label in enumerate(selected_options):
             label_id = int(label) + 1
             ingre_id = label_to_id_and_names[label_id]["id"]
             ingre_name = label_to_id_and_names[label_id][
@@ -186,6 +190,8 @@ def render_weight_input(
                 value = float(value)
                 min_value = 0.0
                 step = 0.1
+            if initial_weights is not None:
+                value = initial_weights[i]
             weights.append(
                 column.slider(ingre_name[:40], min_value, max_value, value, step=step)
             )
