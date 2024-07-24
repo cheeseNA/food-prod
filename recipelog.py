@@ -151,6 +151,47 @@ def render_ingredient_selectors(
     return st.session_state[selected_options_key].copy()
 
 
+def render_weight_input(
+    column,
+    label_to_id_and_names: dict,
+    selected_options: list[int],
+):
+    """
+    column: st.columnsで作成したオブジェクトやst
+    """
+    l = generate_localer(st.session_state.lang)
+    ingre_id_to_weights = get_json_from_file("Labels/weight_median20240615.json")
+    weights = []
+
+    column.write(l("一食分に使った量は何グラムですか？"))
+    with column.container(height=200):
+        for label in selected_options:
+            label_id = int(label) + 1
+            ingre_id = label_to_id_and_names[label_id]["id"]
+            ingre_name = label_to_id_and_names[label_id][
+                "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
+            ]
+            median_weight = ingre_id_to_weights[str(ingre_id)][2]
+
+            value = round(float(median_weight), 1)
+            min_value = 0.0
+            max_value = value * 2
+            step = 0.1
+            if value > 10:
+                value = round(value)
+                max_value = int(max_value)
+                min_value = int(0)
+                step = 1
+            else:
+                value = float(value)
+                min_value = 0.0
+                step = 0.1
+            weights.append(
+                column.slider(ingre_name[:40], min_value, max_value, value, step=step)
+            )
+    return weights.copy()
+
+
 def render_meal_info_tabs(
     food_label_amount_unit: list[dict], necessary_nutrients_per_meal: dict
 ):

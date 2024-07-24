@@ -11,10 +11,10 @@ from imageproc import get_current_candidate
 from locales.locale import generate_localer
 from nutrient_calculate import calculate_necessary_nutrients
 from recipelog import (
-    get_json_from_file,
     get_label_to_id_and_names,
     render_ingredient_selectors,
     render_meal_info_tabs,
+    render_weight_input,
     save_results,
     update_mask,
 )
@@ -143,41 +143,10 @@ def page_1():
     ########################
     ##### Wight Input ######
     ########################
-    ingre_id_to_weights = get_json_from_file("Labels/weight_median20240615.json")
 
-    ingre_names = []
-    median_weights = []
-    weights = []
-    ingre_ids = []
-    for item in st.session_state.selected_options:
-        label_id = int(item) + 1
-        ingre_id = label_to_id_and_names[label_id]["id"]
-        ingre_ids.append(ingre_id)
-        if st.session_state.lang == "ja":
-            ingre_names.append(label_to_id_and_names[label_id]["ja_abbr"])
-        else:
-            ingre_names.append(label_to_id_and_names[label_id]["en_abbr"])
-        median_weights.append(ingre_id_to_weights[str(ingre_id)][2])
-        weights.append(0)
-
-    st.write(l("一食分に使った量は何グラムですか？"))
-
-    with st.container(height=200):
-        for i, name in enumerate(ingre_names):
-            value = round(float(median_weights[i]), 1)
-            min_value = 0.0
-            max_value = value * 2
-            step = 0.1
-            if value > 10:
-                value = round(value)
-                max_value = int(max_value)
-                min_value = int(0)
-                step = 1
-            else:
-                value = float(value)
-                min_value = 0.0
-                step = 0.1
-            weights[i] = st.slider(name[:40], min_value, max_value, value, step=step)
+    weights = render_weight_input(
+        st, label_to_id_and_names, st.session_state.selected_options
+    )
 
     food_label_amount_unit = []
     for i, label in enumerate(st.session_state.selected_options):
@@ -229,6 +198,17 @@ def page_1():
         return
 
     if st.session_state.stage == StreamlitStep.FINISH:
+        ingre_names = []
+        ingre_ids = []
+        for item in st.session_state.selected_options:
+            label_id = int(item) + 1
+            ingre_id = label_to_id_and_names[label_id]["id"]
+            ingre_ids.append(ingre_id)
+            ingre_names.append(
+                label_to_id_and_names[label_id][
+                    "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
+                ]
+            )
         save_results(
             st.session_state.username,
             image,
