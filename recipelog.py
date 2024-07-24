@@ -135,7 +135,7 @@ def save_results(
     records[hash_hex] = {
         "record_time": record_time,  # いつの食事記録か？
         "create_time": current_time_str,  # 食事記録が生成された時間
-        "edit_time": current_time,  # 食事記録が編集された時間
+        "edit_time": current_time_str,  # 食事記録が編集された時間
         "active": True,  # 現在も使われているかどうか
         "duplicate_from": None,  # 元の食事記録はいつのものか？
     }
