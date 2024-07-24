@@ -29,13 +29,7 @@ from recipelog import (
 )
 from record import render_record
 from user_page import user_page
-
-DEBUG = True
-
-
-def debug_print(*args, **kwargs):
-    if DEBUG:
-        print(*args, **kwargs)
+from utils import debug_print
 
 
 class StreamlitStep(IntEnum):
