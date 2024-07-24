@@ -24,6 +24,7 @@ from nutrient_calculate import (
 from recipelog import (
     get_json_from_file,
     get_label_to_id_and_names,
+    render_meal_info_tabs,
     save_results,
     update_mask,
 )
@@ -246,7 +247,6 @@ def page_1():
                 ][:10],
             }
         )
-    nutrients_df = get_nutri_df_from_food_dict(food_label_amount_unit)
 
     necessary_nutrients = calculate_necessary_nutrients(
         st.session_state.users[st.session_state.username]["sex"],
@@ -257,87 +257,7 @@ def page_1():
         key: value / 3 for key, value in necessary_nutrients.items()
     }
 
-    tab3, tab4, tab5, tab6 = st.tabs(
-        [l("主要栄養素"), l("PFCバランス"), l("栄養成分表"), l("環境への影響")]
-    )
-    with tab3:
-        percent_df = get_percent_df(nutrients_df, **necessary_nutrients_per_meal)
-        percent_df[l("主要栄養素")] = [
-            l("カロリー"),
-            l("たんぱく質"),
-            l("脂質"),
-            l("炭水化物"),
-            l("塩分"),
-        ]
-        percent_fig = px.bar(
-            percent_df, x=l("主要栄養素"), y=percent_df.columns[1:].tolist()
-        ).update_layout(
-            yaxis_title=l("1食の目安量に対する割合 (%)"),
-            height=300,
-            legend=dict(itemwidth=30),
-        )
-        for trace in percent_fig.data:
-            raw_series = nutrients_df[trace.name]
-            raw_series = raw_series.apply(lambda x: f"{x:.1f}").str.cat(
-                ["kcal", "g", "g", "g", "g"], sep=" "
-            )
-            trace["customdata"] = raw_series
-            trace["hovertemplate"] = (
-                f"{trace.name}<br>" + "%{customdata}<br>%{y:.1f}%<extra></extra>"
-            )
-        percent_fig.add_hline(y=100.0, line_color="red", line_dash="dash", line_width=1)
-        tab3.plotly_chart(percent_fig, use_container_width=True)
-    with tab4:
-        pfc_df = calc_pfc(nutrients_df)
-        percent_fig2 = px.pie(
-            values=pfc_df.tolist(),
-            names=["Protain", "Fat", "Carb"],
-            height=350,
-        )
-        st.plotly_chart(percent_fig2, use_container_width=True, sort=False)
-        st.html(
-            l(
-                "<b>PFCバランスとは？</b><br>三大栄養素であるタンパク質、脂質、炭水化物の摂取バランス。タンパク質は13～20%、脂質は20～30%、炭水化物は50～65%がよいとされています。<br>※20～39歳男女の目標<br>資料：厚生労働省「日本人の食事摂取基準（2020年版）」<br>"
-            )
-        )
-    with tab5:
-        nutrition_fact = get_nutrient_fact_from_excel()
-        data_df = nutrition_fact.copy()
-        data_df = data_df.loc[ingre_ids]
-        data_df = data_df.drop(["index", "JName"], axis=1)
-        data_df.insert(1, "weight", 0)
-
-        for ii in range(len(data_df)):
-            data_df.iloc[ii, 1] = weights[ii]
-            for jj in range(2, len(data_df.columns)):
-                if not math.isnan(data_df.iloc[ii, jj]):
-                    data_df.iloc[ii, jj] = (
-                        float(data_df.iloc[ii, jj]) * weights[ii] / 100
-                    )
-        append_sum_row_label(data_df)
-        st.dataframe(data_df, width=800)
-    with tab6:
-        env_dataset_df = get_environment_df()
-        food_env_df = pd.DataFrame(
-            {l("環境への影響"): [l("TMR係数"), "GWP", l("反応性窒素")]}
-        )
-        for food in food_label_amount_unit:
-            food_id = food["ingre_id"]
-            food_env_df[food["canonical_name"]] = (
-                env_dataset_df.loc[food_id].values * float(food["amount"]) / 1000
-            )  # TODO: 現在はamountがgだが, 今後g意外も選択できるようになったら修正
-        debug_print("food_env_df", food_env_df)
-        environment_fig = px.bar(
-            food_env_df, x=l("環境への影響"), y=food_env_df.columns[1:].tolist()
-        )
-        tab6.plotly_chart(environment_fig, use_container_width=True)
-        st.html(
-            l(
-                "TMR係数 (Total Material Requirement)とは, その食品を提供するために必要な採掘活動量です"
-            )
-        )
-        st.html(l("GWP (Global Warming Potential)とは, 温室効果ガスの排出量です"))
-        st.html(l("反応性窒素とは, 窒素酸化物の排出量です"))
+    render_meal_info_tabs(food_label_amount_unit, necessary_nutrients_per_meal)
 
     st.html(  # rethink where to put
         "<b>"
