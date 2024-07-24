@@ -70,7 +70,15 @@
     "TMR係数 (Total Material Requirement)とは, その食品を提供するために必要な採掘活動量です": "The Total Material Requirement (TMR) coefficient is the amount of mining activity required to provide that food",
     "GWP (Global Warming Potential)とは, 温室効果ガスの排出量です": "Global Warming Potential (GWP) is the amount of greenhouse gas emissions",
     "反応性窒素とは, 窒素酸化物の排出量です": "Reactive nitrogen is the amount of nitrogen oxide emissions",
-    "言語":"Language",
-    "日本語":"Japanese",
-    "英語":"English"
+    "食事記録": "Record",
+    "あなたの食事記録: ": "Your food records: ",
+    "編集": "edit",
+    "言語": "Language",
+    "日本語": "Japanese",
+    "英語": "English",
+    "日付を選択してください": "Please select a date",
+    "時刻を選択してください": "Please select a time",
+    "食事時刻: ": "Meal time: ",
+    "料理番号: ": "Dish number: ",
+    "料理が登録されていません": "No dishes registered"
 }

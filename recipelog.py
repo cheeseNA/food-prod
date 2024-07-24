@@ -1,6 +1,6 @@
 import json
-import os
 from datetime import datetime
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -79,43 +79,40 @@ def save_results(
     ingre_ids,
     ingre_names,
     weights,
+    date_input,
+    time_input,
     click_dict,
     start_time,
 ):
-    current_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-    end_time = datetime.now()
-    time_difference = end_time - start_time
-    directory = f"Results/{username}/"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    # 「保存」を実行した時刻
+    current_time = datetime.now()
+    current_time_str = current_time.isoformat(timespec="seconds")
+    meal_time = datetime.combine(date_input, time_input)
+    meal_time_str = meal_time.isoformat(timespec="minutes")
 
-    existing_files = [
-        file
-        for file in os.listdir(directory)
-        if file.startswith("result") and file.endswith(".json")
-    ]
-    next_serial_number = len(existing_files) + 1
+    user_dir_path = Path(f"records/{username}")
+    if not user_dir_path.exists():
+        user_dir_path.mkdir()
 
-    output_path = f"{directory}result_{next_serial_number}_{method}_{current_time}.json"
+    meal_dir_path = user_dir_path / meal_time_str
+    if not meal_dir_path.exists():
+        meal_dir_path.mkdir()
 
-    filename = f"image_{next_serial_number}.png"
-    image_path = os.path.join(directory, filename)
-    image_file.save(image_path)
+    dish_count = len(list(meal_dir_path.glob("*")))
+    dish_dir_path = meal_dir_path / str(dish_count)
+    if not dish_dir_path.exists():
+        dish_dir_path.mkdir()
 
     result_data = {
-        "username": username,
-        "image": {
-            "filename": filename,
-            "path": image_path,
-        },
         "method": method,
         "ingre_ids": ingre_ids,
         "ingre_names": ingre_names,
         "weights": weights,
         "click_dict": click_dict,
-        "used_time": time_difference.total_seconds(),
-        "current_time": current_time,
+        "used_time": (current_time - start_time).total_seconds(),
     }
-
-    with open(output_path, "w", encoding="utf-8") as file:
-        json.dump(result_data, file, ensure_ascii=False, indent=4)
+    with (dish_dir_path / (current_time_str + ".json")).open(
+        mode="w", encoding="utf-8"
+    ) as f:
+        json.dump(result_data, f, ensure_ascii=False)
+    image_file.save(dish_dir_path / (current_time_str + ".jpg"))

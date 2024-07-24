@@ -27,6 +27,7 @@ from recipelog import (
     save_results,
     update_mask,
 )
+from record import render_record
 from user_page import user_page
 
 DEBUG = True
@@ -135,6 +136,7 @@ def page_1():
             ],
             value=True,
             on_change=lambda x: st.session_state.selected_options.remove(x),
+            key=item,
             args=(item,),
         )
 
@@ -147,6 +149,7 @@ def page_1():
             ],
             value=False,
             on_change=lambda x: st.session_state.selected_options.append(x),
+            key=item,
             args=(item,),
         )
 
@@ -386,7 +389,12 @@ def page_1():
         + str(l("塩分 {:.2f} g です").format(necessary_nutrients_per_meal["salt"]))
     )
 
-    if st.button(l("保存"), key="amount input done"):
+    # ユーザに日付を入力させる
+    date_input = st.date_input(l("日付を選択してください"))
+    # ユーザに時刻を入力させる
+    time_input = st.time_input(l("時刻を選択してください"))
+
+    if st.button(l("保存"), key="amount input done") and date_input and time_input:
         st.session_state.stage = StreamlitStep.FINISH
     if st.session_state.stage <= StreamlitStep.WAIT_FOR_AMOUNT_INPUT:
         return
@@ -395,10 +403,12 @@ def page_1():
         save_results(
             st.session_state.username,
             image,
-            "method_2",
+            "default",
             ingre_ids,
             ingre_names,
             weights,
+            date_input,
+            time_input,
             st.session_state.click_dict,
             st.session_state.start_time,
         )
@@ -439,12 +449,13 @@ def main():
                 st.rerun()
     else:
         l = generate_localer(st.session_state.lang)
-
-        tab1, tab2 = st.tabs([l("メイン"), l("ユーザ情報")])
+        tab1, tab2, tab3 = st.tabs([l("メイン"), l("ユーザ情報"), l("食事記録")])
         with tab1:
             page_1()
         with tab2:
             user_page()
+        with tab3:
+            render_record()
 
 
 if __name__ == "__main__":
