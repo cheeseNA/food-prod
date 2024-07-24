@@ -13,6 +13,7 @@ from nutrient_calculate import calculate_necessary_nutrients
 from recipelog import (
     get_json_from_file,
     get_label_to_id_and_names,
+    render_ingredient_selectors,
     render_meal_info_tabs,
     save_results,
     update_mask,
@@ -110,54 +111,8 @@ def page_1():
     ########################
     c2.write(l("材料にチェックを入れて下さい。"))
 
-    for item in st.session_state.selected_options:
-        c2.checkbox(
-            label_to_id_and_names[int(item) + 1][
-                "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
-            ],
-            value=True,
-            key=item,
-            on_change=lambda x: st.session_state.selected_options.remove(x),
-            args=(item,),
-        )
-
-    for item in predict_ingres:
-        if item in st.session_state.selected_options:
-            continue
-        c2.checkbox(
-            label_to_id_and_names[int(item) + 1][
-                "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
-            ],
-            value=False,
-            key=item,
-            on_change=lambda x: st.session_state.selected_options.append(x),
-            args=(item,),
-        )
-
-    def multiselect_on_change():
-        name_to_label = {
-            item["ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]: key
-            for key, item in label_to_id_and_names.items()
-        }
-        for item in st.session_state["not_in_list_multiselect"]:
-            label = int(name_to_label[item]) - 1
-            if label in st.session_state.selected_options:
-                continue
-            st.session_state.selected_options.append(label)
-        st.session_state["not_in_list_multiselect"] = []
-        st.session_state.click_dict["input_text"] = len(
-            st.session_state["not_in_list_multiselect"]
-        )  # meaningless any more
-
-    # Search box
-    c2.multiselect(
-        l("リストにない食材を検索:"),
-        [
-            item[1]["ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
-            for item in label_to_id_and_names.items()
-        ],
-        key="not_in_list_multiselect",
-        on_change=multiselect_on_change,
+    st.session_state.selected_options = render_ingredient_selectors(
+        c2, "new_log_creation", label_to_id_and_names, predict_ingres
     )
 
     if c2.button(l("新しい食材候補を生成する")):

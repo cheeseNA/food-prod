@@ -85,11 +85,70 @@ def get_json_from_file(file_path):
     return data
 
 
-def render_ingredient_selectors(session_state_prefix: str):
+def render_ingredient_selectors(
+    column,
+    session_state_prefix: str,
+    label_to_id_and_names: dict,
+    predict_ingres: list[int],
+):
     """
     session_state_prefix: この関数の副作用を抑えるために, session_stateのprefixを指定する.
+    column: st.columnsで作成したオブジェクトやst
     """
-    pass
+    l = generate_localer(st.session_state.lang)
+    selected_options_key = session_state_prefix + "_selected_options"
+    if selected_options_key not in st.session_state:
+        st.session_state[selected_options_key] = []
+    for item in st.session_state[selected_options_key]:
+        column.checkbox(
+            label_to_id_and_names[int(item) + 1][
+                "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
+            ],
+            value=True,
+            key=item,
+            on_change=lambda x: st.session_state[selected_options_key].remove(x),
+            args=(item,),
+        )
+
+    for item in predict_ingres:
+        if item in st.session_state[selected_options_key]:
+            continue
+        column.checkbox(
+            label_to_id_and_names[int(item) + 1][
+                "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
+            ],
+            value=False,
+            key=item,
+            on_change=lambda x: st.session_state[selected_options_key].append(x),
+            args=(item,),
+        )
+
+    def multiselect_on_change():
+        name_to_label = {
+            item["ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]: key
+            for key, item in label_to_id_and_names.items()
+        }
+        for item in st.session_state["not_in_list_multiselect"]:
+            label = int(name_to_label[item]) - 1
+            if label in st.session_state[selected_options_key]:
+                continue
+            st.session_state[selected_options_key].append(label)
+        st.session_state["not_in_list_multiselect"] = []
+        st.session_state.click_dict["input_text"] = len(
+            st.session_state["not_in_list_multiselect"]
+        )  # meaningless any more
+
+    # Search box
+    column.multiselect(
+        l("リストにない食材を検索:"),
+        [
+            item[1]["ja_abbr" if st.session_state.lang == "ja" else "en_abbr"]
+            for item in label_to_id_and_names.items()
+        ],
+        key="not_in_list_multiselect",
+        on_change=multiselect_on_change,
+    )
+    return st.session_state[selected_options_key].copy()
 
 
 def render_meal_info_tabs(
