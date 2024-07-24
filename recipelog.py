@@ -1,6 +1,4 @@
-import hashlib
 import json
-import os
 from datetime import datetime
 from pathlib import Path
 
@@ -88,56 +86,33 @@ def save_results(
 ):
     # 「保存」を実行した時刻
     current_time = datetime.now()
-    current_time_str = current_time.strftime("%Y-%m-%d_%H-%M-%S")
+    current_time_str = current_time.isoformat(timespec="seconds")
+    meal_time = datetime.combine(date_input, time_input)
+    meal_time_str = meal_time.isoformat(timespec="minutes")
 
-    # この食事記録のためのハッシュ値を生成
-    combined_input = f"{username}_{current_time_str}"
-    hash_object = hashlib.sha1(combined_input.encode())
-    hash_hex = hash_object.hexdigest()
+    user_dir_path = Path(f"records/{username}")
+    if not user_dir_path.exists():
+        user_dir_path.mkdir()
 
-    record_time = datetime.combine(date_input, time_input).strftime("%Y-%m-%d_%H-%M-%S")
+    meal_dir_path = user_dir_path / meal_time_str
+    if not meal_dir_path.exists():
+        meal_dir_path.mkdir()
 
-    directory = f"records/{username}/"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    output_path = f"{directory}record_{hash_hex}.json"
-    filename = f"image_{hash_hex}.png"
-    image_path = os.path.join(directory, filename)
-    image_file.save(image_path)
+    dish_count = len(list(meal_dir_path.glob("*")))
+    dish_dir_path = meal_dir_path / str(dish_count)
+    if not dish_dir_path.exists():
+        dish_dir_path.mkdir()
 
     result_data = {
-        "record_time": record_time,
-        "username": username,
-        "image": {
-            "filename": filename,
-            "path": image_path,
-        },
         "method": method,
         "ingre_ids": ingre_ids,
         "ingre_names": ingre_names,
         "weights": weights,
         "click_dict": click_dict,
         "used_time": (current_time - start_time).total_seconds(),
-        "current_time": current_time_str,
     }
-    with open(output_path, "w", encoding="utf-8") as file:
-        json.dump(result_data, file, ensure_ascii=False, indent=4)
-
-    # このユーザの食事履歴のリストを更新
-    food_record = os.path.join(directory, "record.json")
-    if os.path.exists(food_record):
-        with open(food_record, "r", encoding="utf-8") as file:
-            records = json.load(file)
-    else:
-        records = {}
-
-    records[hash_hex] = {
-        "record_time": record_time,  # いつの食事記録か？
-        "create_time": current_time_str,  # 食事記録が生成された時間
-        "edit_time": current_time_str,  # 食事記録が編集された時間
-        "active": True,  # 現在も使われているかどうか
-        "duplicate_from": None,  # 元の食事記録はいつのものか？
-    }
-    with open(food_record, "w", encoding="utf-8") as file:
-        json.dump(records, file, ensure_ascii=False, indent=4)
+    with (dish_dir_path / (current_time_str + ".json")).open(
+        mode="w", encoding="utf-8"
+    ) as f:
+        json.dump(result_data, f, ensure_ascii=False)
+    image_file.save(dish_dir_path / (current_time_str + ".jpg"))
