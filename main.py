@@ -209,19 +209,26 @@ def page_1():
                     "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
                 ]
             )
-        save_results(
+        meal_time = datetime.combine(date_input, time_input)
+        dish_number = save_results(
             st.session_state.username,
             image,
             "default",
             ingre_ids,
             ingre_names,
             weights,
-            date_input,
-            time_input,
+            meal_time,
             st.session_state.click_dict,
             st.session_state.start_time,
         )
         st.success(l("食事記録を保存しました。"))
+        st.html(
+            "<a href="
+            + f'"share/username={st.session_state.username}&meal_time={meal_time.isoformat(timespec="minutes")}&dish_number={dish_number}"'
+            + ">"
+            + l("食事記録共有リンク")
+            + "</a>"
+        )
         st.session_state.stage = StreamlitStep.WAIT_FOR_AMOUNT_INPUT
 
 
