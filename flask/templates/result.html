@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{username}}'s food log ({{meal_time}})</title>
+    <meta
+      property="og:title"
+      content="{{username}}'s food log ({{meal_time}})"
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:description"
+      content="This is a food log for {{username}}'s {{meal_time}} meal."
+    />
+    <meta
+      property="og:url"
+      content="{{host_url}}share/?username={{username}}&meal_time={{meal_time}}&dish_number={{dish_number}}"
+    />
+    <meta
+      property="og:image"
+      content="{{host_url}}share/image?username={{username}}&meal_time={{meal_time}}&dish_number={{dish_number}}"
+    />
+  </head>
+  <body>
+    <h1>This is a food log for {{username}}'s {{meal_time}} meal.</h1>
+    <p>Here is the result:</p>
+    <div>
+      <img
+        src="{{host_url}}share/image?username={{username}}&meal_time={{meal_time}}&dish_number={{dish_number}}"
+        width="500"
+      />
+    </div>
+    <div>{{record}}</div>
+  </body>
+</html>

@@ -299,15 +299,17 @@ def save_results(
     ingre_ids,
     ingre_names,
     weights,
-    date_input,
-    time_input,
+    meal_time,
     click_dict,
     start_time,
-):
+) -> int:
+    """
+    Save the results of the dish.
+    Return the dish number.
+    """
     # 「保存」を実行した時刻
     current_time = datetime.now()
     current_time_str = current_time.isoformat(timespec="seconds")
-    meal_time = datetime.combine(date_input, time_input)
     meal_time_str = meal_time.isoformat(timespec="minutes")
 
     user_dir_path = Path(f"records/{username}")
@@ -336,3 +338,4 @@ def save_results(
     ) as f:
         json.dump(result_data, f, ensure_ascii=False)
     image_file.save(dish_dir_path / (current_time_str + ".jpg"))
+    return dish_count
