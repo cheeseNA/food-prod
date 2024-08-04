@@ -1,6 +1,7 @@
-import json
 import datetime
+import json
 from enum import IntEnum
+import os
 
 # import japanese_clip as ja_clip
 import numpy as np
@@ -209,7 +210,7 @@ def page_1():
                     "ja_abbr" if st.session_state.lang == "ja" else "en_abbr"
                 ]
             )
-        meal_time = datetime.combine(date_input, time_input)
+        meal_time = datetime.datetime.combine(date_input, time_input)
         dish_number = save_results(
             st.session_state.username,
             image,
@@ -224,7 +225,7 @@ def page_1():
         st.success(l("食事記録を保存しました。"))
         st.html(
             "<a href="
-            + f'"share/username={st.session_state.username}&meal_time={meal_time.isoformat(timespec="minutes")}&dish_number={dish_number}"'
+            + f'"http://{os.environ["HOST_NAME"]}/share/?username={st.session_state.username}&meal_time={meal_time.isoformat(timespec="minutes")}&dish_number={dish_number}"'
             + ">"
             + l("食事記録共有リンク")
             + "</a>"
@@ -233,6 +234,9 @@ def page_1():
 
 
 def main():
+    if not os.environ.get("HOST_NAME"):
+        st.write("Please set HOST_NAME in environment variables.")
+        return
     st.session_state.users = json.load(
         open("userdata/users.json", "r")
     )  # call at every run to get latest data
