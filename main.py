@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+import datetime
 from enum import IntEnum
 
 # import japanese_clip as ja_clip
@@ -87,7 +87,7 @@ def page_1():
         st.session_state.stage == StreamlitStep.IMAGE_UPLOADED
     ):  # initializations that should be done before next stage
         st.session_state.stage = StreamlitStep.WAIT_FOR_INGREDIENT_SELECTION
-        st.session_state.start_time = datetime.now()
+        st.session_state.start_time = datetime.datetime.now()
         st.session_state.selected_options = []
         st.session_state.mask = np.array([1 if i != 2 else 0 for i in range(588)])
 
@@ -190,7 +190,7 @@ def page_1():
     # ユーザに日付を入力させる
     date_input = st.date_input(l("日付を選択してください"))
     # ユーザに時刻を入力させる
-    time_input = st.time_input(l("時刻を選択してください"))
+    time_input = st.time_input(l("時刻を選択してください"), datetime.time(12, 0))
 
     if st.button(l("保存"), key="amount input done") and date_input and time_input:
         st.session_state.stage = StreamlitStep.FINISH

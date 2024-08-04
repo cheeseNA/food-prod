@@ -28,8 +28,9 @@ def render_record():
     st.html(l("あなたの食事記録: ") + username)
 
     for meal_dir in meal_dirs:
-        meal_datetime = meal_dir.name
-        st.html(l("食事時刻: ") + meal_datetime)
+        meal_datetime = datetime.fromisoformat(meal_dir.name)
+        meal_datetime_str = meal_datetime.strftime(l("%Y年%m月%d日 %H時%M分"))
+        st.html(l("食事時刻: ") + meal_datetime_str)
         dish_dirs = [d for d in meal_dir.iterdir() if d.is_dir()]
         if not dish_dirs:
             st.write(l("料理が登録されていません"))

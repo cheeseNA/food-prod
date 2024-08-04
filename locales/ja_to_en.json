@@ -81,5 +81,6 @@
     "食事時刻: ": "Meal time: ",
     "料理番号: ": "Dish number: ",
     "料理が登録されていません": "No dishes registered",
+    "%Y年%m月%d日 %H時%M分": "%Y/%m/%d %H:%M",
     "食事記録共有リンク: ": "Food record sharing link: "
 }
