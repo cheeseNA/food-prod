@@ -5,6 +5,8 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import plotly
+import plotly.io as pio
 import streamlit as st
 from plotly import express as px
 
@@ -200,7 +202,12 @@ def render_weight_input(
 
 def render_meal_info_tabs(
     food_label_amount_unit: list[dict], necessary_nutrients_per_meal: dict
-):
+) -> tuple[
+    plotly.graph_objs._figure.Figure,
+    plotly.graph_objs._figure.Figure,
+    pd.DataFrame,
+    plotly.graph_objs._figure.Figure,
+]:
     """
     food_label_amount_unitなどの食材と重量の情報から, 主要栄養素, PFCバランス, 栄養成分表, 環境への影響の情報を表示する, 副作用のない関数.
     各タブの処理は今後分割したほうが良いかもしれない.
@@ -220,7 +227,10 @@ def render_meal_info_tabs(
             l("塩分"),
         ]
         percent_fig = px.bar(
-            percent_df, x=l("主要栄養素"), y=percent_df.columns[1:].tolist()
+            percent_df,
+            x=l("主要栄養素"),
+            y=percent_df.columns[1:].tolist(),
+            color_discrete_sequence=px.colors.qualitative.Plotly,
         ).update_layout(
             yaxis_title=l("1食の目安量に対する割合 (%)"),
             height=300,
@@ -243,6 +253,7 @@ def render_meal_info_tabs(
             values=pfc_df.tolist(),
             names=["Protain", "Fat", "Carb"],
             height=350,
+            color_discrete_sequence=px.colors.qualitative.Plotly,
         )
         pfc_tab.plotly_chart(percent_fig2, use_container_width=True, sort=False)
         pfc_tab.html(
@@ -278,7 +289,10 @@ def render_meal_info_tabs(
             )  # TODO: 現在はamountがgだが, 今後g意外も選択できるようになったら修正
         debug_print("food_env_df", food_env_df)
         environment_fig = px.bar(
-            food_env_df, x=l("環境への影響"), y=food_env_df.columns[1:].tolist()
+            food_env_df,
+            x=l("環境への影響"),
+            y=food_env_df.columns[1:].tolist(),
+            color_discrete_sequence=px.colors.qualitative.Plotly,
         )
         environment_tab.plotly_chart(environment_fig, use_container_width=True)
         environment_tab.html(
@@ -290,6 +304,7 @@ def render_meal_info_tabs(
             l("GWP (Global Warming Potential)とは, 温室効果ガスの排出量です")
         )
         environment_tab.html(l("反応性窒素とは, 窒素酸化物の排出量です"))
+    return percent_fig, percent_fig2, data_df, environment_fig
 
 
 def save_results(
@@ -302,6 +317,10 @@ def save_results(
     meal_time,
     click_dict,
     start_time,
+    main_nutri_fig,
+    pfc_fig,
+    detail_nutri_df,
+    environment_fig,
 ) -> int:
     """
     Save the results of the dish.
@@ -338,4 +357,19 @@ def save_results(
     ) as f:
         json.dump(result_data, f, ensure_ascii=False)
     image_file.save(dish_dir_path / (current_time_str + ".jpg"))
+
+    with (dish_dir_path / (current_time_str + "_main_nutri_fig.json")).open(
+        mode="w", encoding="utf-8"
+    ) as f:
+        f.write(pio.to_json(main_nutri_fig))
+    with (dish_dir_path / (current_time_str + "_pfc_fig.json")).open(
+        mode="w", encoding="utf-8"
+    ) as f:
+        f.write(pio.to_json(pfc_fig))
+    with (dish_dir_path / (current_time_str + "_environment_fig.json")).open(
+        mode="w", encoding="utf-8"
+    ) as f:
+        f.write(pio.to_json(environment_fig))
+
+    detail_nutri_df.to_csv(dish_dir_path / (current_time_str + "_detail_nutri.csv"))
     return dish_count
