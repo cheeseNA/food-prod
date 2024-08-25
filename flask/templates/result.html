@@ -30,5 +30,18 @@
       />
     </div>
     <div>{{record}}</div>
+    <div id="main_chart" class="chart"></div>
+    <div id="pfc_chart" class="chart"></div>
+    <div id="environment_chart" class="chart"></div>
   </body>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script type="text/javascript">
+    const layout = {};
+    var main_nutri_fig = {{main_nutri_fig | safe}};
+    var pfc_fig = {{pfc_fig | safe}};
+    var environment_fig = {{environment_fig | safe}};
+    Plotly.plot('main_chart', main_nutri_fig, layout, {responsive: true});
+    Plotly.plot('pfc_chart', pfc_fig, layout, {responsive: true});
+    Plotly.plot('environment_chart', environment_fig, layout, {responsive: true});
+  </script>
 </html>
