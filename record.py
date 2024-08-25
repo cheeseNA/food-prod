@@ -16,6 +16,14 @@ def read_json(file_path):
     return data
 
 
+def is_isoformat(s):
+    try:
+        datetime.fromisoformat(s)
+        return True
+    except ValueError:
+        return False
+
+
 def render_record():
     l = generate_localer(st.session_state.lang)
     username = st.session_state.username
@@ -23,7 +31,11 @@ def render_record():
     user_dir_path = Path(f"records/{username}")
     if not user_dir_path.exists():
         user_dir_path.mkdir()
-    meal_dirs = [d for d in user_dir_path.iterdir() if d.is_dir()]
+
+    meal_dirs = [
+        d for d in user_dir_path.iterdir() if d.is_dir() and is_isoformat(d.name)
+    ]
+    meal_dirs.sort(key=lambda x: datetime.fromisoformat(x.name), reverse=True)
 
     st.html(l("あなたの食事記録: ") + username)
 
@@ -31,7 +43,8 @@ def render_record():
         meal_datetime = datetime.fromisoformat(meal_dir.name)
         meal_datetime_str = meal_datetime.strftime(l("%Y年%m月%d日 %H時%M分"))
         st.html(l("食事時刻: ") + meal_datetime_str)
-        dish_dirs = [d for d in meal_dir.iterdir() if d.is_dir()]
+        dish_dirs = [d for d in meal_dir.iterdir() if d.is_dir() and d.name.isnumeric()]
+        dish_dirs.sort(key=lambda x: int(x.name))
         if not dish_dirs:
             st.write(l("料理が登録されていません"))
             continue
