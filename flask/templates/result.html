@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{username}}'s food log ({{meal_time}})</title>
+    <title>{{username}}さんの{{meal_time}}の食事記録</title>
     <meta
       property="og:title"
-      content="{{username}}'s food log ({{meal_time}})"
+      content="{{username}}さんの{{meal_time}}の食事記録"
     />
     <meta property="og:type" content="website" />
     <meta
       property="og:description"
-      content="This is a food log for {{username}}'s {{meal_time}} meal."
+      content="{{username}}さんの{{meal_time}}の食事記録です"
     />
     <meta
       property="og:url"
@@ -20,9 +20,8 @@
       content="{{host_url}}share/image?username={{username}}&meal_time={{meal_time}}&dish_number={{dish_number}}"
     />
   </head>
-  <body>
-    <h1>This is a food log for {{username}}'s {{meal_time}} meal.</h1>
-    <p>Here is the result:</p>
+  <body style="font-family: 'Hiragino Kaku Gothic ProN'">
+    <h1>{{username}}さんの{{meal_time}}の食事記録です</h1>
     <div>
       <img
         src="{{host_url}}share/image?username={{username}}&meal_time={{meal_time}}&dish_number={{dish_number}}"

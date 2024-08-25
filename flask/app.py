@@ -28,7 +28,7 @@ def result():
     return render_template(
         "result.html",
         username=username,
-        meal_time=meal_time,
+        meal_time=datetime.fromisoformat(meal_time).strftime("%Y年%m月%d日 %H時%M分"),
         dish_number=dish_number,
         record=record,
         host_url=request.host_url,
