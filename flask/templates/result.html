@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html style="font-size: 1.5rem">
   <head>
-    <title>{{username}}'s food log ({{meal_time}})</title>
+    <title>{{username}}さんの{{meal_time}}の食事記録</title>
     <meta
       property="og:title"
-      content="{{username}}'s food log ({{meal_time}})"
+      content="{{username}}さんの{{meal_time}}の食事記録"
     />
     <meta property="og:type" content="website" />
     <meta
       property="og:description"
-      content="This is a food log for {{username}}'s {{meal_time}} meal."
+      content="{{username}}さんの{{meal_time}}の食事記録です"
     />
     <meta
       property="og:url"
@@ -20,15 +20,62 @@
       content="{{host_url}}share/image?username={{username}}&meal_time={{meal_time}}&dish_number={{dish_number}}"
     />
   </head>
-  <body>
-    <h1>This is a food log for {{username}}'s {{meal_time}} meal.</h1>
-    <p>Here is the result:</p>
+  <body style="font-family: 'Hiragino Kaku Gothic ProN'">
+    <h1>{{username}}さんの{{meal_time}}の食事記録です</h1>
     <div>
       <img
         src="{{host_url}}share/image?username={{username}}&meal_time={{meal_time}}&dish_number={{dish_number}}"
         width="500"
       />
     </div>
-    <div>{{record}}</div>
+    <div id="main_chart" class="chart"></div>
+    <div id="pfc_chart" class="chart"></div>
+    <div id="environment_chart" class="chart"></div>
+    <div id="detail_nutri">
+      <table id="detail_table" class="stripe hover row-border nowrap">
+        <thead>
+          <tr>
+            {% for key in detail_header %}
+            <th>{{key}}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in detail_rows %}
+          <tr>
+            {% for value in row %}
+            <td>{{value}}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </body>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css"
+  />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script
+    type="text/javascript"
+    src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"
+  ></script>
+  <script type="text/javascript">
+    const layout = {};
+    var main_nutri_fig = {{main_nutri_fig | safe}};
+    var pfc_fig = {{pfc_fig | safe}};
+    var environment_fig = {{environment_fig | safe}};
+    Plotly.plot('main_chart', main_nutri_fig, layout, {responsive: true});
+    Plotly.plot('pfc_chart', pfc_fig, layout, {responsive: true});
+    Plotly.plot('environment_chart', environment_fig, layout, {responsive: true});
+    $(document).ready(function (){
+        $('#detail_table').DataTable({
+          paging: false,
+          scrollX: true,
+        });
+    });
+  </script>
 </html>

@@ -1,7 +1,7 @@
 import datetime
 import json
-from enum import IntEnum
 import os
+from enum import IntEnum
 
 # import japanese_clip as ja_clip
 import numpy as np
@@ -171,7 +171,9 @@ def page_1():
         key: value / 3 for key, value in necessary_nutrients.items()
     }
 
-    render_meal_info_tabs(food_label_amount_unit, necessary_nutrients_per_meal)
+    main_nutri_fig, pfc_fig, detail_nutri_df, environment_fig = render_meal_info_tabs(
+        food_label_amount_unit, necessary_nutrients_per_meal
+    )
 
     st.html(  # rethink where to put
         "<b>"
@@ -221,6 +223,10 @@ def page_1():
             meal_time,
             st.session_state.click_dict,
             st.session_state.start_time,
+            main_nutri_fig,
+            pfc_fig,
+            detail_nutri_df,
+            environment_fig,
         )
         st.success(l("食事記録を保存しました。"))
         st.html(
