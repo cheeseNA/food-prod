@@ -2,6 +2,8 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+import pandas as pd
+
 from flask import Flask, render_template, request, send_file
 
 app = Flask(__name__)
@@ -24,7 +26,10 @@ def result():
     img_and_record = get_latest_image_and_record(username, meal_time, dish_number)
     if img_and_record is None:
         return "No such dish."
-    _, record, main_nutri_fig, pfc_fig, environment_fig = img_and_record
+    _, record, main_nutri_fig, pfc_fig, environment_fig, detail_nutri_df = (
+        img_and_record
+    )
+    detail_header, detail_rows = get_header_and_rows_from_df(detail_nutri_df)
     return render_template(
         "result.html",
         username=username,
@@ -39,6 +44,8 @@ def result():
         environment_fig=update_graph_str_for_visibility(
             environment_fig, FONT_SIZE, HEIGHT
         ),
+        detail_header=detail_header,
+        detail_rows=detail_rows,
     )
 
 
@@ -56,7 +63,7 @@ def image():
     image_and_record = get_latest_image_and_record(username, meal_time, dish_number)
     if image_and_record is None:
         return "No such dish."
-    image_path, _, _, _, _ = image_and_record
+    image_path, _, _, _, _, _ = image_and_record
     return send_file(image_path)
 
 
@@ -93,7 +100,17 @@ def get_latest_image_and_record(
         dish_dir_path / (record_images[-1].stem + "_environment_fig.json")
     ).open() as f:
         environment_fig = f.read()
-    return latest_image_fullpath, latest_json, main_nutri_fig, pfc_fig, environment_fig
+    detail_nutri_df = pd.read_csv(
+        dish_dir_path / (record_images[-1].stem + "_detail_nutri.csv")
+    )
+    return (
+        latest_image_fullpath,
+        latest_json,
+        main_nutri_fig,
+        pfc_fig,
+        environment_fig,
+        detail_nutri_df,
+    )
 
 
 def update_graph_str_for_visibility(fig_json: str, font_size: int, height: int) -> str:
@@ -109,3 +126,12 @@ def update_graph_str_for_visibility(fig_json: str, font_size: int, height: int) 
         fig_dict["layout"]["font"]["size"] = font_size
     fig_dict["layout"]["height"] = height
     return json.dumps(fig_dict)
+
+
+def get_header_and_rows_from_df(df: pd.DataFrame) -> tuple[list[str], list[list[str]]]:
+    """
+    Get the header and rows from the DataFrame.
+    """
+    header = df.columns.tolist()
+    rows = df.values.tolist()
+    return header, rows

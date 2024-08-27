@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="font-size: 1.5rem">
   <head>
     <title>{{username}}さんの{{meal_time}}の食事記録</title>
     <meta
@@ -28,12 +28,41 @@
         width="500"
       />
     </div>
-    <div>{{record}}</div>
     <div id="main_chart" class="chart"></div>
     <div id="pfc_chart" class="chart"></div>
     <div id="environment_chart" class="chart"></div>
+    <div id="detail_nutri">
+      <table id="detail_table" class="stripe hover row-border nowrap">
+        <thead>
+          <tr>
+            {% for key in detail_header %}
+            <th>{{key}}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in detail_rows %}
+          <tr>
+            {% for value in row %}
+            <td>{{value}}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </body>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css"
+  />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script
+    type="text/javascript"
+    src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"
+  ></script>
   <script type="text/javascript">
     const layout = {};
     var main_nutri_fig = {{main_nutri_fig | safe}};
@@ -42,5 +71,11 @@
     Plotly.plot('main_chart', main_nutri_fig, layout, {responsive: true});
     Plotly.plot('pfc_chart', pfc_fig, layout, {responsive: true});
     Plotly.plot('environment_chart', environment_fig, layout, {responsive: true});
+    $(document).ready(function (){
+        $('#detail_table').DataTable({
+          paging: false,
+          scrollX: true,
+        });
+    });
   </script>
 </html>
