@@ -251,7 +251,7 @@ def render_meal_info_tabs(
         pfc_df = calc_pfc(nutrients_df)
         percent_fig2 = px.pie(
             values=pfc_df.tolist(),
-            names=["Protain", "Fat", "Carb"],
+            names=[l("たんぱく質"), l("脂質"), l("炭水化物")],
             height=350,
             color_discrete_sequence=px.colors.qualitative.Plotly,
         )
@@ -266,7 +266,9 @@ def render_meal_info_tabs(
         ingre_ids = [food["ingre_id"] for food in food_label_amount_unit]
         data_df = nutrition_fact.copy()
         data_df = data_df.loc[ingre_ids]
-        data_df = data_df.drop(["index", "JName"], axis=1)
+        data_df = data_df.drop(
+            ["index", "Ename" if st.session_state.lang == "ja" else "JName"], axis=1
+        )
         data_df.insert(1, "weight", 0)
 
         for ii in range(len(data_df)):
