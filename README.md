@@ -37,7 +37,7 @@
 
 ## Apache configuration
 
-Add below lines to `/var/etc/apache2/sites-available/000-default.conf`
+Add below lines to `/etc/apache2/sites-available/000-default.conf`
 
 ```
 LoadModule wsgi_module "/var/www/html/maeda/food/.venv/lib/python3.10/site-packages/mod_wsgi/server/mod_wsgi-py310.cpython-310-x86_64-linux-gnu.so"

@@ -2,6 +2,8 @@
 Models
 Results
 .DS_Store
+records/
+userdata/
 
 # --  Python gitignore  --
 # Byte-compiled / optimized / DLL files
